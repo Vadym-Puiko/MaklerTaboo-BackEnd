@@ -1,4 +1,4 @@
-package makler.lv480.java;
+package com.softserve.maklertaboo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package makler.lv480.java;
+package com.softserve.maklertaboo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
