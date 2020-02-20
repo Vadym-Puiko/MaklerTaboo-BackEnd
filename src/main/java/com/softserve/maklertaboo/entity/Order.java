@@ -11,7 +11,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     private Flat flat;
@@ -24,7 +24,6 @@ public class Order {
 
     private double price;
 
-    @Column(name = "start_date")
     private LocalDate startDate;
 
     private int duration;
