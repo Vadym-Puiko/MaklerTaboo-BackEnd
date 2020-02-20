@@ -23,7 +23,7 @@ public class Flat {
     private User owner;
 
     @ManyToMany
-    List<Tags> tagsList;
+    List<Tag> tagList;
 
     @OneToMany
     List<Order> order;
