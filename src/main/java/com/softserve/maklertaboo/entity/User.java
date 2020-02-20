@@ -22,15 +22,15 @@ public class User {
     private String password;
 
     @Column(unique = true, nullable = false)
-    private String phone_number;
+    private String phoneNumber;
 
 
-    private String photo_url;
-    private String user_role;
+    private String photoUrl;
+    private String userRole;
 
 
     @OneToOne
-    Passport passport = new Passport();
+    Passport passport;
 
     @OneToMany
     List<Order> orders = new ArrayList<>();
@@ -42,5 +42,5 @@ public class User {
     List<Comment> comments = new ArrayList<>();
 
     @OneToMany
-    List<User_Comment> user_comments = new ArrayList<>();
+    List<UserComment> userComments = new ArrayList<>();
 }
