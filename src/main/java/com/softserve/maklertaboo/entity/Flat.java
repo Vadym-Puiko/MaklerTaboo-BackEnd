@@ -1,4 +1,4 @@
-package com.softserve.maklertaboo.domain.entity;
+package com.softserve.maklertaboo.entity;
 
 import lombok.Data;
 import lombok.Generated;
