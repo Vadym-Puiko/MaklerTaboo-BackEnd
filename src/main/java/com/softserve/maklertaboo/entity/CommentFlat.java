@@ -8,11 +8,8 @@ import javax.persistence.OneToOne;
 
 @Data
 @Entity
-public class FlatComment {
+public class CommentFlat extends Comment{
 
     @ManyToOne
     private Flat flat;
-
-    @OneToOne
-    private Comment comment;
 }
