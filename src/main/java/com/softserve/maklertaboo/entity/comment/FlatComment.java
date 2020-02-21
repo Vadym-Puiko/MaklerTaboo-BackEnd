@@ -1,6 +1,6 @@
 package com.softserve.maklertaboo.entity.comment;
 
-import com.softserve.maklertaboo.entity.User;
+import com.softserve.maklertaboo.entity.Flat;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -8,8 +8,8 @@ import javax.persistence.ManyToOne;
 
 @Data
 @Entity
-public class CommentUser extends Comment {
+public class FlatComment extends Comment{
 
     @ManyToOne
-    private User user;
+    private Flat flat;
 }

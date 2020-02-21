@@ -1,7 +1,7 @@
 package com.softserve.maklertaboo.entity;
 
 import com.softserve.maklertaboo.entity.comment.Comment;
-import com.softserve.maklertaboo.entity.comment.CommentUser;
+import com.softserve.maklertaboo.entity.comment.UserComment;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -45,5 +45,5 @@ public class User {
     List<Comment> comments = new ArrayList<>();
 
     @OneToMany
-    List<CommentUser> commentUsers = new ArrayList<>();
+    List<UserComment> userComments = new ArrayList<>();
 }

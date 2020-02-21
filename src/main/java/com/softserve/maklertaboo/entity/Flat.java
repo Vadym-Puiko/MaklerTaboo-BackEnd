@@ -1,7 +1,7 @@
 package com.softserve.maklertaboo.entity;
 
-import com.softserve.maklertaboo.entity.comment.CommentFlat;
-import com.softserve.maklertaboo.entity.photo.PhotoFlat;
+import com.softserve.maklertaboo.entity.comment.FlatComment;
+import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -19,7 +19,7 @@ public class Flat {
     private Address address;
 
     @OneToMany
-    private List<PhotoFlat> photoFlatList;
+    private List<FlatPhoto> flatPhotoList;
 
     @ManyToOne
     private User owner;
@@ -31,7 +31,7 @@ public class Flat {
     List<Order> order;
 
     @OneToMany
-    List<CommentFlat> commentFlatList;
+    List<FlatComment> flatCommentList;
 
     @Column (nullable = false)
     private String description;

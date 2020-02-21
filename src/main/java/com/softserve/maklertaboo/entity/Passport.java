@@ -1,6 +1,6 @@
 package com.softserve.maklertaboo.entity;
 
-import com.softserve.maklertaboo.entity.photo.PhotoPassport;
+import com.softserve.maklertaboo.entity.photo.PassportPhoto;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -36,5 +36,5 @@ public class Passport {
     private User user;
 
     @OneToMany
-    List<PhotoPassport> photoPassportList = new ArrayList<>();
+    List<PassportPhoto> passportPhotoList = new ArrayList<>();
 }
