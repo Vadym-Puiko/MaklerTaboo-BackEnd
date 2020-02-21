@@ -4,11 +4,15 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-@Entity
+
 @Data
+@Entity
 public class PhotoComment extends PhotoAbstract {
 
     @ManyToOne
     private Comment comment;
+    
+    @OneToOne
+    private Photo photo;
 
 }
