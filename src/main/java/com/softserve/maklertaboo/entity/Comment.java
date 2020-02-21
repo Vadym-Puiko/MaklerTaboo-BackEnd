@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-public class Comment {
+public abstract class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
