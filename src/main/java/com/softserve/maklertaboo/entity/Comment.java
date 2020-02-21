@@ -20,5 +20,5 @@ public abstract class Comment {
     private LocalDate publicationDate;
 
     @ManyToOne
-    private User user;
+    private User userAuthor;
 }
