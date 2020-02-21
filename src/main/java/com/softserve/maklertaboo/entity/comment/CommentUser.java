@@ -1,14 +1,14 @@
-package com.softserve.maklertaboo.entity;
+package com.softserve.maklertaboo.entity.comment;
 
+import com.softserve.maklertaboo.entity.User;
 import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 
 @Data
 @Entity
-public class UserComment extends Comment {
+public class CommentUser extends Comment {
 
     @ManyToOne
     private User user;

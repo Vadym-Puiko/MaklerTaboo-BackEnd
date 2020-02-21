@@ -1,5 +1,6 @@
-package com.softserve.maklertaboo.entity;
+package com.softserve.maklertaboo.entity.comment;
 
+import com.softserve.maklertaboo.entity.User;
 import lombok.Data;
 
 import javax.persistence.*;
