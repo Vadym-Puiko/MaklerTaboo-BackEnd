@@ -16,8 +16,8 @@ public class Tag {
     private String name;
 
     @ManyToMany
-    List<Order> orders;
+    private List<Order> orders;
 
     @ManyToMany
-    List<Flat> flats;
+    private List<Flat> flats;
 }
