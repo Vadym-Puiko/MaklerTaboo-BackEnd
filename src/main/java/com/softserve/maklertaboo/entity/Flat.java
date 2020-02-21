@@ -28,7 +28,7 @@ public class Flat {
     private List<Tag> tagList;
 
     @OneToMany
-    private List<Order> order;
+    private List<Order> orderList;
 
     @OneToMany
     private List<CommentFlat> commentFlatList;
