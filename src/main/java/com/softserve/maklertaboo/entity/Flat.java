@@ -25,13 +25,13 @@ public class Flat {
     private User owner;
 
     @ManyToMany
-    List<Tag> tagList;
+    private List<Tag> tagList;
 
     @OneToMany
-    List<Order> order;
+    private List<Order> orderList;
 
     @OneToMany
-    List<FlatComment> flatCommentList;
+    private List<FlatComment> commentFlatList;
 
     @Column (nullable = false)
     private String description;

@@ -5,7 +5,6 @@ import com.softserve.maklertaboo.entity.comment.UserComment;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,17 +32,18 @@ public class User {
 
 
     @OneToOne
-    Passport passport;
+    private Passport passport;
 
     @OneToMany
-    List<Order> orders = new ArrayList<>();
+    private List<Order> orders;
 
     @OneToMany
-    List<Flat> flats = new ArrayList<>();
+    private List<Flat> flats;
 
     @OneToMany
-    List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
 
     @OneToMany
-    List<UserComment> userComments = new ArrayList<>();
+    private List<UserComment> userComments;
+
 }
