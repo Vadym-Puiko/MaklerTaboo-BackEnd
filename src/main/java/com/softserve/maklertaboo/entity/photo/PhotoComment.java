@@ -11,5 +11,4 @@ public class PhotoComment extends PhotoAbstract {
 
     @ManyToOne
     private Comment comment;
-  
 }
