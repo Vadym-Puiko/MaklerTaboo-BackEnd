@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -20,7 +21,7 @@ public class Order {
     private User user;
 
     @ManyToMany
-    private Tag tag;
+    private List<Tag> tags;
 
     @ManyToOne
     private OrderStatus orderStatus;

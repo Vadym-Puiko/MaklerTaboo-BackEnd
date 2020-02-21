@@ -4,7 +4,6 @@ import com.softserve.maklertaboo.entity.photo.PhotoPassport;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -36,5 +35,5 @@ public class Passport {
     private User user;
 
     @OneToMany
-    List<PhotoPassport> photoPassportList = new ArrayList<>();
+    private List<PhotoPassport> photoPassportList;
 }
