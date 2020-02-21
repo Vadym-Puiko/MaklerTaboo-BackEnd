@@ -19,6 +19,9 @@ public class Order {
     @ManyToOne
     private User user;
 
+    @ManyToMany
+    private Tag tag;
+
     @ManyToOne
     private OrderStatus orderStatus;
 
