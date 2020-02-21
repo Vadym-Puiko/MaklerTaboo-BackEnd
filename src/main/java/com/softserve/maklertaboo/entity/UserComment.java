@@ -8,11 +8,8 @@ import javax.persistence.OneToOne;
 
 @Data
 @Entity
-public class UserComment {
+public class UserComment extends Comment {
 
     @ManyToOne
     private User user;
-
-    @OneToOne
-    private Comment comment;
 }
