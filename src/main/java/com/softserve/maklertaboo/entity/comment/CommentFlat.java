@@ -1,10 +1,10 @@
-package com.softserve.maklertaboo.entity;
+package com.softserve.maklertaboo.entity.comment;
 
+import com.softserve.maklertaboo.entity.Flat;
 import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 
 @Data
 @Entity
