@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.entity.photo;
 
+import com.softserve.maklertaboo.entity.User;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ public abstract class PhotoAbstract {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @ManyToOne
     private User userAuthor;
