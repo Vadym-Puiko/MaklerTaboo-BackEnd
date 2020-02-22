@@ -1,4 +1,4 @@
-package com.softserve.maklertaboo;
+package com.softserve.maklertaboo.controller;
 
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RestController
 @RequestMapping("hello")
-public class HelloServlet {
+public class HelloController {
 
     @GetMapping
     public String getAll() {

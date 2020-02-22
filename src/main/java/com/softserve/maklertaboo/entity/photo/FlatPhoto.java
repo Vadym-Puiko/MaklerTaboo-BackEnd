@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 
 @Data
 @Entity
-public class PhotoFlat extends PhotoAbstract {
+public class FlatPhoto extends PhotoAbstract {
 
     @ManyToOne
     private Flat flat;
