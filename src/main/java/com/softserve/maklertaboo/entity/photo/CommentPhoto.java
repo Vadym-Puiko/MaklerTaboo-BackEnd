@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 
 @Data
 @Entity
-public class PhotoComment extends PhotoAbstract {
+public class CommentPhoto extends PhotoAbstract {
 
     @ManyToOne
     private Comment comment;

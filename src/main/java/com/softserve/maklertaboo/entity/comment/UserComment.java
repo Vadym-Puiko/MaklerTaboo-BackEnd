@@ -1,4 +1,4 @@
-package com.softserve.maklertaboo.entity.photo;
+package com.softserve.maklertaboo.entity.comment;
 
 import com.softserve.maklertaboo.entity.User;
 import lombok.Data;
@@ -8,9 +8,8 @@ import javax.persistence.ManyToOne;
 
 @Data
 @Entity
-public class PhotoPassport extends PhotoAbstract {
+public class UserComment extends Comment {
 
     @ManyToOne
     private User user;
-
 }

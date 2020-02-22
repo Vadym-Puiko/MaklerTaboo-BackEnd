@@ -1,7 +1,7 @@
 package com.softserve.maklertaboo.entity;
 
 import com.softserve.maklertaboo.entity.comment.Comment;
-import com.softserve.maklertaboo.entity.comment.CommentUser;
+import com.softserve.maklertaboo.entity.comment.UserComment;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -10,6 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
+@Table(name="usr")
 public class User {
 
     @Id
@@ -43,5 +44,6 @@ public class User {
     private List<Comment> comments;
 
     @OneToMany
-    private List<CommentUser> commentUsers;
+    private List<UserComment> userComments;
+
 }
