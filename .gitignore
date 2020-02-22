@@ -20,7 +20,6 @@ README.md
 *.zip
 *.tar.gz
 *.rar
-*.properties
 ### IntelliJ IDEA ###
 .idea
 target/
