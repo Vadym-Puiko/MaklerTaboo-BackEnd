@@ -8,10 +8,10 @@
 		<version>2.2.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>makler</groupId>
-	<artifactId>lv-480.java</artifactId>
+	<groupId>com.softserve.maklertaboo</groupId>
+	<artifactId>flat-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>lv-480.java</name>
+	<name>maklertaboo</name>
 	<description>Makler project</description>
 
 	<properties>
