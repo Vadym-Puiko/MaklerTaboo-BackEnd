@@ -37,7 +37,7 @@ public class Flat {
     private String description;
     @Column (nullable = false)
     private String title;
-    private boolean isVisible;
+    private Boolean isVisible;
     @Column (nullable = false)
-    private double monthPrice;
+    private Double monthPrice;
 }

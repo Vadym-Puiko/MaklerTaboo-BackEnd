@@ -19,9 +19,9 @@ public class Address {
 
     private String district;
 
-    private int houseNumber;
+    private Integer houseNumber;
 
-    private int flatNumber;
+    private Integer flatNumber;
 
-    private int floor;
+    private Integer floor;
 }
