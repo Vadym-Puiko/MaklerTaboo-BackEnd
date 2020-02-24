@@ -16,10 +16,10 @@ public class Passport {
     private String firstName;
     private String lastName;
     private String middleName;
-    private boolean gender;
+    private Boolean gender;
     private String birthDate;
     private String birthPlace;
-    private boolean passportType;
+    private Boolean passportType;
     private String nationality;
     private String authority;
     private String dateOfIssue;
@@ -29,7 +29,7 @@ public class Passport {
     private String passportNumber;
 
     @Column(unique = true, nullable = false)
-    private int identificationNumber;
+    private Integer identificationNumber;
 
     @OneToOne
     private User user;
