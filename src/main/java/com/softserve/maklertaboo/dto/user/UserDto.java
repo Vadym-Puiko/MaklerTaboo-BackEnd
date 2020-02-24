@@ -1,4 +1,4 @@
-package com.softserve.maklertaboo.dto.request;
+package com.softserve.maklertaboo.dto.user;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import javax.validation.constraints.Positive;
 
 @Getter
 @Setter
-public class UserRequest {
+public class UserDto {
 
     @NotNull
     @NotBlank

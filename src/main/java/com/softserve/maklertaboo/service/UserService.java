@@ -1,6 +1,6 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.dto.request.UserRequest;
+import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.dto.response.UserResponse;
 import com.softserve.maklertaboo.entity.User;
 import com.softserve.maklertaboo.repository.photo.UserRepository;
@@ -16,8 +16,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public void save(UserRequest userRequest) {
-        User user = userToUserRequest(userRequest, null);
+    public void save(UserDto userDto) {
+        User user = userToUserRequest(userDto, null);
         userRepository.save(user);
     }
 
@@ -32,8 +32,8 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
-    public void update(Long id, UserRequest userRequest) {
-        User user = userToUserRequest(userRequest, findOne(id));
+    public void update(Long id, UserDto userDto) {
+        User user = userToUserRequest(userDto, findOne(id));
         userRepository.save(user);
     }
 
@@ -41,14 +41,14 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    private User userToUserRequest(UserRequest userRequest, User user) {
+    private User userToUserRequest(UserDto userDto, User user) {
         if (user == null) {
             user = new User();
         }
-        user.setEmail(userRequest.getEmail());
-        user.setPassword(userRequest.getPassword());
-        user.setPhoneNumber(userRequest.getPhoneNumber());
-        user.setPhotoUrl(userRequest.getPhotoUrl());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setPhotoUrl(userDto.getPhotoUrl());
         return user;
     }
 }
