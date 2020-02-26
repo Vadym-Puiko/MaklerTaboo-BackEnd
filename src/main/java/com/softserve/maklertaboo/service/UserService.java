@@ -1,13 +1,11 @@
 package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.user.UserDto;
-import com.softserve.maklertaboo.dto.response.UserResponse;
 import com.softserve.maklertaboo.entity.User;
 import com.softserve.maklertaboo.repository.photo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,12 +19,12 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public List<UserResponse> findAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserResponse::new)
-                .collect(Collectors.toList());
-    }
+//    public List<UserResponse> findAll() {
+//        return userRepository.findAll()
+//                .stream()
+//                .map(UserResponse::new)
+//                .collect(Collectors.toList());
+//    }
 
     public User findOne(Long id) {
         return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
