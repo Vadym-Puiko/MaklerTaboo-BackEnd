@@ -30,6 +30,7 @@ public class User {
     private String photoUrl;
     private String userRole;
 
+    private String username;
 
     @OneToOne
     private Passport passport;

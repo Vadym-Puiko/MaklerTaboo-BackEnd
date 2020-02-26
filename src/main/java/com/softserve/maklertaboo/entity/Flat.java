@@ -3,8 +3,10 @@ package com.softserve.maklertaboo.entity;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -15,14 +17,24 @@ public class Flat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Double monthPrice;
+    private Date creationDate;
+
+    private String description;
+    private String title;
+
+    private String numberofRooms;
+
+    private Boolean isActive;
+
     @OneToOne
     private Address address;
 
-    @OneToMany
-    private List<FlatPhoto> flatPhotoList;
-
     @ManyToOne
     private User owner;
+
+    @OneToMany
+    private List<FlatPhoto> flatPhotoList;
 
     @ManyToMany
     private List<Tag> tagList;
@@ -32,12 +44,4 @@ public class Flat {
 
     @OneToMany
     private List<FlatComment> commentFlatList;
-
-    @Column (nullable = false)
-    private String description;
-    @Column (nullable = false)
-    private String title;
-    private Boolean isVisible;
-    @Column (nullable = false)
-    private Double monthPrice;
 }
