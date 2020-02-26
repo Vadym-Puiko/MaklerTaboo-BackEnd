@@ -16,10 +16,24 @@ public class FlatMapper {
         flatDto.setMonthPrice(flat.getMonthPrice());
         flatDto.setTitle(flat.getTitle());
         flatDto.setPhotoUrl(flat.getFlatPhotoList().get(0).getUrl());
+        flatDto.setAddress(flat.getAddress());
 
         return flatDto;
     }
 
+    public Flat toFlatDto(FlatDto flatDto){
+
+        Flat flat = new Flat();
+        flat.setCreationDate(flatDto.getCreationDate());
+        flat.setDescription(flatDto.getDescription());
+        flat.setId(flatDto.getId());
+        flat.setMonthPrice(flatDto.getMonthPrice());
+        flat.setTitle(flatDto.getTitle());
+        flat.setPhotoUrl(flatDto.getFlatPhotoList().get(0).getUrl());
+        flat.setAddress(flatDto.getAddress());
+
+        return flat;
+    }
 
 
 

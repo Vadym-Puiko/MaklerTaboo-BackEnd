@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.dto;
 
+import com.softserve.maklertaboo.entity.Address;
 import lombok.Data;
 
 import java.util.Date;
@@ -16,4 +17,6 @@ public class FlatDto {
     private String photoUrl;
 
     private Date creationDate;
+
+    private Address address;
 }

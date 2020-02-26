@@ -2,12 +2,9 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.User;
-import com.softserve.maklertaboo.repository.photo.UserRepository;
+import com.softserve.maklertaboo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
