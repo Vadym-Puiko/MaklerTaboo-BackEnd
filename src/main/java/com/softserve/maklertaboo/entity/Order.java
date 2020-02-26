@@ -27,9 +27,9 @@ public class Order {
     @ManyToOne
     private OrderStatus orderStatus;
 
-    private double price;
+    private Double price;
 
     private LocalDate startDate;
 
-    private int duration;
+    private Integer duration;
 }
