@@ -3,7 +3,6 @@ package com.softserve.maklertaboo.entity;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,30 +17,34 @@ public class Flat {
     private Long id;
 
     private Double monthPrice;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "creation_date",
+            columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()")
     private Date creationDate;
 
     private String description;
     private String title;
 
-    private String numberofRooms;
+    private Integer numberofRooms;
 
     private Boolean isActive;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private User owner;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<FlatPhoto> flatPhotoList;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Tag> tagList;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Order> orderList;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<FlatComment> commentFlatList;
 }

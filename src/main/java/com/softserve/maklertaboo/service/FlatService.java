@@ -1,6 +1,6 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.dto.FlatSearchParameters;
+import com.softserve.maklertaboo.dto.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.entity.Flat;
 import com.softserve.maklertaboo.repository.FlatRepository;
 import lombok.Data;
@@ -21,12 +21,12 @@ public class FlatService {
     }
 
     public Page<Flat> getAll(Pageable pageable) {
-        Page<Flat> flats= flatRepository.findAllByIsActiveIsTrue(pageable);
+        Page<Flat> flats = flatRepository.findAllByIsActiveIsTrue(pageable);
         return flats;
     }
 
     public Page<Flat> getByParameters(FlatSearchParameters flatParameters) {
-
         return null;
     }
+
 }

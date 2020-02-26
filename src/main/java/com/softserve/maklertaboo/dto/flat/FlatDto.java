@@ -1,4 +1,4 @@
-package com.softserve.maklertaboo.dto;
+package com.softserve.maklertaboo.dto.flat;
 
 import com.softserve.maklertaboo.entity.Address;
 import lombok.Data;
@@ -9,14 +9,12 @@ import java.util.Date;
 public class FlatDto {
 
     private Long id;
+    private Double monthPrice;
 
     private String description;
     private String title;
-
-    private Double monthPrice;
     private String photoUrl;
 
     private Date creationDate;
-
     private Address address;
 }

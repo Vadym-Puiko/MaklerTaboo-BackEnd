@@ -10,26 +10,20 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name="usr")
+@Table(name = "usr")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String email;
-
-    @Column(unique = true, nullable = false)
     private String password;
 
-    @Column(unique = true, nullable = false)
     private String phoneNumber;
-
-
     private String photoUrl;
-    private String userRole;
 
+    private String userRole;
     private String username;
 
     @OneToOne

@@ -18,5 +18,4 @@ public interface FlatRepository extends JpaRepository<Flat, Long> {
     List<Flat> findByOwner(User author);
 
 
-
 }
