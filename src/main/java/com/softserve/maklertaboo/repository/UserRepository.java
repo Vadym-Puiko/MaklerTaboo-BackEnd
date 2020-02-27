@@ -1,4 +1,4 @@
-package com.softserve.maklertaboo.repository.photo;
+package com.softserve.maklertaboo.repository;
 
 import com.softserve.maklertaboo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

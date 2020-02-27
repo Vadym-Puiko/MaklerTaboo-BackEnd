@@ -17,10 +17,10 @@ public class SwaggerConfig {
 
     @Bean
     public Docket productApi() {
-        Docket docket =  new Docket(DocumentationType.SWAGGER_2)
+        Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 .groupName("SpringBoot-Swagger-API")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("vadym.puiko.site.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.softserve.maklertaboo.controller"))
                 .build()
                 .consumes(Sets.newHashSet(MediaType.APPLICATION_JSON_VALUE))
                 .produces(Sets.newHashSet(MediaType.APPLICATION_JSON_VALUE))

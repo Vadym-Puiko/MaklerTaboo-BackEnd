@@ -27,16 +27,14 @@ public class Passport {
     private String dateOfIssue;
     private String expirationDate;
 
-    @Column(unique = true, nullable = false)
     private String passportNumber;
 
-    @Column(unique = true, nullable = false)
     private Integer identificationNumber;
 
     @OneToOne
     private User user;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<PassportPhoto> passportPhotoList;
 
 }

@@ -9,15 +9,19 @@ import java.util.List;
 @Entity
 public class Tag {
 
+    public Tag(String name) {
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Order> orders;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Flat> flats;
 }
