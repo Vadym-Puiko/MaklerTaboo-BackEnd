@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.dto.user.UserAccountDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.User;
 
@@ -30,34 +31,28 @@ public class UserService {
         userRepository.save(user);
     }
 
-
-    public List<UserDto> findAll() {
+    public List<UserAccountDto> findAll() {
         return userRepository.findAll()
                 .stream()
-                .map(userMapper.convertToDto())
+                .map(userMapper::convertToDto)
                 .collect(Collectors.toList());
     }
-
-//    public List<UserDto> findAll() {
-//        return userRepository.findAll()
-//                .stream()
-//                .map(UserResponse::new)
-//                .collect(Collectors.toList());
-//    }
-
 
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
-    public void update(Long id, UserDto userDto) {
-        User user = userMapper.convertToEntity(findById(id));
+    public void update(Long id, UserAccountDto userAccountDto) {
+        User user = findById(id);
+        user.setUsername(userAccountDto.getUsername());
+        user.setEmail(userAccountDto.getEmail());
+        user.setPhoneNumber(userAccountDto.getPhoneNumber());
+        user.setPhotoUrl(userAccountDto.getPhotoUrl());
         userRepository.save(user);
     }
 
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
-
 
 }
