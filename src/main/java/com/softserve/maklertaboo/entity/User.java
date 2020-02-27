@@ -17,6 +17,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String username;
     private String email;
     private String password;
 
@@ -24,7 +25,6 @@ public class User {
     private String photoUrl;
 
     private String userRole;
-    private String username;
 
     @OneToOne
     private Passport passport;
