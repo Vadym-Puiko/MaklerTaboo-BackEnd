@@ -21,8 +21,7 @@ public class FlatService {
     NewFlatMapper newFlatMapper;
 
     @Autowired
-    public FlatService(FlatRepository flatRepository, FlatSearchRepository flatSearchRepository,NewFlatMapper newFlatMapper
-    ) {
+    public FlatService(FlatRepository flatRepository, FlatSearchRepository flatSearchRepository, NewFlatMapper newFlatMapper) {
         this.newFlatMapper = newFlatMapper;
         this.flatRepository = flatRepository;
         this.flatSearchRepository = flatSearchRepository;
@@ -41,7 +40,7 @@ public class FlatService {
         return flatRepository.findById(Long.parseLong(id + "")).get();
     }
 
-    public void saveFlat(NewFlatDto newFlatDto){
+    public void saveFlat(NewFlatDto newFlatDto) {
         flatRepository.save(newFlatMapper.convertToEntity(newFlatDto));
     }
 }

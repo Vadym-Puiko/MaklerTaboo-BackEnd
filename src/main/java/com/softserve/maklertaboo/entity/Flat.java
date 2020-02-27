@@ -16,7 +16,6 @@ public class Flat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Integer monthPrice;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -28,11 +27,9 @@ public class Flat {
     private String title;
 
     private Integer numberOfRooms;
-
     private Integer floor;
 
     private String district;
-
     private Boolean isActive;
 
     @OneToOne(cascade = CascadeType.ALL)

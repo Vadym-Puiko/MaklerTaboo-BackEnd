@@ -10,17 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class NewFlatMapper implements MapperToEntity<NewFlatDto,Flat> {
+public class NewFlatMapper implements MapperToEntity<NewFlatDto, Flat> {
 
     @Autowired
     TagService tagService;
 
     public Flat convertToEntity(NewFlatDto flatDto) {
-
         Flat flat = new Flat();
 
         flat.setDescription(flatDto.getDescription());
@@ -40,7 +38,7 @@ public class NewFlatMapper implements MapperToEntity<NewFlatDto,Flat> {
         flat.setAddress(address);
         List<FlatPhoto> photos = new ArrayList<>();
 
-        for(String base64: flatDto.getBase64Photos()){
+        for (String base64 : flatDto.getBase64Photos()) {
 
             FlatPhoto flatPhoto = new FlatPhoto();
 

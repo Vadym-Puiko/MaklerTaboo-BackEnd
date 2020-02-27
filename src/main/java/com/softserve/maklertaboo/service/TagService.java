@@ -13,11 +13,11 @@ public class TagService {
     @Autowired
     TagRepository tagRepository;
 
-    public Set<Tag> getTags(Set<String> tags){
+    public Set<Tag> getTags(Set<String> tags) {
         return tagRepository.findByNameIn(tags);
     }
 
-    public void saveTag(Tag tag){
+    public void saveTag(Tag tag) {
         tagRepository.save(tag);
     }
 }

@@ -10,7 +10,7 @@ import java.util.Objects;
 @Data
 @Entity
 @NoArgsConstructor
-public class Tag{
+public class Tag {
 
     public Tag(String name) {
         this.name = name;
@@ -19,7 +19,6 @@ public class Tag{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL)
