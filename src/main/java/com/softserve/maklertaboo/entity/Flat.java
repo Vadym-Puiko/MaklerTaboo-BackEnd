@@ -5,6 +5,7 @@ import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -15,29 +16,40 @@ public class Flat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    private Integer monthPrice;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "creation_date",
+            columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()")
+    private Date creationDate;
+
+    private String description;
+    private String title;
+
+    private Integer numberofRooms;
+
+    private Integer floor;
+
+    private String district;
+
+    private Boolean isActive;
+
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @OneToMany
-    private List<FlatPhoto> flatPhotoList;
-
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private User owner;
 
-    @ManyToMany
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<FlatPhoto> flatPhotoList;
+
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Tag> tagList;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Order> orderList;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<FlatComment> commentFlatList;
 
-    @Column (nullable = false)
-    private String description;
-    @Column (nullable = false)
-    private String title;
-    private Boolean isVisible;
-    @Column (nullable = false)
-    private Double monthPrice;
 }

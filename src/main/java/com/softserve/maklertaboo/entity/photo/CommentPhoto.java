@@ -1,21 +1,30 @@
 package com.softserve.maklertaboo.entity.photo;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.softserve.maklertaboo.entity.User;
 import com.softserve.maklertaboo.entity.comment.Comment;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
-public class CommentPhoto extends PhotoAbstract {
+public class CommentPhoto {
 
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
-    @ManyToOne(cascade = {
-            CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "date")
+    private LocalDateTime date;
+
+    @Column(name = "url")
+    private String url;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private User userAuthor;
+
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Comment comment;
 }
