@@ -3,7 +3,6 @@ package com.softserve.maklertaboo.repository.search;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.entity.Flat;
 import com.softserve.maklertaboo.entity.Tag;
-import com.softserve.maklertaboo.repository.search.metamodel.Flat_;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -60,15 +59,19 @@ public class FlatSearchRepository implements SearchRepository<Flat, FlatSearchPa
             predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("monthPrice"), searchParameters.getPriceHigh()));
         }
 
-        if (searchParameters.getPriceHigh() != null) {
-            predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("monthPrice"), searchParameters.getPriceHigh()));
-        }
-
         if (searchParameters.getFloorLow() != null) {
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(flatRoot.get("monthPrice"), searchParameters.getFloorLow()));
         }
 
-        ListJoin<Flat, Tag> flatTagJoin = flatRoot.joinList("tags");
+        if (searchParameters.getPriceHigh() != null) {
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("monthPrice"), searchParameters.getPriceHigh()));
+        }
+
+        if (searchParameters.getNumberOfRooms() != null) {
+            predicates.add(criteriaBuilder.equal(flatRoot.get("numberOfRooms"), searchParameters.getNumberOfRooms()));
+        }
+
+        SetJoin<Object, Object> flatTagJoin = flatRoot.joinSet("tags");
 
         if (searchParameters.getTags() != null) {
                 predicates.add(flatTagJoin.get("name").in(searchParameters.getTags()));

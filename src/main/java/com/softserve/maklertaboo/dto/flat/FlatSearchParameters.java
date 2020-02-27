@@ -8,7 +8,7 @@ import java.util.Set;
 public class FlatSearchParameters {
 
     private String region;
-    private String numberofRooms;
+    private Integer numberOfRooms;
 
     private Integer floorLow;
     private Integer floorHigh;
