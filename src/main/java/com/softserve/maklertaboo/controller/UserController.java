@@ -19,16 +19,16 @@ public class UserController {
     public void save(@RequestBody UserDto userDto) {
         userService.save(userDto);
     }
-//
-//    @GetMapping
-//    public List<UserResponse> findAll() {
-//        return userService.findAll();
-//    }
 
-//    @PutMapping
-//    public void update(Long id, @RequestBody UserRequest request) {
-//        userService.update(id, request);
-//    }
+    @GetMapping
+    public List<UserResponse> findAll() {
+        return userService.findAll();
+    }
+
+    @PutMapping
+    public void update(Long id, @RequestBody UserDto userDto) {
+        userService.update(id, userDto);
+    }
 
     @DeleteMapping
     public void delete(Long id) {
