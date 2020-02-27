@@ -11,6 +11,6 @@ public class MessageDTO {
     private String content;
     private String sendTime;
     private Long senderId;
-    private String username;
+    private String senderUsername;
     private Long chatId;
 }

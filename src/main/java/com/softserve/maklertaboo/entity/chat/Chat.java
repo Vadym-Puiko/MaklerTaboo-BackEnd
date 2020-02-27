@@ -19,8 +19,10 @@ public class Chat {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Message> messages;
 
-    @NonNull
+
     @ManyToOne
     private User sender;
+
+    @ManyToOne
     private User receiver;
 }

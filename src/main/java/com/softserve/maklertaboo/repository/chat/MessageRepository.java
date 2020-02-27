@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findAllByChatId(Long chatId);
     Optional<Message> findMessageById (Long id);
+    Long countByChatId(Long chatId);
 }

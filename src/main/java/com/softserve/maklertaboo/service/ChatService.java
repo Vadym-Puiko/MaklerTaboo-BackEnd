@@ -31,6 +31,10 @@ public class ChatService {
     public List<Chat> getAllChatBySenderId(Long id){
         return chatRepository.findAllBySenderId(id);
     }
+
+    public Long getCountOfMessages(Long chatId) {
+        return messageRepository.countByChatId(chatId);
+    }
 }
 
 

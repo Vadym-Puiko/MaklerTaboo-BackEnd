@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.controller;
 
+import com.softserve.maklertaboo.service.ChatService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import javax.validation.constraints.Positive;
 @Slf4j
 @Controller
 public class ChatController {
- /*   private ChatService chatService;*/
+    private ChatService chatService;
 
     @Autowired
     public ChatController(ChatService chatService) {
@@ -23,8 +24,8 @@ public class ChatController {
 
     @GetMapping(value = "/chats/{chatId}/count")
     @ResponseStatus(HttpStatus.OK)
-    public Long countOfMessages(@PathVariable(value = "chatId") @Positive @NonNull Long chatId) {
-
- /*       return chatService.getCountOfMessages(chatId);*/
+    public Long countOfMessages(@PathVariable(value = "chatId")  Long chatId) {
+        return chatService.getCountOfMessages(chatId);
     }
+
 }
