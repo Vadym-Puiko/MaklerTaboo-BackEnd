@@ -2,29 +2,36 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.User;
-import com.softserve.maklertaboo.mapping.UserDtoToEntity;
+import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
+    private final UserMapper userMapper;
+
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserMapper userMapper, UserRepository userRepository) {
+        this.userMapper = userMapper;
+        this.userRepository = userRepository;
+    }
 
     public void save(UserDto userDto) {
-        UserDtoToEntity userToEntity = new UserDtoToEntity();
-        User user = userToEntity.convertToEntity(userDto);
+        User user = userMapper.convertToEntity(userDto);
         userRepository.save(user);
     }
 
-    public List<UserResponse> findAll() {
+    public List<UserDto> findAll() {
         return userRepository.findAll()
                 .stream()
-                .map(UserResponse::new)
+                .map(userMapper.convertToDto())
                 .collect(Collectors.toList());
     }
 
@@ -33,7 +40,7 @@ public class UserService {
     }
 
     public void update(Long id, UserDto userDto) {
-        User user = userToUserRequest(userDto, findById(id));
+        User user = userMapper.convertToEntity(findById(id));
         userRepository.save(user);
     }
 
