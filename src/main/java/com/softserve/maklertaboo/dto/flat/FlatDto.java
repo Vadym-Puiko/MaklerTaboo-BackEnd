@@ -9,7 +9,7 @@ import java.util.Date;
 public class FlatDto {
 
     private Long id;
-    private Double monthPrice;
+    private Integer monthPrice;
 
     private String description;
     private String title;

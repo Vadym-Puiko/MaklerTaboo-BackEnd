@@ -3,6 +3,7 @@ package com.softserve.maklertaboo.service;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.entity.Flat;
 import com.softserve.maklertaboo.repository.FlatRepository;
+import com.softserve.maklertaboo.repository.search.FlatSearchRepository;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,10 +15,12 @@ import org.springframework.stereotype.Service;
 public class FlatService {
 
     FlatRepository flatRepository;
+    FlatSearchRepository flatSearchRepository;
 
     @Autowired
-    public FlatService(FlatRepository flatRepository) {
+    public FlatService(FlatRepository flatRepository, FlatSearchRepository flatSearchRepository) {
         this.flatRepository = flatRepository;
+        this.flatSearchRepository = flatSearchRepository;
     }
 
     public Page<Flat> getAll(Pageable pageable) {
@@ -25,8 +28,12 @@ public class FlatService {
         return flats;
     }
 
-    public Page<Flat> getByParameters(FlatSearchParameters flatParameters) {
-        return null;
+    public Page<Flat> getByParameters(FlatSearchParameters flatParameters, Pageable pageable) {
+        return flatSearchRepository.findByParams(flatParameters, pageable);
+    }
+
+    public Flat getById(Integer id) {
+        return flatRepository.findById(Long.parseLong(id + "")).get();
     }
 
 }

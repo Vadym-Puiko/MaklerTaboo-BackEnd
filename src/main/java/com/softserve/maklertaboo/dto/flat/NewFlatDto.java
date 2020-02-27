@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class NewFlatDto {
+
     private String description;
     private String title;
     private Double monthPrice;

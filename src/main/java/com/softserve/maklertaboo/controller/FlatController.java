@@ -1,7 +1,6 @@
 package com.softserve.maklertaboo.controller;
 
 
-import com.softserve.maklertaboo.dto.flat.FlatDetailDto;
 import com.softserve.maklertaboo.dto.flat.FlatDto;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
@@ -36,10 +35,18 @@ public class FlatController {
         return flatService.getAll(pageable).map(flatMapper::toFlatDto);
     }
 
+    @GetMapping("detailed/{page}")
+    public FlatDto getOne(@PathVariable Integer page) {
+        System.out.println("Here");
+        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_ON_PAGE);
+        return flatMapper.toFlatDto(flatService.getById(page));
+    }
+
     @PutMapping("/search/{page}")
     public Page<FlatDto> getByParameters(@PathVariable Integer page, @RequestBody FlatSearchParameters flatParameters) {
+        System.out.println(flatParameters);
         Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_ON_PAGE);
-        return flatService.getByParameters(flatParameters).map(flatMapper::toFlatDto);
+        return flatService.getByParameters(flatParameters, pageable).map(flatMapper::toFlatDto);
     }
 
     @PostMapping("/create")

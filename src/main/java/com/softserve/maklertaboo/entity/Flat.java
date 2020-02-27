@@ -16,7 +16,7 @@ public class Flat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double monthPrice;
+    private Integer monthPrice;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date",
@@ -27,6 +27,10 @@ public class Flat {
     private String title;
 
     private Integer numberofRooms;
+
+    private Integer floor;
+
+    private String district;
 
     private Boolean isActive;
 
@@ -47,4 +51,5 @@ public class Flat {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<FlatComment> commentFlatList;
+
 }

@@ -5,9 +5,9 @@ import com.softserve.maklertaboo.entity.Flat;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FlatMapper {
+public class FlatMapper implements MapperToDto<Flat, FlatDto>, MapperToEntity<FlatDto,Flat> {
 
-    public FlatDto toFlatDto(Flat flat) {
+    public FlatDto convertToDto(Flat flat) {
 
         FlatDto flatDto = new FlatDto();
         flatDto.setCreationDate(flat.getCreationDate());
@@ -17,12 +17,10 @@ public class FlatMapper {
         flatDto.setTitle(flat.getTitle());
         flatDto.setPhotoUrl(flat.getFlatPhotoList().get(0).getUrl());
         flatDto.setAddress(flat.getAddress());
-
         return flatDto;
     }
 
-    public Flat toFlatDto(FlatDto flatDto) {
-
+    public Flat convertToEntity(FlatDto flatDto) {
         Flat flat = new Flat();
         flat.setCreationDate(flatDto.getCreationDate());
         flat.setDescription(flatDto.getDescription());
@@ -30,9 +28,7 @@ public class FlatMapper {
         flat.setMonthPrice(flatDto.getMonthPrice());
         flat.setTitle(flatDto.getTitle());
         flat.setAddress(flatDto.getAddress());
-
         return flat;
     }
-
 
 }
