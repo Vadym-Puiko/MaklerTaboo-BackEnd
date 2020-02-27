@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.entity.chat;
 
+import com.softserve.maklertaboo.entity.User;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -17,4 +18,9 @@ public class Chat {
     @NonNull
     @OneToMany(cascade = CascadeType.ALL)
     private List<Message> messages;
+
+    @NonNull
+    @ManyToOne
+    private User sender;
+    private User receiver;
 }
