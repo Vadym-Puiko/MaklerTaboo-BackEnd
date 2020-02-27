@@ -2,13 +2,10 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.User;
-import com.softserve.maklertaboo.mapping.UserToDto;
 import com.softserve.maklertaboo.mapping.UserToEntity;
 import com.softserve.maklertaboo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -22,7 +19,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-//    public List<UserResponse> findAll() {
+//    public List<UserDto> findAll() {
 //        return userRepository.findAll()
 //                .stream()
 //                .map(UserResponse::new)

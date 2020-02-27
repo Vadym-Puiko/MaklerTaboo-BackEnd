@@ -17,7 +17,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket productApi() {
-        Docket docket =  new Docket(DocumentationType.SWAGGER_2)
+        Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 .groupName("SpringBoot-Swagger-API")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.softserve.maklertaboo.controller"))

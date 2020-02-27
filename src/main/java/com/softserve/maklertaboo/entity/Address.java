@@ -17,11 +17,8 @@ public class Address {
 
     private String street;
 
-    private String district;
-
     private Integer houseNumber;
 
     private Integer flatNumber;
 
-    private Integer floor;
 }
