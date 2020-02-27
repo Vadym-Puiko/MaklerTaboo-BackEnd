@@ -20,6 +20,6 @@ public abstract class Comment {
     @Column(nullable = false)
     private LocalDate publicationDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private User userAuthor;
 }
