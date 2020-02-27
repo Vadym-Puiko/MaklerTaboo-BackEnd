@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -26,7 +27,7 @@ public class Flat {
     private String description;
     private String title;
 
-    private Integer numberofRooms;
+    private Integer numberOfRooms;
 
     private Integer floor;
 
@@ -44,7 +45,7 @@ public class Flat {
     private List<FlatPhoto> flatPhotoList;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private List<Tag> tagList;
+    private Set<Tag> tags;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Order> orderList;

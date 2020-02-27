@@ -1,7 +1,9 @@
 package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.flat.FlatSearchParameters;
+import com.softserve.maklertaboo.dto.flat.NewFlatDto;
 import com.softserve.maklertaboo.entity.Flat;
+import com.softserve.maklertaboo.mapping.flat.NewFlatMapper;
 import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.search.FlatSearchRepository;
 import lombok.Data;
@@ -16,9 +18,12 @@ public class FlatService {
 
     FlatRepository flatRepository;
     FlatSearchRepository flatSearchRepository;
+    NewFlatMapper newFlatMapper;
 
     @Autowired
-    public FlatService(FlatRepository flatRepository, FlatSearchRepository flatSearchRepository) {
+    public FlatService(FlatRepository flatRepository, FlatSearchRepository flatSearchRepository,NewFlatMapper newFlatMapper
+    ) {
+        this.newFlatMapper = newFlatMapper;
         this.flatRepository = flatRepository;
         this.flatSearchRepository = flatSearchRepository;
     }
@@ -36,4 +41,7 @@ public class FlatService {
         return flatRepository.findById(Long.parseLong(id + "")).get();
     }
 
+    public void saveFlat(NewFlatDto newFlatDto){
+        flatRepository.save(newFlatMapper.convertToEntity(newFlatDto));
+    }
 }

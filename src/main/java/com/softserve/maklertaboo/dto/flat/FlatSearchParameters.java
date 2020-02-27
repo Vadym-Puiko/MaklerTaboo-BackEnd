@@ -2,7 +2,7 @@ package com.softserve.maklertaboo.dto.flat;
 
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class FlatSearchParameters {
@@ -16,7 +16,7 @@ public class FlatSearchParameters {
     private Integer priceLow;
     private Integer priceHigh;
 
-    private List<String> tags;
+    private Set<String> tags;
 
 }
 

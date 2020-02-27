@@ -3,6 +3,7 @@ package com.softserve.maklertaboo.repository.search;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.entity.Flat;
 import com.softserve.maklertaboo.entity.Tag;
+import com.softserve.maklertaboo.repository.search.metamodel.Flat_;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,6 +31,7 @@ public class FlatSearchRepository implements SearchRepository<Flat, FlatSearchPa
     public Page<Flat> findByParams(FlatSearchParameters searchParameters, Pageable pageable) {
 
         CriteriaQuery<Flat> criteriaQuery = criteriaBuilder.createQuery(Flat.class);
+
         Root<Flat> flatRoot = criteriaQuery.from(Flat.class);
 
         List<Predicate> predicates = getPredicates(searchParameters, flatRoot);
@@ -66,17 +68,11 @@ public class FlatSearchRepository implements SearchRepository<Flat, FlatSearchPa
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(flatRoot.get("monthPrice"), searchParameters.getFloorLow()));
         }
 
-        Join<Flat, Tag> FlatTagJoin = flatRoot.join("flat_tag_list", JoinType.INNER);
+        ListJoin<Flat, Tag> flatTagJoin = flatRoot.joinList("tags");
 
         if (searchParameters.getTags() != null) {
-            for (String tag : searchParameters.getTags()) {
-                predicates.add(criteriaBuilder.like(FlatTagJoin
-                        .get("name").as(String.class), tag));
-            }
+                predicates.add(flatTagJoin.get("name").in(searchParameters.getTags()));
         }
-
         return predicates;
     }
-
-
 }

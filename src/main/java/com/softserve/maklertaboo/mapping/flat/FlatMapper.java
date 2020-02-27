@@ -1,7 +1,9 @@
-package com.softserve.maklertaboo.mapping;
+package com.softserve.maklertaboo.mapping.flat;
 
 import com.softserve.maklertaboo.dto.flat.FlatDto;
 import com.softserve.maklertaboo.entity.Flat;
+import com.softserve.maklertaboo.mapping.MapperToDto;
+import com.softserve.maklertaboo.mapping.MapperToEntity;
 import org.springframework.stereotype.Component;
 
 @Component
