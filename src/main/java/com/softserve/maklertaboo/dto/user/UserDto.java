@@ -20,7 +20,6 @@ public class UserDto {
     @NotBlank
     @Positive
     private String phoneNumber;
-
     private String photoUrl;
 
 }
