@@ -32,21 +32,20 @@ public class FlatController {
     @GetMapping("{page}")
     public Page<FlatDto> getActive(@PathVariable Integer page) {
         Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_ON_PAGE);
-        return flatService.getAll(pageable).map(flatMapper::toFlatDto);
+        return flatService.getAll(pageable).map(flatMapper::convertToDto);
     }
 
     @GetMapping("detailed/{page}")
     public FlatDto getOne(@PathVariable Integer page) {
         System.out.println("Here");
         Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_ON_PAGE);
-        return flatMapper.toFlatDto(flatService.getById(page));
+        return flatMapper.convertToDto(flatService.getById(page));
     }
 
     @PutMapping("/search/{page}")
     public Page<FlatDto> getByParameters(@PathVariable Integer page, @RequestBody FlatSearchParameters flatParameters) {
-        System.out.println(flatParameters);
         Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_ON_PAGE);
-        return flatService.getByParameters(flatParameters, pageable).map(flatMapper::toFlatDto);
+        return flatService.getByParameters(flatParameters, pageable).map(flatMapper::convertToDto);
     }
 
     @PostMapping("/create")
