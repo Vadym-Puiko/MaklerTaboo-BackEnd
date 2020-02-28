@@ -1,11 +1,8 @@
 package com.softserve.maklertaboo.service;
-
 import com.softserve.maklertaboo.dto.user.UserAccountDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.User;
-
 import com.softserve.maklertaboo.mapping.UserMapper;
-
 import com.softserve.maklertaboo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
