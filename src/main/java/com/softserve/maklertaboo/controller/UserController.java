@@ -5,6 +5,8 @@ import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/user")

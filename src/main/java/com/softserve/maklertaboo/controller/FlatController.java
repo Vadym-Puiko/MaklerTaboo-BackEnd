@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/flat")
 public class FlatController {
 
-    private static final int AMOUNT_OF_FLATS_ON_PAGE = 2;
+    private static final int AMOUNT_OF_FLATS_IN_PAGE = 16;
 
     FlatService flatService;
     FlatMapper flatMapper;
@@ -31,20 +31,20 @@ public class FlatController {
 
     @GetMapping("{page}")
     public Page<FlatDto> getActive(@PathVariable Integer page) {
-        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_ON_PAGE);
+        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE);
         return flatService.getAll(pageable).map(flatMapper::convertToDto);
     }
 
     @GetMapping("detailed/{page}")
     public FlatDto getOne(@PathVariable Integer page) {
         System.out.println("Here");
-        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_ON_PAGE);
+        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE);
         return flatMapper.convertToDto(flatService.getById(page));
     }
 
     @PutMapping("/search/{page}")
     public Page<FlatDto> getByParameters(@PathVariable Integer page, @RequestBody FlatSearchParameters flatParameters) {
-        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_ON_PAGE);
+        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE);
         return flatService.getByParameters(flatParameters, pageable).map(flatMapper::convertToDto);
     }
 
