@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -15,7 +16,6 @@ public class Flat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Integer monthPrice;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -26,12 +26,10 @@ public class Flat {
     private String description;
     private String title;
 
-    private Integer numberofRooms;
-
+    private Integer numberOfRooms;
     private Integer floor;
 
     private String district;
-
     private Boolean isActive;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -44,7 +42,7 @@ public class Flat {
     private List<FlatPhoto> flatPhotoList;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private List<Tag> tagList;
+    private Set<Tag> tags;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Order> orderList;

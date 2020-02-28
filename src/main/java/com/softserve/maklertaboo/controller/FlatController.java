@@ -4,7 +4,7 @@ package com.softserve.maklertaboo.controller;
 import com.softserve.maklertaboo.dto.flat.FlatDto;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
-import com.softserve.maklertaboo.mapping.FlatMapper;
+import com.softserve.maklertaboo.mapping.flat.FlatMapper;
 import com.softserve.maklertaboo.service.FlatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/flat")
 public class FlatController {
 
-    private static final int AMOUNT_OF_FLATS_ON_PAGE = 1;
+    private static final int AMOUNT_OF_FLATS_ON_PAGE = 2;
 
     FlatService flatService;
     FlatMapper flatMapper;
@@ -50,6 +50,6 @@ public class FlatController {
 
     @PostMapping("/create")
     public void addNewFlat(@RequestBody NewFlatDto newFlatDto) {
-
+        flatService.saveFlat(newFlatDto);
     }
 }

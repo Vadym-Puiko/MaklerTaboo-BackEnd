@@ -1,12 +1,15 @@
 package com.softserve.maklertaboo.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Tag {
 
     public Tag(String name) {
@@ -16,7 +19,6 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -24,4 +26,17 @@ public class Tag {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Flat> flats;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return Objects.equals(name, tag.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 }
