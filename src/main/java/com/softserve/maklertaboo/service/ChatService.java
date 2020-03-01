@@ -20,20 +20,21 @@ public class ChatService {
         return chatRepository.findById(id);
     }
 
-    public void deleteChatById(Long id){
-        Optional<Chat> chat= chatRepository.findById(id);
-        if(chat.isPresent()){
+    public void deleteChatById(Long id) {
+        Optional<Chat> chat = chatRepository.findById(id);
+        if (chat.isPresent()) {
             chatRepository.deleteById(id);
         }
     }
 
-    public List<Chat> getAllChatBySenderId(Long id){
+    public List<Chat> getAllChatBySenderId(Long id) {
         return chatRepository.findAllBySenderId(id);
     }
 
     public Long getCountOfMessages(Long chatId) {
         return messageRepository.countByChatId(chatId);
     }
+
 }
 
 
