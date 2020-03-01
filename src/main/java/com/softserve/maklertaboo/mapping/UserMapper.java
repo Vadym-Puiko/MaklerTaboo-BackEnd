@@ -2,20 +2,22 @@ package com.softserve.maklertaboo.mapping;
 
 import com.softserve.maklertaboo.dto.user.UserAccountDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
-import com.softserve.maklertaboo.entity.User;
+import com.softserve.maklertaboo.entity.user.User;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper implements MapperToDto<User, UserAccountDto>, MapperToEntity<UserDto, User> {
+public class UserMapper implements MapperToDto<User, UserDto>, MapperToEntity<UserDto, User> {
 
     @Override
-    public UserAccountDto convertToDto(User user) {
-        UserAccountDto userAccountDto = new UserAccountDto();
-        userAccountDto.setUsername(user.getUsername());
-        userAccountDto.setEmail(user.getEmail());
-        userAccountDto.setPhoneNumber(user.getPhoneNumber());
-        userAccountDto.setPhotoUrl(user.getPhotoUrl());
-        return userAccountDto;
+    public UserDto convertToDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+        userDto.setPassword(user.getPassword());
+        userDto.setPhoneNumber(user.getPhoneNumber());
+        userDto.setPhotoUrl(user.getPhotoUrl());
+        return userDto;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.softserve.maklertaboo.entity;
 
 import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.photo.FlatPhoto;
+import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 
 import javax.persistence.*;

@@ -1,7 +1,7 @@
 package com.softserve.maklertaboo.repository;
 
 import com.softserve.maklertaboo.entity.Flat;
-import com.softserve.maklertaboo.entity.User;
+import com.softserve.maklertaboo.entity.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
