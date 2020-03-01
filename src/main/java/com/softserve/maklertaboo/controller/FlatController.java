@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/flat")
 public class FlatController {
 
-    private static final int AMOUNT_OF_FLATS_IN_PAGE = 16;
+    private static final int AMOUNT_OF_FLATS_IN_PAGE = 4;
 
     FlatService flatService;
     FlatMapper flatMapper;
@@ -31,8 +32,9 @@ public class FlatController {
 
     @GetMapping("{page}")
     public Page<FlatDto> getActive(@PathVariable Integer page) {
-        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE);
-        return flatService.getAll(pageable).map(flatMapper::convertToDto);
+        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE, Sort.by("id").descending());
+        Page<FlatDto> flatsPage = flatService.getAll(pageable).map(flatMapper::convertToDto);
+        return flatsPage;
     }
 
     @GetMapping("detailed/{page}")
@@ -56,5 +58,10 @@ public class FlatController {
     @PostMapping("/create")
     public void addNewFlat(@RequestBody NewFlatDto newFlatDto) {
         flatService.saveFlat(newFlatDto);
+    }
+
+    @DeleteMapping("{id}")
+    public void remove(@RequestBody Long id) {
+        flatService.deactivateFlat(id);
     }
 }

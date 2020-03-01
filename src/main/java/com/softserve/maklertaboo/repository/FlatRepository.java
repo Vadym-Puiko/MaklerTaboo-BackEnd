@@ -15,6 +15,8 @@ public interface FlatRepository extends JpaRepository<Flat, Long> {
 
     Page<Flat> findAllByIsActiveIsTrue(Pageable pageable);
 
+    List<Flat> findAllByIsActiveIsTrue();
+
     List<Flat> findByOwner(User author);
 
 
