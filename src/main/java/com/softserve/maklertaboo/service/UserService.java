@@ -1,14 +1,12 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.dto.PageableDto;
-import com.softserve.maklertaboo.dto.user.UserDetailsDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.user.User;
 
 import com.softserve.maklertaboo.mapping.UserMapper;
 
-import com.softserve.maklertaboo.repository.passport.PassportRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,13 +20,11 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
-    private final PassportRepository passportRepository;
 
     @Autowired
-    public UserService(UserMapper userMapper, UserRepository userRepository, PassportRepository passportRepository) {
+    public UserService(UserMapper userMapper, UserRepository userRepository) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
-        this.passportRepository = passportRepository;
     }
 
     public void saveUser(UserDto userDto) {

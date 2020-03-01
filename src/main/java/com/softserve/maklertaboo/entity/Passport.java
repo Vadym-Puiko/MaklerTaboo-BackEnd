@@ -7,13 +7,14 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.List;
 
+
 @Data
 @Entity
+@Table(name="passport")
 public class Passport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String firstName;
     private String lastName;
     private String middleName;
@@ -25,14 +26,14 @@ public class Passport {
     private String authority;
     private String dateOfIssue;
     private String expirationDate;
-
     private String passportNumber;
-
     private Integer identificationNumber;
 
-    @OneToOne(mappedBy = "passport")
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "passport")
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<PassportPhoto> passportPhotoList;
+
 }
