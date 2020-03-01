@@ -48,6 +48,11 @@ public class FlatController {
         return flatService.getByParameters(flatParameters, pageable).map(flatMapper::convertToDto);
     }
 
+    @PostMapping("activate/{id}")
+    public void setActive(@PathVariable Long id){
+        flatService.activate(id);
+    }
+
     @PostMapping("/create")
     public void addNewFlat(@RequestBody NewFlatDto newFlatDto) {
         flatService.saveFlat(newFlatDto);
