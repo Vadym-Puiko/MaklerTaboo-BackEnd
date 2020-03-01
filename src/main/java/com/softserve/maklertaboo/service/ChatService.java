@@ -3,7 +3,6 @@ package com.softserve.maklertaboo.service;
 import com.softserve.maklertaboo.entity.chat.Chat;
 import com.softserve.maklertaboo.repository.chat.ChatRepository;
 import com.softserve.maklertaboo.repository.chat.MessageRepository;
-import lombok.Lombok;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

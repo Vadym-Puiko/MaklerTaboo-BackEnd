@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Data
 @Entity
@@ -25,4 +26,7 @@ public class Message {
 
     @ManyToOne
     private Chat chat;
+
+    public void setChat(Optional<Chat> chatById) {
+    }
 }
