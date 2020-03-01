@@ -1,6 +1,7 @@
 package com.softserve.maklertaboo.entity;
 
 import com.softserve.maklertaboo.entity.photo.PassportPhoto;
+import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -28,7 +29,8 @@ public class Passport {
     private String passportNumber;
     private Integer identificationNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "passport")
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL)
