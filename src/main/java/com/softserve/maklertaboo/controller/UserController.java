@@ -49,6 +49,11 @@ public class UserController {
         return userService.findByEmail(email);
     }
 
+    @GetMapping("/username/{username}")
+    public UserDto getUserByUsername(@PathVariable String username) {
+        return userService.findByUsername(username);
+    }
+
     @GetMapping("/exists/email/{email}")
     public Boolean emailExists(@PathVariable String email) {
         return userService.emailExists(email);
