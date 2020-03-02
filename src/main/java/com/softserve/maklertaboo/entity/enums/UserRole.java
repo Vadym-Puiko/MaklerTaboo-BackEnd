@@ -1,6 +1,7 @@
 package com.softserve.maklertaboo.entity.enums;
 
 public enum UserRole {
+    USER,
     RENTER,
     LANDLORD,
     MODERATOR,

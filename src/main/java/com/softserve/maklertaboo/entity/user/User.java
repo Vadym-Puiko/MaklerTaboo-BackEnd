@@ -32,6 +32,7 @@ public class User {
 
     private String photoUrl;
 
+    @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -49,4 +50,8 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<UserComment> userComments;
 
+    @PrePersist
+    public void prePersist() {
+        setRole(UserRole.USER);
+    }
 }
