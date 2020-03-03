@@ -16,9 +16,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class FlatService {
 
-    FlatRepository flatRepository;
-    FlatSearchRepository flatSearchRepository;
-    NewFlatMapper newFlatMapper;
+    private final FlatRepository flatRepository;
+    private final FlatSearchRepository flatSearchRepository;
+    private final NewFlatMapper newFlatMapper;
 
     @Autowired
     public FlatService(FlatRepository flatRepository, FlatSearchRepository flatSearchRepository, NewFlatMapper newFlatMapper) {
