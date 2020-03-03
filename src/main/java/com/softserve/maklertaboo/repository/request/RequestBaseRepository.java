@@ -6,4 +6,5 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
 public interface RequestBaseRepository<T extends RequestForVerification> extends JpaRepository<T, Long> {
+
 }

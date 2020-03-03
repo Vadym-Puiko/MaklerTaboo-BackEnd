@@ -7,10 +7,10 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
-@Data
 @Entity
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class RequestForUserVerification extends RequestForVerification {
 
     @OneToOne(cascade = CascadeType.ALL)
