@@ -1,6 +1,5 @@
 package com.softserve.maklertaboo.mapping;
 
-import com.softserve.maklertaboo.dto.user.UserAccountDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.user.User;
 import org.springframework.stereotype.Component;
