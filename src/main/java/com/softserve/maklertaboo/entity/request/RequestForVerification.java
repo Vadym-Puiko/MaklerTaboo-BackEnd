@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 @Entity
-abstract class RequestForVerification {
+public abstract class RequestForVerification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
