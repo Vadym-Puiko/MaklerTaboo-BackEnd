@@ -2,6 +2,8 @@ package com.softserve.maklertaboo.controller;
 
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.service.UserService;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +33,10 @@ public class UserController {
     public void createUser(@Valid @RequestBody UserDto userDto) {
         userService.saveUser(userDto);
     }
+@ApiResponses({
 
+        @ApiResponse(code = 200, message = "OK")
+})
     @GetMapping("/all")
     public List<UserDto> getAllUser() {
         return userService.findAllUser();
