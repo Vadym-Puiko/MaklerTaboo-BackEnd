@@ -7,14 +7,14 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
-@MappedSuperclass
+@Entity
 public abstract class RequestForVerification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "is_approved",
-            columnDefinition = "boolean default false")
+            columnDefinition = "tinyint(1) default 1")
     private boolean isApproved;
 
     @Column(name = "creation_date",
