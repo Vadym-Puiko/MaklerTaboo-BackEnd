@@ -11,7 +11,6 @@ import javax.persistence.Table;
 
 @Data
 @Entity
-@Table(name = "requests_user_verification")
 public class RequestForUserVerification extends RequestForVerification {
 
     @OneToOne(cascade = CascadeType.ALL)

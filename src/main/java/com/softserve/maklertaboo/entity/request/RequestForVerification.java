@@ -7,11 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
-@Entity
-@Table(name = "request_verification")
-@Inheritance(
-        strategy = InheritanceType.JOINED
-)
+@MappedSuperclass
 public abstract class RequestForVerification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
