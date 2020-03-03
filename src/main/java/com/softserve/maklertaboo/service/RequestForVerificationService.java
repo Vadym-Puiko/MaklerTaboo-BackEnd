@@ -1,6 +1,7 @@
 package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
+import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.repository.request.RequestForFlatVerificationRepository;
 import com.softserve.maklertaboo.repository.request.RequestForUserVerificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,8 @@ public class RequestForVerificationService {
         return requestFlatRepository.findAll();
     }
 
+    public List<RequestForUserVerification> getAllRequestsForUserVerification() {
+        return requestUserRepository.findAll();
+    }
 
 }

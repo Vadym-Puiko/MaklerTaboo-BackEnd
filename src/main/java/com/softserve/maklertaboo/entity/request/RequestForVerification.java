@@ -2,6 +2,7 @@ package com.softserve.maklertaboo.entity.request;
 
 
 import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,7 +16,7 @@ public abstract class RequestForVerification {
 
     @Column(name = "is_approved",
             columnDefinition = "tinyint(1) default 1")
-    private boolean isApproved;
+    private Boolean isApproved;
 
     @Column(name = "creation_date",
             columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()")
