@@ -2,6 +2,7 @@ package com.softserve.maklertaboo.entity.request;
 
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
