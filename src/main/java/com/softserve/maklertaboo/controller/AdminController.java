@@ -4,6 +4,7 @@ import com.softserve.maklertaboo.service.RequestForVerificationService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Data
@@ -18,7 +19,7 @@ public class AdminController {
         this.requestForVerificationService = requestForVerificationService;
     }
 
-
+    @GetMapping("/requests/flat")
 
 
 }
