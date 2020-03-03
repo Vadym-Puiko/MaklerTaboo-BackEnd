@@ -3,13 +3,19 @@ package com.softserve.maklertaboo.entity.photo;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.entity.comment.Comment;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class CommentPhoto {
+    CommentPhoto(String url, Comment comment){
+        this.url=url;
+        this.comment=comment;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -9,6 +9,7 @@ import com.softserve.maklertaboo.mapping.MapperToEntity;
 public class FlatCommentMapper implements MapperToDto<FlatComment, FlatCommentDto>, MapperToEntity<FlatCommentDto, FlatComment> {
     @Override
     public FlatCommentDto convertToDto(FlatComment entity) {
+        FlatCommentDto flatCommentDto=new FlatCommentDto();
 
 
         return null;
@@ -24,7 +25,7 @@ public class FlatCommentMapper implements MapperToDto<FlatComment, FlatCommentDt
         Flat flat=new Flat();
         flat.setId(dto.getPostId());
         flatComment.setFlat(flat);
-
+        flatComment.setCommentPhotos();
 
         return null;
     }
