@@ -19,4 +19,5 @@ public class FlatDto {
     private String creationDate;
     private Address address;
     private List<String> tags;
+
 }

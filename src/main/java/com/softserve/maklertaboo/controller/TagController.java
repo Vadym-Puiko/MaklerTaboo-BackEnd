@@ -9,6 +9,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/tag")
@@ -29,5 +32,10 @@ public class TagController {
     public Page<Tag> getTag(@PathVariable Integer page){
         Pageable pageable = PageRequest.of(page, AMOUNT_OF_TAGS_IN_PAGE);
         return tagService.getAll(pageable);
+    }
+
+    @GetMapping
+    public List<String> getAllTags(){
+        return tagService.getAllTags().stream().map(Tag::getName).collect(Collectors.toList());
     }
 }

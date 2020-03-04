@@ -1,6 +1,5 @@
 package com.softserve.maklertaboo.controller;
 
-
 import com.softserve.maklertaboo.dto.flat.FlatDto;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
@@ -11,8 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
 
 @CrossOrigin
 @RestController
@@ -46,6 +45,10 @@ public class FlatController {
 
     @PutMapping("/search/{page}")
     public Page<FlatDto> getByParameters(@PathVariable Integer page, @RequestBody FlatSearchParameters flatParameters) {
+        if(flatParameters==null){
+            return getActive(page);
+        }
+        System.out.println(flatParameters.toString());
         Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE);
         return flatService.getByParameters(flatParameters, pageable).map(flatMapper::convertToDto);
     }
