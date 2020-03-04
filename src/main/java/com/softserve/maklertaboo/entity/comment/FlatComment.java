@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 public class FlatComment extends Comment {
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.DETACH)
     private Flat flat;
 
     @OneToMany(cascade = CascadeType.ALL)

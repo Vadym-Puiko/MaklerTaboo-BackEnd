@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.entity.photo;
 
+import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.entity.comment.Comment;
 import lombok.Data;
@@ -12,10 +13,6 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 public class CommentPhoto {
-    CommentPhoto(String url, Comment comment){
-        this.url=url;
-        this.comment=comment;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,5 +29,5 @@ public class CommentPhoto {
 
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private Comment comment;
+    private FlatComment flatComment;
 }

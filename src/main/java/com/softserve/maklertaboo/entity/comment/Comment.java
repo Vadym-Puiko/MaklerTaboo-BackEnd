@@ -14,13 +14,13 @@ public abstract class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+
     private String text;
 
-    @Column(nullable = false)
+
     private LocalDateTime publicationDate;
 
-    @Column(nullable = false)
+
     private LocalDateTime deletedDate;
 
     private Boolean isActive;

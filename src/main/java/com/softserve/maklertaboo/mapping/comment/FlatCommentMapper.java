@@ -4,7 +4,6 @@ import com.softserve.maklertaboo.dto.comment.FlatCommentDto;
 import com.softserve.maklertaboo.entity.Flat;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.photo.CommentPhoto;
-import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import com.softserve.maklertaboo.mapping.MapperToDto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
 
@@ -22,19 +21,29 @@ public class FlatCommentMapper implements MapperToDto<FlatComment, FlatCommentDt
 
     @Override
     public FlatComment convertToEntity(FlatCommentDto dto) {
+
         FlatComment flatComment=new FlatComment();
 
         flatComment.setText(dto.getText());
-        flatComment.setCommentPhotos(dto.getCommentPhotos());
 
         Flat flat=new Flat();
-        flat.setId(dto.getPostId());
+        flat.setId(dto.getFlatId());
         flatComment.setFlat(flat);
 
+        List<CommentPhoto> photos=new ArrayList<>();
+        for (String url : dto.getCommentPhotos()) {
 
+            CommentPhoto commentPhoto=new CommentPhoto();
 
-       // flatComment.setCommentPhotos();
+           // commentPhoto.setUserAuthor(user);
+            commentPhoto.setUrl(url);
+            commentPhoto.setFlatComment(flatComment);
+            photos.add(commentPhoto);
 
-        return null;
+        }
+
+        flatComment.setCommentPhotos(photos);
+
+        return flatComment;
     }
 }

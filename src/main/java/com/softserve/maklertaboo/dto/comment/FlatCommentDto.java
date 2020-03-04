@@ -8,7 +8,9 @@ import java.util.List;
 
 @Data
 public class FlatCommentDto {
-    private Long postId;
+    private Long id;
+    private Long flatId;
     private String text;
-    private List<CommentPhoto> commentPhotos;
+    private List<String> commentPhotos;
+    private String publicationDate;
 }
