@@ -19,15 +19,17 @@ public class RequestForVerificationService {
     private final RequestForFlatVerificationRepository requestFlatRepository;
     private final RequestForUserVerificationRepository requestUserRepository;
     private final FlatService flatService;
+    private final UserService userService;
 
     @Autowired
     public RequestForVerificationService(RequestForFlatVerificationRepository requestForFlatVerificationRepository,
                                          RequestForUserVerificationRepository requestForUserVerificationRepository,
-                                         FlatService flatService) {
+                                         FlatService flatService, UserService userService) {
 
         this.requestFlatRepository = requestForFlatVerificationRepository;
         this.requestUserRepository = requestForUserVerificationRepository;
         this.flatService = flatService;
+        this.userService = userService;
     }
 
     public List<RequestForFlatVerification> getAllRequestsForFlatVerification() {
@@ -43,6 +45,13 @@ public class RequestForVerificationService {
         requestForFlatVerification.setIsApproved(Boolean.TRUE);
         requestForFlatVerification.setApprovalDate(new Date());
         flatService.setActiveTrue(requestForFlatVerification.getFlat().getId());
+    }
+
+    public void approveUserRequest(Long id) {
+        RequestForFlatVerification requestForFlatVerification = getRequestsForFlatVerificationById(id);
+        requestForFlatVerification.setIsApproved(Boolean.TRUE);
+        requestForFlatVerification.setApprovalDate(new Date());
+        userService.makeLandlord(id);
     }
 
     public RequestForUserVerification getRequestsForUserVerificationById(Long id) {

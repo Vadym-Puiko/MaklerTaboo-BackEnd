@@ -52,4 +52,9 @@ public class AdminController {
         requestForVerificationService.approveFlatRequest(id);
     }
 
+    @PutMapping("requests/user/{id}/approve")
+    public void approveRequestForUser(@PathVariable Long id) {
+        requestForVerificationService.approveUserRequest(id);
+    }
+
 }
