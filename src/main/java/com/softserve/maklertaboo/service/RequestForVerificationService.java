@@ -3,6 +3,7 @@ package com.softserve.maklertaboo.service;
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.entity.request.RequestForVerification;
+import com.softserve.maklertaboo.repository.request.RequestBaseRepository;
 import com.softserve.maklertaboo.repository.request.RequestForFlatVerificationRepository;
 import com.softserve.maklertaboo.repository.request.RequestForUserVerificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,20 @@ public class RequestForVerificationService {
         return requestUserRepository.findAll();
     }
 
-    public RequestForVerification getRequestsForVerificationById(Long id) throws Exception {
-        Optional<RequestForFlatVerification> request = requestFlatRepository.findById(id);
-        if (request.isPresent()){
+    public RequestForUserVerification getRequestsForUserVerificationById(Long id)
+            throws Exception {
+        return getRequestsForVerificationById(requestUserRepository, id);
+    }
+
+    public RequestForFlatVerification getRequestsForFlatVerificationById(Long id)
+            throws Exception {
+        return getRequestsForVerificationById(requestFlatRepository, id);
+    }
+
+    private <T extends RequestForVerification> T getRequestsForVerificationById(RequestBaseRepository<T> requestBaseRepository, Long id)
+            throws Exception {
+        Optional<T> request = requestBaseRepository.findById(id);
+        if (request.isPresent()) {
             return request.get();
         } else {
             throw new Exception();
