@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
 @RestController
-@RequestMapping("hello")
+@RequestMapping("/hello")
 public class TestController {
 
     @GetMapping
