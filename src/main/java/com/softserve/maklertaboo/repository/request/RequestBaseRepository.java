@@ -10,4 +10,6 @@ import java.util.List;
 public interface RequestBaseRepository<T extends RequestForVerification> extends JpaRepository<T, Long> {
     List<T> findAll();
 
+//    T findById(Long id);
+
 }
