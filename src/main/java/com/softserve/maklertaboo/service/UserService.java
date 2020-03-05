@@ -49,6 +49,11 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
+    public UserDto findByUsername(String username) {
+        User user = userRepository.findUserByUsername(username);
+        return userMapper.convertToDto(user);
+    }
+
     public void updateUser(Long id, UserDto userDto) {
         User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         user.setUsername(userDto.getUsername());

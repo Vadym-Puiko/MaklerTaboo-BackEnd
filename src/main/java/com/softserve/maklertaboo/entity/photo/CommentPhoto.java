@@ -1,14 +1,17 @@
 package com.softserve.maklertaboo.entity.photo;
 
+import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.entity.comment.Comment;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class CommentPhoto {
 
     @Id
@@ -26,5 +29,5 @@ public class CommentPhoto {
 
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private Comment comment;
+    private FlatComment flatComment;
 }
