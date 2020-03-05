@@ -1,11 +1,9 @@
 package com.softserve.maklertaboo.controller;
 
 import com.softserve.maklertaboo.dto.request.RequestForFlatDto;
-import com.softserve.maklertaboo.dto.request.RequestForUserDto;
-import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
-import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
+import com.softserve.maklertaboo.dto.request.RequestForLandlordDto;
 import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
-import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
+import com.softserve.maklertaboo.mapping.request.RequestForLandlordMapper;
 import com.softserve.maklertaboo.service.RequestForVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +18,15 @@ public class AdminController {
 
     RequestForVerificationService requestForVerificationService;
     RequestForFlatMapper requestForFlatMapper;
-    RequestForUserMapper requestForUserMapper;
+    RequestForLandlordMapper requestForLandlordMapper;
 
     @Autowired
     public AdminController(RequestForVerificationService requestForVerificationService,
-                           RequestForUserMapper requestForUserMapper,
+                           RequestForLandlordMapper requestForLandlordMapper,
                            RequestForFlatMapper requestForFlatMapper) {
         this.requestForVerificationService = requestForVerificationService;
         this.requestForFlatMapper = requestForFlatMapper;
-        this.requestForUserMapper = requestForUserMapper;
+        this.requestForLandlordMapper = requestForLandlordMapper;
     }
 
     @GetMapping("/requests/flat")
@@ -40,10 +38,10 @@ public class AdminController {
     }
 
     @GetMapping("/requests/user")
-    public List<RequestForUserDto> getRequestsForUsers() {
+    public List<RequestForLandlordDto> getRequestsForLandlords() {
         return requestForVerificationService
-                .getAllRequestsForUserVerification().stream()
-                .map(requestForUserMapper::convertToDto)
+                .getAllRequestsForLandlordVerification().stream()
+                .map(requestForLandlordMapper::convertToDto)
                 .collect(Collectors.toList());
     }
 
@@ -53,8 +51,8 @@ public class AdminController {
     }
 
     @PutMapping("requests/user/{id}/approve")
-    public void approveRequestForUser(@PathVariable Long id) {
-        requestForVerificationService.approveUserRequest(id);
+    public void approveRequestForLandlord(@PathVariable Long id) {
+        requestForVerificationService.approveLandlordRequest(id);
     }
 
 
