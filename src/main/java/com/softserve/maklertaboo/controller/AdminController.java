@@ -50,9 +50,19 @@ public class AdminController {
         requestForVerificationService.approveFlatRequest(id);
     }
 
+    @PutMapping("requests/flat/{id}/decline")
+    public void declineRequestForFlat(@PathVariable Long id) {
+        requestForVerificationService.declineFlatRequest(id);
+    }
+
     @PutMapping("requests/user/{id}/approve")
     public void approveRequestForLandlord(@PathVariable Long id) {
         requestForVerificationService.approveLandlordRequest(id);
+    }
+
+    @PutMapping("requests/user/{id}/decline")
+    public void declineRequestForLandlord(@PathVariable Long id) {
+        requestForVerificationService.declineLandlordRequest(id);
     }
 
 

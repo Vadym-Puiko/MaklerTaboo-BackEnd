@@ -46,6 +46,14 @@ public class RequestForVerificationService {
         requestForFlatVerification.setStatus(RequestForVerificationStatus.APPROVED);
         requestForFlatVerification.setVerificationDate(new Date());
         flatService.setActiveTrue(requestForFlatVerification.getFlat().getId());
+        requestFlatRepository.save(requestForFlatVerification);
+    }
+
+    public void declineFlatRequest(Long id) {
+        RequestForFlatVerification requestForFlatVerification = getRequestsForFlatVerificationById(id);
+        requestForFlatVerification.setStatus(RequestForVerificationStatus.DECLINED);
+        requestForFlatVerification.setVerificationDate(new Date());
+        requestFlatRepository.save(requestForFlatVerification);
     }
 
     public void approveLandlordRequest(Long id) {
@@ -53,6 +61,14 @@ public class RequestForVerificationService {
         requestForLandlordVerification.setStatus(RequestForVerificationStatus.APPROVED);
         requestForLandlordVerification.setVerificationDate(new Date());
         userService.makeLandlord(requestForLandlordVerification.getUser().getId());
+        requestLandlordRepository.save(requestForLandlordVerification);
+    }
+
+    public void declineLandlordRequest(Long id) {
+        RequestForLandlordVerification requestForLandlordVerification = getRequestsForLandlordVerificationById(id);
+        requestForLandlordVerification.setStatus(RequestForVerificationStatus.DECLINED);
+        requestForLandlordVerification.setVerificationDate(new Date());
+        requestLandlordRepository.save(requestForLandlordVerification);
     }
 
     public RequestForLandlordVerification getRequestsForLandlordVerificationById(Long id) {
