@@ -4,6 +4,7 @@ import com.softserve.maklertaboo.entity.comment.Comment;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class FlatDetailDto {
@@ -13,6 +14,6 @@ public class FlatDetailDto {
     private Double monthPrice;
 
     private List<String> photos;
-    private List<String> tags;
+    private Set<String> tags;
     private List<Comment> comments;
 }

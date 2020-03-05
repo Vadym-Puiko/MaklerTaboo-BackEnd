@@ -1,12 +1,11 @@
 package com.softserve.maklertaboo.entity.chat;
 
-import com.softserve.maklertaboo.entity.User;
+import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Data
 @Entity
@@ -27,6 +26,10 @@ public class Message {
     @ManyToOne
     private Chat chat;
 
-    public void setChat(Optional<Chat> chatById) {
+  /*  public void setChat(Optional<Chat> chatById) {
+    }
+*/
+    public void setChat(Chat chat) {
+        this.chat = chat;
     }
 }

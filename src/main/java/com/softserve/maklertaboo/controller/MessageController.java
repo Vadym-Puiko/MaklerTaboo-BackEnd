@@ -5,20 +5,16 @@ import com.softserve.maklertaboo.service.MessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 @CrossOrigin
-/*@RequestMapping("/")*/
+@RequestMapping("/")
+//@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 public class MessageController {
     private MessageService messageService;
     private ModelMapper modelMapper;
@@ -31,8 +27,7 @@ public class MessageController {
 
     //    @PreAuthorize("hasRole('USER')")
     @GetMapping("/messages/{id}")
-    public List<ChatMessageDTO> getCurrentMessagesByChatId(@PathVariable @NotNull @Positive Long id) {
-
+    public List<ChatMessageDTO> getCurrentMessagesByChatId(@PathVariable Long id) {
         log.info("MessagesController get messages by chat id");
         return messageService.getMessageByChatId(id)
                 .stream()

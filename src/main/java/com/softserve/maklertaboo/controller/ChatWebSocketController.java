@@ -14,13 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
 
 import static java.lang.String.format;
 
 @Slf4j
 @CrossOrigin
 @RestController
+/*@RequestMapping("/chat/")*/
 public class ChatWebSocketController {
     private final SimpMessagingTemplate  simpMessagingTemplate;
     private ChatService chatService;
@@ -37,7 +39,7 @@ public class ChatWebSocketController {
         this.modelMapper = modelMapper;
     }
 
-    @DeleteMapping
+/*    @DeleteMapping
     public void deleteMessage1(@Payload DeleteMessageInfoDTO deleteMessageInfoDTO) {
 
         log.info("ChatWebsocketController delete message");
@@ -55,15 +57,14 @@ public class ChatWebSocketController {
         log.info("ChatWebsocketController send message");
         log.info(chatMessageInfoDTO.getChatId() + "    " + chatMessageInfoDTO.getContent());
         Message message = new Message();
-
-        message.setSender(userService.findOne(chatMessageInfoDTO.getUserId()));
+        message.setSender(chatService.findOne(chatMessageInfoDTO.getUserId()));
         message.setChat(chatService.getChatById(chatMessageInfoDTO.getChatId()));
         message.setContent(chatMessageInfoDTO.getContent());
 
         Message sendBackMessage = messageService.addMessage(message);
         simpMessagingTemplate.convertAndSend(format("/topic/messages/%s",chatMessageInfoDTO.getChatId()), modelMapper.map(sendBackMessage, ChatMessageDTO.class));
 
-    }
+    }*/
 
     @MessageMapping("/send/message")
     public void sendMessage(@Payload ChatMessageInfoDTO chatMessageInfoDTO) {
@@ -72,7 +73,7 @@ public class ChatWebSocketController {
         log.info(chatMessageInfoDTO.getChatId() + "    " + chatMessageInfoDTO.getContent());
         Message message = new Message();
 
-        message.setSender(userService.findOne(chatMessageInfoDTO.getUserId()));
+        message.setSender(chatService.findOne(chatMessageInfoDTO.getUserId()));
         message.setChat(chatService.getChatById(chatMessageInfoDTO.getChatId()));
         message.setContent(chatMessageInfoDTO.getContent());
 
@@ -94,18 +95,20 @@ public class ChatWebSocketController {
         simpMessagingTemplate.convertAndSend(format("/topic/messages/%s",deleteMessageInfoDTO.getChatId()),deletedMessageDTO);
     }
 
-   /* @MessageMapping("/update/message")
-    public void updateMessage(@Payload ChatMessageInfoDTO chatMessageInfoDTO) {
+/*    @PutMapping("/update/message")
+    public void updateMessage(@Payload UpdateMessageDTO updateMessageDTO) {
         log.info("ChatWebsocketController update message");
-        log.info(chatMessageInfoDTO.getChatId() + "    " + chatMessageInfoDTO.getContent());
+        log.info(updateMessageDTO.getChatId() + "    " + updateMessageDTO.getContent());
+        messageService.updateMessage();
         Message message = new Message();
+        message.setSender(chatService.findOne(updateMessageDTO.getUserId()));
+        message.setChat(chatService.getChatById(updateMessageDTO.getChatId()));
+        *//*message.setSender(userService.findOne(chatMessageInfoDTO.getUserId()));
+        message.setChat(chatService.getChatById(chatMessageInfoDTO.getChatId()));*//*
+        message.setContent(updateMessageDTO.getContent());
 
-        message.setSender(userService.findOne(chatMessageInfoDTO.getUserId()));
-        message.setChat(chatService.getChatById(chatMessageInfoDTO.getChatId()));
-        message.setContent(chatMessageInfoDTO.getContent());
-
-        Message sendBackMessage = messageService.addMessage(message);
-        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", chatMessageInfoDTO.getChatId()), modelMapper.map(sendBackMessage, ChatMessageDTO.class));
+        Message sendBackMessage = messageService.updateMessage(message);
+        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", updateMessageDTO.getChatId()), modelMapper.map(sendBackMessage, ChatMessageDTO.class));
 
     }*/
 }

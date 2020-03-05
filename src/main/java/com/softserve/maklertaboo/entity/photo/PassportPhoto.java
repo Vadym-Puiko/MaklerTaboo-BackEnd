@@ -1,7 +1,7 @@
 package com.softserve.maklertaboo.entity.photo;
 
 import com.softserve.maklertaboo.entity.Passport;
-import com.softserve.maklertaboo.entity.User;
+import com.softserve.maklertaboo.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

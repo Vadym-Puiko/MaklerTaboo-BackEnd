@@ -20,6 +20,22 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
+/*    public void updateMessage(Long id){
+        Optional<Message> message = messageRepository.findById(id);
+        if(message.isPresent()){
+            messageRepository.updateById(id);
+        }
+    }*/
+
+
+    public void updateMessage(Long id, String content) {
+        Message message = messageRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        message.setContent(content);
+        messageRepository.save(message);
+    }
+
+
+
     public void deleteMessage(Long id) {
         Optional<Message> message = messageRepository.findById(id);
         if (message.isPresent()) {

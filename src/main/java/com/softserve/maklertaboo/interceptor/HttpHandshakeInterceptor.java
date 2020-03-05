@@ -20,13 +20,13 @@ public class HttpHandshakeInterceptor implements HandshakeInterceptor {
 
         log.info("before handshake");
 
-        if(serverHttpRequest instanceof ServletServerHttpRequest){
+        if (serverHttpRequest instanceof ServletServerHttpRequest) {
 
             ServletServerHttpRequest servletServerHttpRequest = (ServletServerHttpRequest) serverHttpRequest;
             HttpSession session = servletServerHttpRequest.getServletRequest().getSession();
             map.put("sessionId", session.getId());
         }
-            return true;
+        return true;
     }
 
     @Override

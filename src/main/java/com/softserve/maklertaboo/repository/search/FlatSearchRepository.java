@@ -2,7 +2,6 @@ package com.softserve.maklertaboo.repository.search;
 
 import com.softserve.maklertaboo.dto.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.entity.Flat;
-import com.softserve.maklertaboo.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,7 +32,6 @@ public class FlatSearchRepository implements SearchRepository<Flat, FlatSearchPa
         Root<Flat> flatRoot = criteriaQuery.from(Flat.class);
 
         List<Predicate> predicates = getPredicates(searchParameters, flatRoot);
-
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
 
         List<Flat> result = entityManager.createQuery(criteriaQuery)
@@ -58,25 +56,23 @@ public class FlatSearchRepository implements SearchRepository<Flat, FlatSearchPa
             predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("monthPrice"), searchParameters.getPriceHigh()));
         }
 
-        if (searchParameters.getPriceHigh() != null) {
-            predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("monthPrice"), searchParameters.getPriceHigh()));
-        }
-
         if (searchParameters.getFloorLow() != null) {
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(flatRoot.get("monthPrice"), searchParameters.getFloorLow()));
         }
 
-        Join<Flat, Tag> FlatTagJoin = flatRoot.join("flat_tag_list", JoinType.INNER);
-
-        if (searchParameters.getTags() != null) {
-            for (String tag : searchParameters.getTags()) {
-                predicates.add(criteriaBuilder.like(FlatTagJoin
-                        .get("name").as(String.class), tag));
-            }
+        if (searchParameters.getPriceHigh() != null) {
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("monthPrice"), searchParameters.getPriceHigh()));
         }
 
+        if (searchParameters.getNumberOfRooms() != null) {
+            predicates.add(criteriaBuilder.equal(flatRoot.get("numberOfRooms"), searchParameters.getNumberOfRooms()));
+        }
+
+        SetJoin<Object, Object> flatTagJoin = flatRoot.joinSet("tags");
+
+        if (searchParameters.getTags() != null) {
+            predicates.add(flatTagJoin.get("name").in(searchParameters.getTags()));
+        }
         return predicates;
     }
-
-
 }
