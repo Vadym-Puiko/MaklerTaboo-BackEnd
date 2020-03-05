@@ -2,7 +2,6 @@ package com.softserve.maklertaboo.entity.request;
 
 
 import lombok.Data;
-import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.Date;
