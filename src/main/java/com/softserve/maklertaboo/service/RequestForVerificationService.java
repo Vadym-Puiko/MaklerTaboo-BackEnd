@@ -49,13 +49,6 @@ public class RequestForVerificationService {
         requestFlatRepository.save(requestForFlatVerification);
     }
 
-    public void declineFlatRequest(Long id) {
-        RequestForFlatVerification requestForFlatVerification = getRequestsForFlatVerificationById(id);
-        requestForFlatVerification.setStatus(RequestForVerificationStatus.DECLINED);
-        requestForFlatVerification.setVerificationDate(new Date());
-        requestFlatRepository.save(requestForFlatVerification);
-    }
-
     public void approveLandlordRequest(Long id) {
         RequestForLandlordVerification requestForLandlordVerification = getRequestsForLandlordVerificationById(id);
         requestForLandlordVerification.setStatus(RequestForVerificationStatus.APPROVED);
@@ -64,11 +57,12 @@ public class RequestForVerificationService {
         requestLandlordRepository.save(requestForLandlordVerification);
     }
 
+    public void declineFlatRequest(Long id) {
+        declineRequest(requestFlatRepository, id);
+    }
+
     public void declineLandlordRequest(Long id) {
-        RequestForLandlordVerification requestForLandlordVerification = getRequestsForLandlordVerificationById(id);
-        requestForLandlordVerification.setStatus(RequestForVerificationStatus.DECLINED);
-        requestForLandlordVerification.setVerificationDate(new Date());
-        requestLandlordRepository.save(requestForLandlordVerification);
+        declineRequest(requestLandlordRepository, id);
     }
 
     public RequestForLandlordVerification getRequestsForLandlordVerificationById(Long id) {
@@ -86,6 +80,13 @@ public class RequestForVerificationService {
         } else {
             throw new DataNotFoundException();
         }
+    }
+
+    private <T extends RequestForVerification> void declineRequest(RequestBaseRepository<T> requestBaseRepository, Long id) {
+        T requestForVerification = getRequestsForVerificationById(requestBaseRepository, id);
+        requestForVerification.setStatus(RequestForVerificationStatus.DECLINED);
+        requestForVerification.setVerificationDate(new Date());
+        requestBaseRepository.save(requestForVerification);
     }
 
 
