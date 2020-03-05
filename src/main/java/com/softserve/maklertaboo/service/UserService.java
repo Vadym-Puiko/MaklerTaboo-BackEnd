@@ -89,4 +89,10 @@ public class UserService {
         user.setRole(UserRole.LANDLORD);
         userRepository.save(user);
     }
+
+    public void makeModerator(Long id) {
+        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        user.setRole(UserRole.MODERATOR);
+        userRepository.save(user);
+    }
 }

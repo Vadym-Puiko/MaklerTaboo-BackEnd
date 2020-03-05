@@ -1,9 +1,9 @@
 package com.softserve.maklertaboo.controller;
 
 import com.softserve.maklertaboo.dto.request.RequestForFlatDto;
-import com.softserve.maklertaboo.dto.request.RequestForLandlordDto;
+import com.softserve.maklertaboo.dto.request.RequestForUserDto;
 import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
-import com.softserve.maklertaboo.mapping.request.RequestForLandlordMapper;
+import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.service.RequestForVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +18,18 @@ public class AdminController {
 
     RequestForVerificationService requestForVerificationService;
     RequestForFlatMapper requestForFlatMapper;
-    RequestForLandlordMapper requestForLandlordMapper;
+    RequestForUserMapper requestForUserMapper;
 
     @Autowired
     public AdminController(RequestForVerificationService requestForVerificationService,
-                           RequestForLandlordMapper requestForLandlordMapper,
+                           RequestForUserMapper requestForUserMapper,
                            RequestForFlatMapper requestForFlatMapper) {
         this.requestForVerificationService = requestForVerificationService;
         this.requestForFlatMapper = requestForFlatMapper;
-        this.requestForLandlordMapper = requestForLandlordMapper;
+        this.requestForUserMapper = requestForUserMapper;
     }
 
-    @GetMapping("/requests/flat")
+    @GetMapping("/requests/flats")
     public List<RequestForFlatDto> getRequestsForFlats() {
         return requestForVerificationService
                 .getAllRequestsForFlatVerification().stream()
@@ -37,32 +37,40 @@ public class AdminController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/requests/user")
-    public List<RequestForLandlordDto> getRequestsForLandlords() {
+    @GetMapping("/requests/users/landlords")
+    public List<RequestForUserDto> getRequestsForLandlords() {
         return requestForVerificationService
                 .getAllRequestsForLandlordVerification().stream()
-                .map(requestForLandlordMapper::convertToDto)
+                .map(requestForUserMapper::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    @PutMapping("requests/flat/{id}/approve")
+    @GetMapping("/requests/users/moderators")
+    public List<RequestForUserDto> getRequestsForModerators() {
+        return requestForVerificationService
+                .getAllRequestsForModeratorVerification().stream()
+                .map(requestForUserMapper::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @PutMapping("requests/flats/{id}/approve")
     public void approveRequestForFlat(@PathVariable Long id) {
         requestForVerificationService.approveFlatRequest(id);
     }
 
-    @PutMapping("requests/flat/{id}/decline")
+    @PutMapping("requests/flats/{id}/decline")
     public void declineRequestForFlat(@PathVariable Long id) {
         requestForVerificationService.declineFlatRequest(id);
     }
 
-    @PutMapping("requests/user/{id}/approve")
-    public void approveRequestForLandlord(@PathVariable Long id) {
-        requestForVerificationService.approveLandlordRequest(id);
+    @PutMapping("requests/users/{id}/approve")
+    public void approveRequestForUser(@PathVariable Long id) {
+        requestForVerificationService.approveUserRequest(id);
     }
 
-    @PutMapping("requests/user/{id}/decline")
-    public void declineRequestForLandlord(@PathVariable Long id) {
-        requestForVerificationService.declineLandlordRequest(id);
+    @PutMapping("requests/users/{id}/decline")
+    public void declineRequestForUser(@PathVariable Long id) {
+        requestForVerificationService.declineUserRequest(id);
     }
 
 

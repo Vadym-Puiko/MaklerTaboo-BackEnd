@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class RequestForLandlordDto {
+public class RequestForUserDto {
     private Long id;
     private RequestForVerificationStatus status;
     private Date creationDate;
