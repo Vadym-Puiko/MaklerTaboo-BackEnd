@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.entity.request.RequestForVerification;
@@ -42,15 +43,15 @@ public class RequestForVerificationService {
 
     public void approveFlatRequest(Long id) {
         RequestForFlatVerification requestForFlatVerification = getRequestsForFlatVerificationById(id);
-        requestForFlatVerification.setIsApproved(Boolean.TRUE);
-        requestForFlatVerification.setApprovalDate(new Date());
+        requestForFlatVerification.setStatus(RequestForVerificationStatus.APPROVED);
+        requestForFlatVerification.setVerificationDate(new Date());
         flatService.setActiveTrue(requestForFlatVerification.getFlat().getId());
     }
 
     public void approveUserRequest(Long id) {
         RequestForFlatVerification requestForFlatVerification = getRequestsForFlatVerificationById(id);
-        requestForFlatVerification.setIsApproved(Boolean.TRUE);
-        requestForFlatVerification.setApprovalDate(new Date());
+        requestForFlatVerification.setStatus(RequestForVerificationStatus.APPROVED);
+        requestForFlatVerification.setVerificationDate(new Date());
         userService.makeLandlord(id);
     }
 

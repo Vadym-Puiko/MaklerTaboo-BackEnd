@@ -24,10 +24,10 @@ public class RequestForFlatMapper implements MapperToDto<RequestForFlatVerificat
         RequestForFlatDto requestForFlatDto = new RequestForFlatDto();
         requestForFlatDto.setCreationDate(requestForFlat.getCreationDate());
 
-        requestForFlatDto.setApprovalDate(requestForFlat.getApprovalDate());
+        requestForFlatDto.setVerificationDate(requestForFlat.getVerificationDate());
         requestForFlatDto.setId(requestForFlat.getId());
 
-        requestForFlatDto.setApproved(requestForFlat.getIsApproved());
+        requestForFlatDto.setStatus(requestForFlat.getStatus());
 
         requestForFlatDto.setFlat(flatMapper.convertToDto(requestForFlat.getFlat()));
 

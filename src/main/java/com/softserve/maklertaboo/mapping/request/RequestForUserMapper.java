@@ -24,10 +24,10 @@ public class RequestForUserMapper implements MapperToDto<RequestForUserVerificat
         RequestForUserDto requestForUserDto = new RequestForUserDto();
         requestForUserDto.setCreationDate(requestForUser.getCreationDate());
 
-        requestForUserDto.setApprovalDate(requestForUser.getApprovalDate());
+        requestForUserDto.setVerificationDate(requestForUser.getVerificationDate());
         requestForUserDto.setId(requestForUser.getId());
 
-        requestForUserDto.setApproved(requestForUser.getIsApproved());
+        requestForUserDto.setStatus(requestForUser.getStatus());
 
         requestForUserDto.setUser(userMapper.convertToDto(requestForUser.getUser()));
 
