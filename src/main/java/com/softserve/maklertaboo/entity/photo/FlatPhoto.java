@@ -12,11 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class FlatPhoto {
 
-    public FlatPhoto(String url, Flat flat) {
-        this.url = url;
-        this.flat = flat;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
