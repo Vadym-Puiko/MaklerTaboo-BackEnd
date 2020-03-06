@@ -6,43 +6,45 @@ import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.photo.CommentPhoto;
 import com.softserve.maklertaboo.mapping.MapperToDto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
+import com.softserve.maklertaboo.repository.FlatRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Component
 public class FlatCommentMapper implements MapperToDto<FlatComment, FlatCommentDto>, MapperToEntity<FlatCommentDto, FlatComment> {
+
+    private final FlatRepository flatRepository;
+
+
+    @Autowired
+    public FlatCommentMapper(FlatRepository flatRepository) {
+        this.flatRepository = flatRepository;
+    }
+
+
     @Override
     public FlatCommentDto convertToDto(FlatComment entity) {
         FlatCommentDto flatCommentDto=new FlatCommentDto();
 
+        flatCommentDto.setId(entity.getId());
+        flatCommentDto.setText(entity.getText());
+        flatCommentDto.setPublicationDate(entity.getPublicationDate());
+        flatCommentDto.setFlatId(entity.getFlat().getId());
 
-        return null;
+        return flatCommentDto;
     }
 
     @Override
     public FlatComment convertToEntity(FlatCommentDto dto) {
-
         FlatComment flatComment=new FlatComment();
 
         flatComment.setText(dto.getText());
-
-        Flat flat=new Flat();
-        flat.setId(dto.getFlatId());
+        Flat flat= flatRepository.findById(dto.getFlatId()).orElseThrow(IllegalArgumentException::new);
         flatComment.setFlat(flat);
-
-        List<CommentPhoto> photos=new ArrayList<>();
-        for (String url : dto.getCommentPhotos()) {
-
-            CommentPhoto commentPhoto=new CommentPhoto();
-
-           // commentPhoto.setUserAuthor(user);
-            commentPhoto.setUrl(url);
-            commentPhoto.setFlatComment(flatComment);
-            photos.add(commentPhoto);
-
-        }
-
-        flatComment.setCommentPhotos(photos);
 
         return flatComment;
     }
