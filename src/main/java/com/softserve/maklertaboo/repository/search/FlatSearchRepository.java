@@ -1,7 +1,7 @@
 package com.softserve.maklertaboo.repository.search;
 
-import com.softserve.maklertaboo.dto.flat.FlatSearchParameters;
-import com.softserve.maklertaboo.entity.Flat;
+import com.softserve.maklertaboo.entity.flat.Flat;
+import com.softserve.maklertaboo.entity.flat.FlatSearchParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
-import javax.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,26 +45,32 @@ public class FlatSearchRepository implements SearchRepository<Flat, FlatSearchPa
         List<Predicate> predicates = new LinkedList<>();
 
         if (searchParameters.getPriceLow() != null) {
-            predicates.add(criteriaBuilder.greaterThanOrEqualTo(flatRoot.get("monthPrice"), searchParameters.getPriceLow()));
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(flatRoot.get("monthPrice"),
+                    searchParameters.getPriceLow()));
         }
 
         if (searchParameters.getPriceHigh() != null) {
-            predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("monthPrice"), searchParameters.getPriceHigh()));
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("monthPrice"),
+                    searchParameters.getPriceHigh()));
         }
 
         if (searchParameters.getFloorLow() != null) {
-            predicates.add(criteriaBuilder.greaterThanOrEqualTo(flatRoot.get("floor"), searchParameters.getFloorLow()));
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(flatRoot.get("floor"),
+                    searchParameters.getFloorLow()));
         }
 
         if (searchParameters.getFloorHigh() != null) {
-            predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("floor"), searchParameters.getFloorHigh()));
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("floor"),
+                    searchParameters.getFloorHigh()));
         }
 
         if (searchParameters.getMinNumberOfRooms() != null) {
-            predicates.add(criteriaBuilder.greaterThanOrEqualTo(flatRoot.get("numberOfRooms"), searchParameters.getMinNumberOfRooms()));
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(flatRoot.get("numberOfRooms"),
+                    searchParameters.getMinNumberOfRooms()));
         }
         if (searchParameters.getMaxNumberOfRooms() != null) {
-            predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("numberOfRooms"), searchParameters.getMaxNumberOfRooms()));
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(flatRoot.get("numberOfRooms"),
+                    searchParameters.getMaxNumberOfRooms()));
         }
 
         SetJoin<Object, Object> flatTagJoin = flatRoot.joinSet("tags");

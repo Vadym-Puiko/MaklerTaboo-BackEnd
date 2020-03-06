@@ -1,6 +1,6 @@
 package com.softserve.maklertaboo.entity.comment;
 
-import com.softserve.maklertaboo.entity.Flat;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import lombok.Data;
 
 import javax.persistence.CascadeType;

@@ -2,7 +2,7 @@ package com.softserve.maklertaboo.mapping.flat;
 
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
 import com.softserve.maklertaboo.entity.Address;
-import com.softserve.maklertaboo.entity.Flat;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
 import com.softserve.maklertaboo.repository.user.UserRepository;

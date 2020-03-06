@@ -1,8 +1,10 @@
 package com.softserve.maklertaboo.controller;
 
+import com.softserve.maklertaboo.dto.flat.FlatDetailDto;
 import com.softserve.maklertaboo.dto.flat.FlatDto;
-import com.softserve.maklertaboo.dto.flat.FlatSearchParameters;
+import com.softserve.maklertaboo.dto.flat.FlatSearchParametersDto;
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
+import com.softserve.maklertaboo.mapping.flat.FlatDetailMapper;
 import com.softserve.maklertaboo.mapping.flat.FlatMapper;
 import com.softserve.maklertaboo.service.FlatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
@@ -22,31 +23,26 @@ public class FlatController {
 
     FlatService flatService;
     FlatMapper flatMapper;
+    FlatDetailMapper flatDetailMapper;
 
     @Autowired
-    public FlatController(FlatService flatService, FlatMapper flatMapper) {
+    public FlatController(FlatService flatService, FlatMapper flatMapper,
+                          FlatDetailMapper flatDetailMapper) {
         this.flatService = flatService;
         this.flatMapper = flatMapper;
+        this.flatDetailMapper = flatDetailMapper;
     }
 
-    @GetMapping("{page}")
-    public Page<FlatDto> getActive(@PathVariable Integer page) {
-        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE, Sort.by("id").descending());
-        Page<FlatDto> flatsPage = flatService.getAll(pageable).map(flatMapper::convertToDto);
-        return flatsPage;
-    }
-
-    @GetMapping("detailed/{page}")
-    public FlatDto getOne(@PathVariable Integer page) {
-        System.out.println("Here");
-        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE);
-        return flatMapper.convertToDto(flatService.getById(page));
+    @GetMapping("{postId}")
+    public FlatDetailDto getActive(@PathVariable Integer postId) {
+        return flatDetailMapper.convertToDto(flatService.getById(postId));
     }
 
     @PutMapping("/search/{page}")
-    public Page<FlatDto> getByParameters(@PathVariable Integer page, @RequestBody FlatSearchParameters flatParameters) {
+    public Page<FlatDto> getByParameters(@PathVariable Integer page, @RequestBody FlatSearchParametersDto flatParameters) {
         if(flatParameters==null || flatParameters.isEmpty()){
-            return getActive(page);
+            Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE, Sort.by("id").descending());
+            return flatService.getAll(pageable).map(flatMapper::convertToDto);
         }
         Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE);
         return flatService.getByParameters(flatParameters, pageable).map(flatMapper::convertToDto);

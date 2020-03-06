@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-public class FlatSearchParameters {
+public class FlatSearchParametersDto {
 
     private List<String> regions;
+    private Set<String> tags;
 
     private Integer minNumberOfRooms;
     private Integer maxNumberOfRooms;
@@ -19,27 +20,26 @@ public class FlatSearchParameters {
     private Integer priceLow;
     private Integer priceHigh;
 
-    private Set<String> tags;
 
-    public boolean isEmpty(){
-        if(regions!=null){
+    public boolean isEmpty() {
+        if (regions != null) {
             return false;
         }
-        if(tags!=null){
+        if (tags != null) {
             return false;
         }
-        if(minNumberOfRooms!=null || maxNumberOfRooms!=null){
+        if (minNumberOfRooms != null || maxNumberOfRooms != null) {
             return false;
         }
-        if(floorLow!=null || floorHigh!=null){
+        if (floorLow != null || floorHigh != null) {
             return false;
         }
-        if(priceLow!=null || priceHigh!=null){
+        if (priceLow != null || priceHigh != null) {
             return false;
         }
+
         return true;
     }
-
 
 }
 

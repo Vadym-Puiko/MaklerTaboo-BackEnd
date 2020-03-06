@@ -1,7 +1,7 @@
 package com.softserve.maklertaboo.mapping.flat;
 
 import com.softserve.maklertaboo.dto.flat.FlatDto;
-import com.softserve.maklertaboo.entity.Flat;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.Tag;
 import com.softserve.maklertaboo.mapping.MapperToDto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @Component
 public class FlatMapper implements MapperToDto<Flat, FlatDto>, MapperToEntity<FlatDto, Flat> {
 
-
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM HH:mm");
 
     public FlatDto convertToDto(Flat flat) {
@@ -23,7 +22,6 @@ public class FlatMapper implements MapperToDto<Flat, FlatDto>, MapperToEntity<Fl
         if(flat.getCreationDate()!=null) {
             flatDto.setCreationDate(dateFormat.format(flat.getCreationDate()));
         }
-
         flatDto.setDescription(flat.getDescription());
         flatDto.setId(flat.getId());
 
