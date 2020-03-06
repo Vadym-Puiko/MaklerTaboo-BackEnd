@@ -2,15 +2,15 @@ package com.softserve.maklertaboo.controller;
 
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.service.UserService;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -29,16 +29,28 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Created"),
+//            @ApiResponse(code = 400, message = "User already exists")
+//    })
     @PostMapping
     public void createUser(@Valid @RequestBody UserDto userDto) {
         userService.saveUser(userDto);
     }
-@ApiResponses({
 
-        @ApiResponse(code = 200, message = "OK")
-})
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "OK"),
+//            @ApiResponse(code = 400, message = "Bad request")
+//    })
+
+    @PostMapping("/signIn")
+    public void signIn (@Valid @RequestBody UserDto userDto, HttpServletResponse response){
+        String token = userService.signIn(userDto);
+        response.addHeader("token", token);
+    }
+
     @GetMapping("/all")
-    public List<UserDto> getAllUser() {
+    public List<UserDto> getAllUser(HttpRequest request) {
         return userService.findAllUser();
     }
 

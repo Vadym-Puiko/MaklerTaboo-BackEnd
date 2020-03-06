@@ -3,10 +3,12 @@ package com.softserve.maklertaboo.service;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.user.User;
 
+import com.softserve.maklertaboo.exception.BadEmailOrUserException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 
 import com.softserve.maklertaboo.repository.user.UserRepository;
 
+import com.softserve.maklertaboo.security.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,16 +22,24 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public UserService(UserMapper userMapper, UserRepository userRepository) {
+    public UserService(UserMapper userMapper, UserRepository userRepository, JwtTokenUtil jwtTokenUtil) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     public void saveUser(UserDto userDto) {
         User user = userMapper.convertToEntity(userDto);
         userRepository.save(user);
+    }
+
+    public String signIn(UserDto userDto) {
+        User user = userRepository.findUserByEmailAndPassword(userDto.getEmail(), userDto.getPassword())
+                .orElseThrow(() -> new BadEmailOrUserException("Email or password is not valid"));
+        return jwtTokenUtil.createAccessToken(user);
     }
 
     public List<UserDto> findAllUser() {
