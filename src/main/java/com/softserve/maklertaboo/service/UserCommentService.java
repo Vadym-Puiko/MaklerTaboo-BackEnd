@@ -40,9 +40,4 @@ public class UserCommentService {
         return userCommentRepository.findByUser(user).stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
-
-//    public UserComment getById(Long id){
-//        return userCommentRepository.findById(id);
-//    }
-
 }

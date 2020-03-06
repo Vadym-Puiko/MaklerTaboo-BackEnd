@@ -4,6 +4,7 @@ import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.photo.CommentPhoto;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -12,5 +13,5 @@ public class FlatCommentDto {
     private Long flatId;
     private String text;
     private List<String> commentPhotos;
-    private String publicationDate;
+    private LocalDateTime publicationDate;
 }

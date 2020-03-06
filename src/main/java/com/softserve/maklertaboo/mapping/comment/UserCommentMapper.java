@@ -15,12 +15,11 @@ import org.springframework.stereotype.Component;
 public class UserCommentMapper implements MapperToDto<UserComment, UserCommentDto>, MapperToEntity<UserCommentDto, UserComment> {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+
 
     @Autowired
-    public UserCommentMapper(UserRepository userRepository,UserMapper userMapper) {
+    public UserCommentMapper(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userMapper=userMapper;
     }
 
 
@@ -47,10 +46,7 @@ public class UserCommentMapper implements MapperToDto<UserComment, UserCommentDt
         UserComment userComment=new UserComment();
 
         userComment.setText(dto.getText());
-
-
         User user = userRepository.findById(dto.getUserId()).orElseThrow(IllegalArgumentException::new);
-
         userComment.setUser(user);
 
 

@@ -9,17 +9,17 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/comments")
-public class CommentController {
+@RequestMapping("/usercomments")
+public class UserCommentController {
     private final UserCommentService userCommentService;
 
     @Autowired
-    CommentController(UserCommentService userCommentService){
+    UserCommentController(UserCommentService userCommentService){
         this.userCommentService=userCommentService;
     }
 
     @PostMapping("/create")
-    public void addNewComment(@RequestBody UserCommentDto userCommentDto) {
+    public void addNewUserComment(@RequestBody UserCommentDto userCommentDto) {
         userCommentService.saveUserComment(userCommentDto);
     }
 
@@ -28,9 +28,11 @@ public class CommentController {
         userCommentService.deleteUserComment(id);
     }
 
-    @GetMapping("getallusercomments")
+    @GetMapping("/getall")
     public List<UserCommentDto> getAllUserCommentsAboutUser(UserCommentDto userCommentDto){
         return  userCommentService.getAllUserCommentsForUser(userCommentDto);
     }
+
+
 
 }
