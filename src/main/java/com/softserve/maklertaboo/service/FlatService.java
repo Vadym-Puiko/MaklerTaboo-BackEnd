@@ -43,4 +43,10 @@ public class FlatService {
     public void saveFlat(NewFlatDto newFlatDto) {
         flatRepository.save(newFlatMapper.convertToEntity(newFlatDto));
     }
+
+    public void setActiveTrue(Long id) {
+        Flat flat = getById(id.intValue());
+        flat.setIsActive(Boolean.TRUE);
+        flatRepository.save(flat);
+    }
 }
