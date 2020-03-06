@@ -1,17 +1,14 @@
 package com.softserve.maklertaboo.mapping.comment;
 
 import com.softserve.maklertaboo.dto.comment.FlatCommentDto;
-import com.softserve.maklertaboo.entity.Flat;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
-import com.softserve.maklertaboo.entity.photo.CommentPhoto;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.mapping.MapperToDto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
 import com.softserve.maklertaboo.repository.FlatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Component

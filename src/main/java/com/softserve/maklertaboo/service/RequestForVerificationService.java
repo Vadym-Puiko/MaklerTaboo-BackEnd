@@ -55,7 +55,7 @@ public class RequestForVerificationService {
         RequestForFlatVerification requestForFlatVerification = getRequestsForFlatVerificationById(id);
         requestForFlatVerification.setStatus(RequestForVerificationStatus.APPROVED);
         requestForFlatVerification.setVerificationDate(new Date());
-        flatService.setActiveTrue(requestForFlatVerification.getFlat().getId());
+        flatService.activate(requestForFlatVerification.getFlat().getId());
         requestFlatRepository.save(requestForFlatVerification);
     }
 
