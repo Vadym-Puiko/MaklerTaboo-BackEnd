@@ -1,17 +1,12 @@
 package com.softserve.maklertaboo.service;
-
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.user.User;
-
 import com.softserve.maklertaboo.mapping.UserMapper;
-
 import com.softserve.maklertaboo.repository.user.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

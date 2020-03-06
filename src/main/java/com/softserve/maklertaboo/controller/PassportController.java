@@ -5,9 +5,8 @@ import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.service.PassportService;
 import com.softserve.maklertaboo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @CrossOrigin
@@ -23,13 +22,18 @@ public class PassportController {
         this.userService = userService;
     }
 
-    @GetMapping("/passport")
-    public List<PassportDto> getPassportData() {
-        return passportService.findAll();
+    @GetMapping("/passport/{id}")
+    public List<PassportDto> getPassportData(@PathVariable  Long id ) {
+        return passportService.getPassport(id);
     }
 
-    @GetMapping("/user")
-    public List<UserDto> getUserData() {
-        return userService.findAllUser();
+    @GetMapping("/user/{id}")
+    public UserDto getUserData(@PathVariable  Long id) {
+        return userService.findUserById(id);
+    }
+
+    @RequestMapping(value = "/passport", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void updatePassportData(@RequestBody List<PassportDto> passportDto){
+        passportService.updatePassport(passportDto);
     }
 }
