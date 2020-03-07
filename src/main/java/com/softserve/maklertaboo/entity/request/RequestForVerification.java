@@ -15,13 +15,11 @@ public abstract class RequestForVerification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "status",
-            columnDefinition = "varchar(255) default 'VERIFYING'")
+    @Column(columnDefinition = "varchar(255) default 'VERIFYING'")
     @Enumerated(EnumType.STRING)
     private RequestForVerificationStatus status;
 
-    @Column(name = "creation_date",
-            columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()")
+    @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()")
     private Date creationDate;
 
     private Date verificationDate;

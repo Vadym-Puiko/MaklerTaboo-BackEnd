@@ -1,11 +1,14 @@
 package com.softserve.maklertaboo.repository.user;
 
+import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import javax.xml.crypto.Data;
+import java.util.Date;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -18,17 +21,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAll(Pageable pageable);
 
-    @Query("SELECT COUNT(u) FROM User u")//active?
-    Long countActiveUsers();
+    long count();
 
-    @Query("SELECT COUNT(u) FROM User u WHERE u.role='LANDLORD'")
-    Long countActiveRenters();
-
-    @Query("SELECT COUNT(u) FROM User u WHERE u.role='LANDLORD'")
-    Long countActiveLandlords();
-
-    @Query("SELECT COUNT(u) FROM User u WHERE u.role='MODERATOR'")
-    Long countActiveModerators();
+    Long countAllByRole(UserRole userRole);
 
     User getByUsername(String username);
+
+    int countAllByRegistrationDateBetween(Date start, Date end);
 }

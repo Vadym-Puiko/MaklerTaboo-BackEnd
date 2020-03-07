@@ -6,6 +6,7 @@ import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.service.RequestForVerificationService;
 import com.softserve.maklertaboo.service.StatisticsService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -104,6 +105,11 @@ public class AdminController {
     public List<Long> getCountOfActiveUnactiveFlats() {
         return Arrays.asList(statisticsService.getCountOfActiveFlats(),
                             statisticsService.getCountOfUnactiveFlats());
+    }
+
+    @GetMapping("statistics/user-regisration-dynamics")
+    public List<Integer> getCountOfRegisteredUsersForLastWeek(){
+        return statisticsService.getCountOfUsersForWeek();
     }
 
 }
