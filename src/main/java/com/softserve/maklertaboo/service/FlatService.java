@@ -46,9 +46,7 @@ public class FlatService {
 
     @Cacheable("flats")
     public Page<Flat> getByParameters(FlatSearchParametersDto flatParametersDto, Pageable pageable) {
-
         FlatSearchParameters flatParameters = flatSearchMapper.convertToEntity(flatParametersDto);
-
         return flatSearchRepository.findByParams(flatParameters, pageable);
     }
 
