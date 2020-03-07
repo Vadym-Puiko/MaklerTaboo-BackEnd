@@ -5,6 +5,7 @@ import com.softserve.maklertaboo.dto.request.RequestForUserDto;
 import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.service.RequestForVerificationService;
+import com.softserve.maklertaboo.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +20,17 @@ public class AdminController {
     RequestForVerificationService requestForVerificationService;
     RequestForFlatMapper requestForFlatMapper;
     RequestForUserMapper requestForUserMapper;
+    StatisticsService statisticsService;
 
     @Autowired
     public AdminController(RequestForVerificationService requestForVerificationService,
                            RequestForUserMapper requestForUserMapper,
-                           RequestForFlatMapper requestForFlatMapper) {
+                           RequestForFlatMapper requestForFlatMapper,
+                           StatisticsService statisticsService) {
         this.requestForVerificationService = requestForVerificationService;
         this.requestForFlatMapper = requestForFlatMapper;
         this.requestForUserMapper = requestForUserMapper;
+        this.statisticsService = statisticsService;
     }
 
     @GetMapping("/requests/flats")
@@ -73,5 +77,9 @@ public class AdminController {
         requestForVerificationService.declineUserRequest(id);
     }
 
+    @GetMapping("statistics/active-flats")
+    public Long getCountOfActiveFlats(){
+        return statisticsService.getCountOfActiveFlats();
+    }
 
 }
