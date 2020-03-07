@@ -1,7 +1,7 @@
 package com.softserve.maklertaboo.repository.comment;
 
-import com.softserve.maklertaboo.entity.Flat;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

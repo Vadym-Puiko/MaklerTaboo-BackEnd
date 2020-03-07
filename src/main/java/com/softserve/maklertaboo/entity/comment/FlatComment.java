@@ -1,6 +1,6 @@
 package com.softserve.maklertaboo.entity.comment;
 
-import com.softserve.maklertaboo.entity.Flat;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.photo.CommentPhoto;
 import lombok.Data;
 
