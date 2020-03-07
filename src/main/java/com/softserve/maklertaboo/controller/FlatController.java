@@ -6,6 +6,7 @@ import com.softserve.maklertaboo.dto.flat.FlatSearchParametersDto;
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
 import com.softserve.maklertaboo.mapping.flat.FlatDetailMapper;
 import com.softserve.maklertaboo.mapping.flat.FlatMapper;
+import com.softserve.maklertaboo.repository.search.FlatFullTextSearch;
 import com.softserve.maklertaboo.service.FlatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -24,6 +28,9 @@ public class FlatController {
     FlatService flatService;
     FlatMapper flatMapper;
     FlatDetailMapper flatDetailMapper;
+
+    @Autowired
+    FlatFullTextSearch flatFullTextSearch;
 
     @Autowired
     public FlatController(FlatService flatService, FlatMapper flatMapper,
@@ -61,5 +68,10 @@ public class FlatController {
     @DeleteMapping("{id}")
     public void remove(@RequestBody Long id) {
         flatService.deactivateFlat(id);
+    }
+
+    @GetMapping("/full")
+    public List<FlatDto> full(@RequestParam String search){
+        return flatFullTextSearch.search(search).stream().map(flatMapper::convertToDto).collect(Collectors.toList());
     }
 }
