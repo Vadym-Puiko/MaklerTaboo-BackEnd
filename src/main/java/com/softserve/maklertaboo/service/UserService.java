@@ -2,6 +2,7 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
+import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 
 import com.softserve.maklertaboo.exception.BadEmailOrUserException;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,4 +95,15 @@ public class UserService {
         return userRepository.findAll(pageable).map(userMapper::convertToDto);
     }
 
+    public void makeLandlord(Long id) {
+        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        user.setRole(UserRole.LANDLORD);
+        userRepository.save(user);
+    }
+
+    public void makeModerator(Long id) {
+        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        user.setRole(UserRole.MODERATOR);
+        userRepository.save(user);
+    }
 }

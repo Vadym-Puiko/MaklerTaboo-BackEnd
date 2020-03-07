@@ -1,6 +1,6 @@
 package com.softserve.maklertaboo.entity.user;
 
-import com.softserve.maklertaboo.entity.Flat;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.Order;
 import com.softserve.maklertaboo.entity.Passport;
 import com.softserve.maklertaboo.entity.comment.Comment;

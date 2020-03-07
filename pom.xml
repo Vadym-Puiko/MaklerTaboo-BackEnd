@@ -114,6 +114,19 @@
 			<version>1.2.17</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-search -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search-orm</artifactId>
+			<version>5.11.5.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search-elasticsearch</artifactId>
+			<version>5.11.5.Final</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
