@@ -27,7 +27,6 @@ public class Flat {
     private Integer monthPrice;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Field(index= YES, analyze=Analyze.YES, store=Store.YES)
     private Date creationDate;
 
     @Field(index= YES, analyze=Analyze.YES, store=Store.YES)
