@@ -94,8 +94,8 @@ public class AdminController {
     }
 
     @GetMapping("statistics/users-landlords")
-    public List<Long> getCountOfUsersLandlords() {
-        return Arrays.asList(statisticsService.getCountOfActiveUsers(),
+    public List<Long> getCountOfUsersByRole() {
+        return Arrays.asList(statisticsService.getCountOfActiveRenters(),
                 statisticsService.getCountOfActiveLandlords(),
                 statisticsService.getCountOfActiveModerators());
     }
