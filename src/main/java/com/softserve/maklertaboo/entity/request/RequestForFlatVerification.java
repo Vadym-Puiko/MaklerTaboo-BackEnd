@@ -1,6 +1,6 @@
 package com.softserve.maklertaboo.entity.request;
 
-import com.softserve.maklertaboo.entity.Flat;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

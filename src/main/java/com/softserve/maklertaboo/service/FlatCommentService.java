@@ -1,8 +1,8 @@
 package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.comment.FlatCommentDto;
-import com.softserve.maklertaboo.entity.Flat;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.mapping.comment.FlatCommentMapper;
 import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.comment.FlatCommentRepository;
