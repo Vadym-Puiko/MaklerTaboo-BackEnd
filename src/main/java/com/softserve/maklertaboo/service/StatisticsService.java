@@ -18,4 +18,8 @@ public class StatisticsService {
         return flatRepository.countActiveFlats();
     }
 
+    public Long getCountOfActiveUsers(){
+        return userRepository.countActiveUsers();
+    }
+
 }
