@@ -82,9 +82,14 @@ public class AdminController {
         return statisticsService.getCountOfActiveFlats();
     }
 
-    @GetMapping("statistics/active-flats")
+    @GetMapping("statistics/active-users")
     public Long getCountOfActiveUsers(){
         return statisticsService.getCountOfActiveUsers();
+    }
+
+    @GetMapping("statistics/active-moderators")
+    public Long getCountOfActiveLandlords(){
+        return statisticsService.getCountOfActiveLandlords();
     }
 
 }

@@ -22,4 +22,8 @@ public class StatisticsService {
         return userRepository.countActiveUsers();
     }
 
+    public Long getCountOfActiveLandlords(){
+        return userRepository.countActiveLandlords();
+    }
+
 }

@@ -18,6 +18,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAll(Pageable pageable);
 
-    @Query("SELECT COUNT(f) FROM Flat f")//active?
+    @Query("SELECT COUNT(u) FROM User u")//active?
     Long countActiveUsers();
+
+    @Query("SELECT COUNT(u) FROM User u WHERE u.role='LANDLORD'")
+    Long countActiveLandlords();
 }
