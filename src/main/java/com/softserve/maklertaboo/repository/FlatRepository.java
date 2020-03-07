@@ -21,4 +21,7 @@ public interface FlatRepository extends JpaRepository<Flat, Long> {
     @Query("SELECT COUNT(f) FROM Flat f WHERE f.isActive=true")
     Long countActiveFlats();
 
+    @Query("SELECT COUNT(f) FROM Flat f WHERE f.isActive=false")
+    Long countUnactiveFlats();
+
 }

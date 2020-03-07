@@ -9,6 +9,7 @@ import com.softserve.maklertaboo.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,18 +79,31 @@ public class AdminController {
     }
 
     @GetMapping("statistics/active-flats")
-    public Long getCountOfActiveFlats(){
+    public Long getCountOfActiveFlats() {
         return statisticsService.getCountOfActiveFlats();
     }
 
     @GetMapping("statistics/active-users")
-    public Long getCountOfActiveUsers(){
+    public Long getCountOfActiveUsers() {
         return statisticsService.getCountOfActiveUsers();
     }
 
     @GetMapping("statistics/active-landlords")
-    public Long getCountOfActiveLandlords(){
+    public Long getCountOfActiveLandlords() {
         return statisticsService.getCountOfActiveLandlords();
+    }
+
+    @GetMapping("statistics/users-landlords")
+    public List<Long> getCountOfUsersLandlords() {
+        return Arrays.asList(statisticsService.getCountOfActiveUsers(),
+                statisticsService.getCountOfActiveLandlords(),
+                statisticsService.getCountOfActiveModerators());
+    }
+
+    @GetMapping("statistics/active-unactive-flats")
+    public List<Long> getCountOfActiveUnactiveFlats() {
+        return Arrays.asList(statisticsService.getCountOfActiveFlats(),
+                            statisticsService.getCountOfUnactiveFlats());
     }
 
 }

@@ -2,6 +2,7 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,16 +15,26 @@ public class StatisticsService {
         this.flatRepository = flatRepository;
     }
 
-    public Long getCountOfActiveFlats(){
+    public Long getCountOfActiveFlats() {
         return flatRepository.countActiveFlats();
     }
 
-    public Long getCountOfActiveUsers(){
+    public Long getCountOfUnactiveFlats() {
+        return flatRepository.countUnactiveFlats();
+    }
+
+
+    public Long getCountOfActiveUsers() {
         return userRepository.countActiveUsers();
     }
 
-    public Long getCountOfActiveLandlords(){
+    public Long getCountOfActiveLandlords() {
         return userRepository.countActiveLandlords();
     }
+
+    public Long getCountOfActiveModerators() {
+        return userRepository.countActiveModerators();
+    }
+
 
 }
