@@ -27,5 +27,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User getByUsername(String username);
 
-    int countAllByRegistrationDateBetween(Date start, Date end);
+    long countAllByRegistrationDateBetween(Date start, Date end);
+
+    long countAllByRegistrationDateBefore(Date start);
+
 }

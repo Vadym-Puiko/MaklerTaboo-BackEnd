@@ -108,8 +108,23 @@ public class AdminController {
     }
 
     @GetMapping("statistics/user-regisration-dynamics")
-    public List<Integer> getCountOfRegisteredUsersForLastWeek(){
+    public List<Long> getCountOfRegisteredUsersForLastWeek(){
         return statisticsService.getCountOfUsersForWeek();
     }
+
+    @GetMapping("statistics/flat-creation-dynamics")
+    public List<Long> getCountOfCreatedFlatsForLastWeek(){
+        return statisticsService.getCountOfFlatsForWeek();
+    }
+
+    @GetMapping("statistics/users-dynamics")
+    public List<Long> getCountOfUsersForMount(){
+        return statisticsService.getCountOfUsersForMounth();
+    }
+    @GetMapping("statistics/landlords-dynamics")
+    public List<Long> getCountOfLandlordsForMount(){
+        return statisticsService.getCountOfLandlordsForMounth();
+    }
+
 
 }
