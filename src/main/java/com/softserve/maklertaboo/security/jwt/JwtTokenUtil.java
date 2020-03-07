@@ -2,6 +2,7 @@ package com.softserve.maklertaboo.security.jwt;
 
 import com.softserve.maklertaboo.entity.user.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
@@ -55,14 +56,15 @@ public class JwtTokenUtil implements Serializable {
 //    private Claims getAllClaimsFromToken(String token) {
 //        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 //    }
-//
-//    private Boolean isTokenExpired(String token) {
-//        final Date expiration = getExpirationDateFromToken(token);
-//        return expiration.before(new Date());
-//    }
-//
-//    public Boolean validateToken(String token, UserDetailsImpl userDetails) {
-//        final String username = getUsernameFromToken(token);
-//        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-//    }
+
+    public boolean isTokenValid(String token) {
+        try{
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            return !(claims.getBody().getExpiration().before(new Date()));
+        }catch(IllegalArgumentException e){
+            log.error("Given token is not valid: " + e.getMessage());
+        }
+        return false;
+    }
+
 }

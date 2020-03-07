@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.controller;
 
+import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +45,8 @@ public class UserController {
 //    })
 
     @PostMapping("/signIn")
-    public void signIn (@Valid @RequestBody UserDto userDto, HttpServletResponse response){
-        String token = userService.signIn(userDto);
+    public void signIn (@Valid @RequestBody LoginDto loginDto, HttpServletResponse response){
+        String token = userService.signIn(loginDto);
         response.addHeader("token", token);
     }
 

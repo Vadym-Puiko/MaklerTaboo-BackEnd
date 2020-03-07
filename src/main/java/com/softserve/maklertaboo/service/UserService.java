@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.user.User;
 
@@ -36,8 +37,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public String signIn(UserDto userDto) {
-        User user = userRepository.findUserByEmailAndPassword(userDto.getEmail(), userDto.getPassword())
+    public String signIn(LoginDto loginDto) {
+        User user = userRepository.findUserByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword())
                 .orElseThrow(() -> new BadEmailOrUserException("Email or password is not valid"));
         return jwtTokenUtil.createAccessToken(user);
     }

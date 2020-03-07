@@ -33,12 +33,13 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = httpServletRequest.getHeader("token");
-        log.info("through filter");
         if (accessToken != null) {
             try {
-                Authentication authentication = authenticationManager
-                        .authenticate(new UsernamePasswordAuthenticationToken(accessToken, null));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (jwtTokenUtil.isTokenValid(accessToken)) {
+                    Authentication authentication = authenticationManager
+                            .authenticate(new UsernamePasswordAuthenticationToken(accessToken, null));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             } catch (ExpiredJwtException e) {
                 log.info("Token has expired: " + accessToken);
             } catch (Exception e) {
