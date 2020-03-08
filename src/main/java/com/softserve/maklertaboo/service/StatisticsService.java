@@ -67,15 +67,14 @@ public class StatisticsService<RequestForFlatVerificationService> {
         LocalDate date = LocalDate.now().minusDays(numberOfDays);
         return IntStream.rangeClosed(1, numberOfDays)
                 .mapToObj(date::plusDays)
-                .map(x -> x.atStartOfDay().plusDays(1))
-                .map(x -> userRepository.countAllByRegistrationDateBetween(asDate(x.minusDays(1)), asDate(x)))
+                .map(this::getCountOfRegisteredUsersByDay)
                 .collect(Collectors.toList());
     }
 
-//    public Long getCountOfRegisteredUsersByDay(LocalDate day){
-//        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
-//        return userRepository.countAllByRegistrationDateBetween(asDate(endOfDay.minusDays(1)),asDate(endOfDay));
-//    }
+    public Long getCountOfRegisteredUsersByDay(LocalDate day){
+        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
+        return userRepository.countAllByRegistrationDateBetween(asDate(endOfDay.minusDays(1)),asDate(endOfDay));
+    }
     
 
 
@@ -83,9 +82,13 @@ public class StatisticsService<RequestForFlatVerificationService> {
         LocalDate date = LocalDate.now().minusDays(numberOfDays);
         return IntStream.rangeClosed(1, numberOfDays)
                 .mapToObj(date::plusDays)
-                .map(x -> x.atStartOfDay().plusDays(1))
-                .map(x -> requestFlatRepository.countAllVerificationDateBetweenAndStatus_Approved(asDate(x.minusDays(1)), asDate(x)))
+                .map(this::getCountOfPostedFlatsByDay)
                 .collect(Collectors.toList());
+    }
+
+    public Long getCountOfPostedFlatsByDay(LocalDate day){
+        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
+        return requestFlatRepository.countAllVerificationDateBetweenAndStatus_Approved(asDate(endOfDay.minusDays(1)),asDate(endOfDay));
     }
 
 
@@ -93,18 +96,26 @@ public class StatisticsService<RequestForFlatVerificationService> {
         LocalDate date = LocalDate.now().minusMonths(numberOfMonths);
         return IntStream.rangeClosed(1, numberOfMonths)
                 .mapToObj(date::plusMonths)
-                .map(x -> x.with(TemporalAdjusters.lastDayOfMonth()))
-                .map(x -> userRepository.countAllByRegistrationDateBefore(asDate(x)))
+                .map(this::getCountOfUsersBeforeMonth)
                 .collect(Collectors.toList());
+    }
+
+    public Long getCountOfUsersBeforeMonth(LocalDate month){
+        LocalDate endOfMont = month.with(TemporalAdjusters.lastDayOfMonth());
+        return userRepository.countAllByRegistrationDateBefore(asDate(endOfMont));
     }
 
     public List<Long> getCountOfLandlordsForLastMonths(int numberOfMonths) {
         LocalDate date = LocalDate.now().minusMonths(numberOfMonths);
         return IntStream.rangeClosed(1, numberOfMonths)
                 .mapToObj(date::plusMonths)
-                .map(x -> x.with(TemporalAdjusters.lastDayOfMonth()))
-                .map(x -> requestUserRepository.countAllVerificationDateLessAndStatus_Approved(asDate(x), RequestForVerificationType.LANDLORD))
+                .map(this::getCountOfLandlordsBeforeMonth)
                 .collect(Collectors.toList());
+    }
+
+    public Long getCountOfLandlordsBeforeMonth(LocalDate month){
+        LocalDate endOfMont = month.with(TemporalAdjusters.lastDayOfMonth());
+        return requestUserRepository.countAllVerificationDateLessAndStatus_Approved(asDate(endOfMont),RequestForVerificationType.LANDLORD);
     }
 
     public List<Long> getCountOfPostedUserCommentsForLastMonths(int numberOfMonths) {
@@ -135,9 +146,9 @@ public class StatisticsService<RequestForFlatVerificationService> {
                 .collect(Collectors.toList());
     }
 
-    public List<String> getNameOfLastMonths(int numberOfMonths) {
-        LocalDate date = LocalDate.now().minusMonths(numberOfMonths);
-        return IntStream.rangeClosed(1, numberOfMonths)
+    public List<String> getNameOfMonthsInRange(int from,int to) {
+        LocalDate date = LocalDate.now().minusMonths(to);
+        return IntStream.rangeClosed(from, to)
                 .mapToObj(date::plusMonths)
                 .map(LocalDate::getMonth)
                 .map(Objects::toString)
