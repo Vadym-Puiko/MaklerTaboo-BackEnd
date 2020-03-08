@@ -58,10 +58,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(entryPoint)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/users/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/flatcomments/getall/**").permitAll()
+                .antMatchers("/users/signIn/**").permitAll()
                 .antMatchers("/**").permitAll()
-//                .antMatchers().hasAnyRole("ROLE_USER", "ROLE_RENTER", "ROLE_LANDLORD", "ROLE_MODERATOR", "ROLE_ADMIN")
                 .anyRequest().authenticated();
 
     }
