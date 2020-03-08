@@ -6,7 +6,6 @@ import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.service.RequestForVerificationService;
 import com.softserve.maklertaboo.service.StatisticsService;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -104,33 +103,36 @@ public class AdminController {
     @GetMapping("statistics/active-unactive-flats")
     public List<Long> getCountOfActiveUnactiveFlats() {
         return Arrays.asList(statisticsService.getCountOfActiveFlats(),
-                            statisticsService.getCountOfUnactiveFlats());
+                statisticsService.getCountOfUnactiveFlats());
     }
 
     @GetMapping("statistics/user-regisration-dynamics")
-    public List<Long> getCountOfRegisteredUsersForLastWeek(){
-        return statisticsService.getCountOfUsersForWeek();
+    public List<Long> getCountOfRegisteredUsersForLastWeek() {
+        return statisticsService.getCountOfRegisteredUsersForLastDays(7);
     }
 
     @GetMapping("statistics/flat-creation-dynamics")
-    public List<Long> getCountOfCreatedFlatsForLastWeek(){
-        return statisticsService.getCountOfFlatsForWeek();
+    public List<Long> getCountOfCreatedFlatsForLastWeek() {
+        return statisticsService.getCountOfPostedFlatsForLastDays(7);
     }
 
     @GetMapping("statistics/users-dynamics")
-    public List<Long> getCountOfUsersForMount(){
-        return statisticsService.getCountOfUsersForMounth();
+    public List<Long> getCountOfUsersForMount() {
+        return statisticsService.getCountOfUsersForLastMonths(7);
     }
+
     @GetMapping("statistics/landlords-dynamics")
-    public List<Long> getCountOfLandlordsForMount(){
-        return statisticsService.getCountOfLandlordsForMounth();
+    public List<Long> getCountOfLandlordsForMount() {
+        return statisticsService.getCountOfLandlordsForLastMonths(7);
     }
+
     @GetMapping("statistics/user-comments-dynamics")
-    public List<Long> getCountOfUserCommentsForMount(){
-        return statisticsService.getCountOfUsersCommentsForMounth();
+    public List<Long> getCountOfUserCommentsForMount() {
+        return statisticsService.getCountOfPostedUserCommentsForLastMonths(7);
     }
+
     @GetMapping("statistics/flat-comments-dynamics")
-    public List<Long> getCountOfFlatCommentsForMount(){
-        return statisticsService.getCountOfFlatCommentsForMounth();
+    public List<Long> getCountOfFlatCommentsForMount() {
+        return statisticsService.getCountOfPostedFlatCommentsForLastMonths(7);
     }
 }

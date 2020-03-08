@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,127 +63,96 @@ public class StatisticsService<RequestForFlatVerificationService> {
     }
 
 
-    public List<Long> getCountOfUsersForWeek() {
-        List<Long> countForDay = new ArrayList<>();
-        for (int i = -7; i < 0; i++) {
-            final Calendar start = Calendar.getInstance();
-            start.add(Calendar.DATE, i + 1);
+    public List<Long> getCountOfRegisteredUsersForLastDays(int numberOfDays) {
+        LocalDate date = LocalDate.now().minusDays(numberOfDays);
+        return IntStream.rangeClosed(1, numberOfDays)
+                .mapToObj(date::plusDays)
+                .map(x -> x.atStartOfDay().plusDays(1))
+                .map(x -> userRepository.countAllByRegistrationDateBetween(asDate(x.minusDays(1)), asDate(x)))
+                .collect(Collectors.toList());
+    }
 
-            final Calendar end = Calendar.getInstance();
-            end.add(Calendar.DATE, i + 2);
+//    public Long getCountOfRegisteredUsersByDay(LocalDate day){
+//        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
+//        return userRepository.countAllByRegistrationDateBetween(asDate(endOfDay.minusDays(1)),asDate(endOfDay));
+//    }
+    
 
-            Date previousDate = Date.from(start.toInstant().truncatedTo(ChronoUnit.DAYS));
-            Date nextDate = Date.from(end.toInstant().truncatedTo(ChronoUnit.DAYS));
 
-            countForDay.add(userRepository.countAllByRegistrationDateBetween(previousDate, nextDate));
-        }
-        return countForDay;
+    public List<Long> getCountOfPostedFlatsForLastDays(int numberOfDays) {
+        LocalDate date = LocalDate.now().minusDays(numberOfDays);
+        return IntStream.rangeClosed(1, numberOfDays)
+                .mapToObj(date::plusDays)
+                .map(x -> x.atStartOfDay().plusDays(1))
+                .map(x -> requestFlatRepository.countAllVerificationDateBetweenAndStatus_Approved(asDate(x.minusDays(1)), asDate(x)))
+                .collect(Collectors.toList());
     }
 
 
-    public List<Long> getCountOfFlatsForWeek() {
-        List<Long> countForDay = new ArrayList<>();
-        for (int i = -7; i < 0; i++) {
-            final Calendar start = Calendar.getInstance();
-            start.add(Calendar.DATE, i + 1);
+    public List<Long> getCountOfUsersForLastMonths(int numberOfMonths) {
+        LocalDate date = LocalDate.now().minusMonths(numberOfMonths);
+        return IntStream.rangeClosed(1, numberOfMonths)
+                .mapToObj(date::plusMonths)
+                .map(x -> x.with(TemporalAdjusters.lastDayOfMonth()))
+                .map(x -> userRepository.countAllByRegistrationDateBefore(asDate(x)))
+                .collect(Collectors.toList());
+    }
 
-            final Calendar end = Calendar.getInstance();
-            end.add(Calendar.DATE, i + 2);
+    public List<Long> getCountOfLandlordsForLastMonths(int numberOfMonths) {
+        LocalDate date = LocalDate.now().minusMonths(numberOfMonths);
+        return IntStream.rangeClosed(1, numberOfMonths)
+                .mapToObj(date::plusMonths)
+                .map(x -> x.with(TemporalAdjusters.lastDayOfMonth()))
+                .map(x -> requestUserRepository.countAllVerificationDateLessAndStatus_Approved(asDate(x), RequestForVerificationType.LANDLORD))
+                .collect(Collectors.toList());
+    }
 
-            Date previousDate = Date.from(start.toInstant().truncatedTo(ChronoUnit.DAYS));
-            Date nextDate = Date.from(end.toInstant().truncatedTo(ChronoUnit.DAYS));
+    public List<Long> getCountOfPostedUserCommentsForLastMonths(int numberOfMonths) {
+        LocalDate date = LocalDate.now().minusMonths(numberOfMonths);
+        return IntStream.rangeClosed(1, numberOfMonths)
+                .mapToObj(date::plusMonths)
+                .map(x -> x.with(TemporalAdjusters.lastDayOfMonth()))
+                .map(x -> userCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(x.minusMonths(1)), asLocalDateTime(x)))
+                .collect(Collectors.toList());
+    }
 
-            countForDay.add(requestFlatRepository.countAllVerificationDateBetweenAndStatus_Approved(previousDate, nextDate));
-        }
-        return countForDay;
+    public List<Long> getCountOfPostedFlatCommentsForLastMonths(int numberOfMonths) {
+        LocalDate date = LocalDate.now().minusMonths(numberOfMonths);
+        return IntStream.rangeClosed(1, numberOfMonths)
+                .mapToObj(date::plusMonths)
+                .map(x -> x.with(TemporalAdjusters.lastDayOfMonth()))
+                .map(x -> flatCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(x.minusMonths(1)), asLocalDateTime(x)))
+                .collect(Collectors.toList());
     }
 
 
-    public List<Long> getCountOfUsersForMounth() {
-        List<Long> countForDay = new ArrayList<>();
-        for (int i = -7; i < 0; i++) {
-            final Calendar start = Calendar.getInstance();
-            start.add(Calendar.MONTH, i + 2);
-
-            start.set(Calendar.DAY_OF_MONTH, 1);
-
-            Date previousDate = start.getTime();
-
-            countForDay.add(userRepository.countAllByRegistrationDateBefore(previousDate));
-        }
-        return countForDay;
-    }
-
-    public List<Long> getCountOfLandlordsForMounth() {
-        List<Long> countForDay = new ArrayList<>();
-        for (int i = -7; i < 0; i++) {
-            final Calendar start = Calendar.getInstance();
-            start.add(Calendar.MONTH, i + 2);
-
-            start.set(Calendar.DAY_OF_MONTH, 1);
-
-            Date previousDate = start.getTime();
-
-            countForDay.add(requestUserRepository.countAllVerificationDateLessAndStatus_Approved(previousDate, RequestForVerificationType.LANDLORD));
-        }
-        return countForDay;
-    }
-
-    public List<Long> getCountOfUsersCommentsForMounth() {
-        List<Long> countForDay = new ArrayList<>();
-        for (int i = -7; i < 0; i++) {
-            final Calendar start = Calendar.getInstance();
-            start.add(Calendar.MONTH, i + 1);
-            start.set(Calendar.DAY_OF_MONTH, 1);
-
-            final Calendar end = Calendar.getInstance();
-            end.add(Calendar.MONTH, i + 2);
-            end.set(Calendar.DAY_OF_MONTH, 1);
-
-            LocalDateTime previousDate = start.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            LocalDateTime nextDate = end.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-            countForDay.add(userCommentRepository.countAllByPublicationDateBetween(previousDate, nextDate));
-        }
-        return countForDay;
-    }
-
-    public List<Long> getCountOfFlatCommentsForMounth() {
-        List<Long> countForDay = new ArrayList<>();
-        for (int i = -7; i < 0; i++) {
-            final Calendar start = Calendar.getInstance();
-            start.add(Calendar.MONTH, i + 1);
-            start.set(Calendar.DAY_OF_MONTH, 1);
-
-            final Calendar end = Calendar.getInstance();
-            end.add(Calendar.MONTH, i + 2);
-            end.set(Calendar.DAY_OF_MONTH, 1);
-
-            LocalDateTime previousDate = start.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            LocalDateTime nextDate = end.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-            countForDay.add(flatCommentRepository.countAllByPublicationDateBetween(previousDate, nextDate));
-        }
-        return countForDay;
-    }
-
-
-
-    private List<String> getLast7Days() {
-        LocalDate weekBeforeToday = LocalDate.now().minusDays(7);
-        return IntStream.rangeClosed(1, 7)
-                .mapToObj(weekBeforeToday::plusDays)
+    public List<String> getNameOfLastDaysOfWeek(int numberOfDays) {
+        LocalDate date = LocalDate.now().minusDays(numberOfDays);
+        return IntStream.rangeClosed(1, numberOfDays)
+                .mapToObj(date::plusDays)
                 .map(LocalDate::getDayOfWeek)
                 .map(Objects::toString)
                 .collect(Collectors.toList());
     }
 
-    private List<String> getLast7Mounths() {
-        LocalDate weekBeforeToday = LocalDate.now().minusMonths(7);
-        return IntStream.rangeClosed(1, 7)
-                .mapToObj(weekBeforeToday::plusMonths)
+    public List<String> getNameOfLastMonths(int numberOfMonths) {
+        LocalDate date = LocalDate.now().minusMonths(numberOfMonths);
+        return IntStream.rangeClosed(1, numberOfMonths)
+                .mapToObj(date::plusMonths)
                 .map(LocalDate::getMonth)
                 .map(Objects::toString)
                 .collect(Collectors.toList());
+    }
+
+    private Date asDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    private Date asDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    private LocalDateTime asLocalDateTime(LocalDate localDate) {
+        return LocalDateTime.of(localDate, LocalTime.now());
     }
 }
