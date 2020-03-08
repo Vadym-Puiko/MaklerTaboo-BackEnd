@@ -2,9 +2,10 @@ package com.softserve.maklertaboo.mapping.flat;
 
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
 import com.softserve.maklertaboo.entity.Address;
-import com.softserve.maklertaboo.entity.Flat;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
+import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,14 @@ import java.util.List;
 @Component
 public class NewFlatMapper implements MapperToEntity<NewFlatDto, Flat> {
 
+    private final TagService tagService;
+    private final UserRepository userRepository;
+
     @Autowired
-    TagService tagService;
+    public NewFlatMapper(TagService tagService, UserRepository userRepository) {
+        this.tagService = tagService;
+        this.userRepository = userRepository;
+    }
 
     public Flat convertToEntity(NewFlatDto flatDto) {
         Flat flat = new Flat();
@@ -50,6 +57,9 @@ public class NewFlatMapper implements MapperToEntity<NewFlatDto, Flat> {
         flat.setFlatPhotoList(photos);
         flat.setTags(tagService.getTags(flatDto.getTags()));
 
+        flat.setOwner(
+                userRepository.getByUsername(flatDto.getUsername())
+        );
         return flat;
     }
 }
