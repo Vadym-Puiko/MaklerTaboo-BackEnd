@@ -116,15 +116,21 @@ public class AdminController {
         return statisticsService.getCountOfPostedFlatsForLastDays(7);
     }
 
-    @GetMapping("statistics/users-dynamics")
-    public List<Long> getCountOfUsersForMount() {
-        return statisticsService.getCountOfUsersForLastMonths(7);
+    @GetMapping("statistics/users-dynamics/{fromMonth}/{toMonth}")
+    public List<Long> getCountOfUsersForMount(@PathVariable("fromMonth") date fromMonth, @PathVariable("toMonth") int toMonth) {
+        return statisticsService.getCountOfUsersForBetweenMonths(fromMonth, toMonth);
     }
 
-    @GetMapping("statistics/landlords-dynamics")
-    public List<Long> getCountOfLandlordsForMount() {
-        return statisticsService.getCountOfLandlordsForLastMonths(7);
+    @GetMapping("statistics/landlords-dynamics/{fromMonth}/{toMonth}")
+    public List<Long> getCountOfLandlordsForMount(@PathVariable("fromMonth") int fromMonth, @PathVariable("toMonth") int toMonth) {
+        return statisticsService.getCountOfLandlordsForBetweenMonths(fromMonth, toMonth);
     }
+
+    @GetMapping("statistics/month-names/{fromMonth}/{toMonth}")
+    public List<String> getNameOfMonthsInRange(@PathVariable("fromMonth") int fromMonth, @PathVariable("toMonth") int toMonth) {
+        return statisticsService.getNameOfMonthsInRange(fromMonth, toMonth);
+    }
+
 
     @GetMapping("statistics/user-comments-dynamics")
     public List<Long> getCountOfUserCommentsForMount() {
