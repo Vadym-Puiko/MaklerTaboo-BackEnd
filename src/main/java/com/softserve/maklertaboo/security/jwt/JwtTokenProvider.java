@@ -30,8 +30,6 @@ public class JwtTokenProvider implements Serializable {
 
     public String generateAccessToken(UserDetailsImpl user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername());
-        claims.put("id", user.getId());
-        claims.put("role", user.getAuthorities());
         Date expiryDate = new Date(new Date().getTime() + Long.valueOf(accessExpirationTime));
         log.info("Access Token for " + user.getUsername() + " created.");
         return Jwts.builder()

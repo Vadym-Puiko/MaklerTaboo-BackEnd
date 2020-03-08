@@ -50,7 +50,7 @@ public class UserService {
         if (user == null) {
             throw new BadEmailOrPasswordException("Email or password is not valid");
         }
-        return new JWTSuccessLogIn(user.getId(), user.getUsername(), user.getEmail());
+        return new JWTSuccessLogIn(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
 
     public List<UserDto> findAllUser() {
