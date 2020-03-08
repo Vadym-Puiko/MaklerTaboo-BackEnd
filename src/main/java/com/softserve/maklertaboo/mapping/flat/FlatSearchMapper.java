@@ -34,10 +34,11 @@ public class FlatSearchMapper implements MapperToEntity<FlatSearchParametersDto,
         flatSearchParameters.setRegions(dto.getRegions());
         Set<String> searchText = new HashSet<>();
 
-        for (String tag : dto.getTags()) {
-            if (tagRepository.findByName(tag).isEmpty()) {
-                searchText.add(tag);
-            }{
+        if(dto.getTags()!=null) {
+            for (String tag : dto.getTags()) {
+                if (tagRepository.findByName(tag).isEmpty()) {
+                    searchText.add(tag);
+                }
             }
         }
         flatSearchParameters.setSearchText(searchText);

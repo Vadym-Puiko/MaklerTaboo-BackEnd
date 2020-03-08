@@ -56,8 +56,17 @@ public class FlatService {
 
     @Cacheable("flats")
     public Page<Flat> getByParameters(FlatSearchParametersDto flatParametersDto, Pageable pageable) {
+
         FlatSearchParameters flatParameters = flatSearchMapper.convertToEntity(flatParametersDto);
-        String searchText = StringUtils.join(flatParameters.getSearchText()).replaceAll(","," ");
+
+        return flatFullTextSearch.search(flatParameters,pageable);
+    }
+
+    @Cacheable("flats")
+    public Page<Flat> getByParametersTEST(FlatSearchParametersDto flatParametersDto, Pageable pageable) {
+
+        FlatSearchParameters flatParameters = flatSearchMapper.convertToEntity(flatParametersDto);
+
         return flatSearchRepository.findByParams(flatParameters, pageable);
     }
 

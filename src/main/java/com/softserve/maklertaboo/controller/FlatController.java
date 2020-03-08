@@ -46,9 +46,6 @@ public class FlatController {
     public Page<FlatDto> getByParameters(@PathVariable Integer page, @RequestBody FlatSearchParametersDto flatParameters) {
 
         Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE, Sort.by("id").descending());
-        if(flatParameters==null || flatParameters.isEmpty()){
-            return flatService.getAll(pageable).map(flatMapper::convertToDto);
-        }
         return flatService.getByParameters(flatParameters, pageable).map(flatMapper::convertToDto);
     }
 

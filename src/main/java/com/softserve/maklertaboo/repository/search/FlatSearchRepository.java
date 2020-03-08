@@ -41,16 +41,6 @@ public class FlatSearchRepository implements SearchRepository<Flat, FlatSearchPa
         return new PageImpl<Flat>(result, pageable, result.size());
     }
 
-    public CriteriaQuery<Flat> getCriterias(FlatSearchParameters searchParameters){
-
-        CriteriaQuery<Flat> criteriaQuery = criteriaBuilder.createQuery(Flat.class);
-        Root<Flat> flatRoot = criteriaQuery.from(Flat.class);
-
-        List<Predicate> predicates = getPredicates(searchParameters, flatRoot);
-        criteriaQuery.where(predicates.toArray(new Predicate[0]));
-        return criteriaQuery;
-    }
-
     private List<Predicate> getPredicates(FlatSearchParameters searchParameters, Root<Flat> flatRoot) {
         List<Predicate> predicates = new LinkedList<>();
 
