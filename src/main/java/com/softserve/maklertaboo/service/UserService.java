@@ -41,12 +41,16 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public JWTSuccessLogIn signIn(LoginDto loginDto, Authentication auth) {
+    public String generateToken(Authentication auth){
+        return jwtTokenProvider.generateAccessToken(auth);
+    }
+
+    public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
         User user = userRepository.findUserByEmail (loginDto.getEmail());
         if (user == null) {
             throw new BadEmailOrPasswordException("Email or password is not valid");
         }
-        return new JWTSuccessLogIn(user.getId(), jwtTokenProvider.generateAccessToken(auth), user.getEmail());
+        return new JWTSuccessLogIn(user.getId(), user.getUsername(), user.getEmail());
     }
 
     public List<UserDto> findAllUser() {

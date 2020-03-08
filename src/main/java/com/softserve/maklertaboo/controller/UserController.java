@@ -47,6 +47,7 @@ public class UserController {
 
     @PostMapping("/signIn")
     public ResponseEntity<JWTSuccessLogIn> signIn(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
+        JWTSuccessLogIn jwtSuccessLogIn = userService.validateLogin(loginDto);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),
@@ -54,7 +55,9 @@ public class UserController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return ResponseEntity.ok(userService.signIn(loginDto, authentication));
+        String accessToken = userService.generateToken(authentication);
+        response.addHeader("accessToken", accessToken);
+        return ResponseEntity.ok(jwtSuccessLogIn);
 
     }
 
