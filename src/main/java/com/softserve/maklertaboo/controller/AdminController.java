@@ -125,6 +125,12 @@ public class AdminController {
     public List<Long> getCountOfLandlordsForMount(){
         return statisticsService.getCountOfLandlordsForMounth();
     }
-
-
+    @GetMapping("statistics/user-comments-dynamics")
+    public List<Long> getCountOfUserCommentsForMount(){
+        return statisticsService.getCountOfUsersCommentsForMounth();
+    }
+    @GetMapping("statistics/flat-comments-dynamics")
+    public List<Long> getCountOfFlatCommentsForMount(){
+        return statisticsService.getCountOfFlatCommentsForMounth();
+    }
 }
