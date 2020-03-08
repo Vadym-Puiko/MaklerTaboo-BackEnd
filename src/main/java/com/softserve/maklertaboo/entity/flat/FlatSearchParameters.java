@@ -1,6 +1,5 @@
 package com.softserve.maklertaboo.entity.flat;
 
-import com.softserve.maklertaboo.entity.Tag;
 import lombok.Data;
 
 import java.util.List;
