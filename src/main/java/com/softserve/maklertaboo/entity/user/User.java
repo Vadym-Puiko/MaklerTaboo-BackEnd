@@ -52,6 +52,6 @@ public class User {
 
     @PrePersist
     public void prePersist() {
-        setRole(UserRole.USER);
+        setRole(UserRole.ROLE_USER);
     }
 }

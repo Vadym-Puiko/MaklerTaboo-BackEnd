@@ -1,12 +1,14 @@
 package com.softserve.maklertaboo.security.jwt;
 
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.security.entity.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -14,24 +16,24 @@ import java.util.Date;
 
 @Slf4j
 @Component
-public class JwtTokenUtil implements Serializable {
+public class JwtTokenProvider implements Serializable {
 
     @Value("${spring.security.token.accessExpirationTime}")
     private String accessExpirationTime;
-//    private static final long serialVersionUID = -2550185165626007488L;
-//    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
     @Value("${spring.security.token.secret}")
     private String secret;
 
-    public String createAccessToken (User user) {
-        Claims claims = Jwts.claims();
+    public String generateAccessToken(Authentication authentication) {
+        return this.generateAccessToken(((UserDetailsImpl) authentication.getPrincipal()));
+    }
+
+    public String generateAccessToken(UserDetailsImpl user) {
+        Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("id", user.getId());
-        claims.put("email", user.getEmail());
-        claims.put("role", user.getRole().name());
-        claims.put("username", user.getUsername());
+        claims.put("role", user.getAuthorities());
         Date expiryDate = new Date(new Date().getTime() + Long.valueOf(accessExpirationTime));
-        log.info("Access Token for " + user.getEmail() + " created.");
+        log.info("Access Token for " + user.getUsername() + " created.");
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())

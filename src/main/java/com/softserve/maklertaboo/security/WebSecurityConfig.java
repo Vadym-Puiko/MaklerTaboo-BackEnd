@@ -1,29 +1,51 @@
 package com.softserve.maklertaboo.security;
 
 import com.softserve.maklertaboo.security.filter.JWTAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.softserve.maklertaboo.security.jwt.JWTAuthenticationEntryPoint;
+import com.softserve.maklertaboo.security.service.UserDetailsServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true,
+        prePostEnabled = true
+)
+@AllArgsConstructor
 @PropertySource("classpath:/spring-security.properties")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter();
+    private final JWTAuthenticationFilter jwtAuthenticationFilter;
+    private final JWTAuthenticationEntryPoint entryPoint;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Bean
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -31,17 +53,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(entryPoint)
+                .and()
                 .authorizeRequests()
+                .antMatchers("/users/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/flatcomments/getall/**").permitAll()
                 .antMatchers("/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll()
-                .and()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//                .antMatchers().hasAnyRole("ROLE_USER", "ROLE_RENTER", "ROLE_LANDLORD", "ROLE_MODERATOR", "ROLE_ADMIN")
+                .anyRequest().authenticated();
 
     }
 
@@ -54,11 +75,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/configuration/security",
                 "/swagger-ui.html",
                 "/webjars/**"
-//                securityConfigProperties.getLocationUrl(),
-//                securityConfigProperties.getRulesUrl()
         );
     }
-
 
 
 }

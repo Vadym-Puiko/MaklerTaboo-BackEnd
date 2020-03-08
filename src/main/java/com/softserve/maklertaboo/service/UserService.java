@@ -1,22 +1,24 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 
-import com.softserve.maklertaboo.exception.BadEmailOrUserException;
+import com.softserve.maklertaboo.exception.BadEmailOrPasswordException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 
 import com.softserve.maklertaboo.repository.user.UserRepository;
 
-import com.softserve.maklertaboo.security.jwt.JwtTokenUtil;
+import com.softserve.maklertaboo.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,13 +27,13 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public UserService(UserMapper userMapper, UserRepository userRepository, JwtTokenUtil jwtTokenUtil) {
+    public UserService(UserMapper userMapper, UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
-        this.jwtTokenUtil = jwtTokenUtil;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public void saveUser(UserDto userDto) {
@@ -39,10 +41,12 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public String signIn(LoginDto loginDto) {
-        User user = userRepository.findUserByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword())
-                .orElseThrow(() -> new BadEmailOrUserException("Email or password is not valid"));
-        return jwtTokenUtil.createAccessToken(user);
+    public JWTSuccessLogIn signIn(LoginDto loginDto, Authentication auth) {
+        User user = userRepository.findUserByEmail (loginDto.getEmail());
+        if (user == null) {
+            throw new BadEmailOrPasswordException("Email or password is not valid");
+        }
+        return new JWTSuccessLogIn(user.getId(), jwtTokenProvider.generateAccessToken(auth), user.getEmail());
     }
 
     public List<UserDto> findAllUser() {
@@ -97,13 +101,20 @@ public class UserService {
 
     public void makeLandlord(Long id) {
         User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setRole(UserRole.LANDLORD);
+        user.setRole(UserRole.ROLE_LANDLORD);
         userRepository.save(user);
     }
 
     public void makeModerator(Long id) {
         User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setRole(UserRole.MODERATOR);
+        user.setRole(UserRole.ROLE_MODERATOR);
         userRepository.save(user);
+    }
+
+    public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
+        if(!passwordEncoder.matches(loginDto.getPassword(), findByUsername(loginDto.getEmail()).getPassword())){
+            throw new BadEmailOrPasswordException("Email or password is not valid");
+        }
+        return true;
     }
 }

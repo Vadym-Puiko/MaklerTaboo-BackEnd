@@ -1,14 +1,20 @@
 package com.softserve.maklertaboo.controller;
 
-import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
+import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
+import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,19 +24,14 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
-
-    @Autowired
-    public UserController(UserService userService, AuthenticationManager authenticationManager) {
-        this.userService = userService;
-        this.authenticationManager = authenticationManager;
-    }
-
-//    @ApiResponses(value = {
+    //    @ApiResponses(value = {
 //            @ApiResponse(code = 200, message = "Created"),
 //            @ApiResponse(code = 400, message = "User already exists")
 //    })
@@ -45,9 +46,16 @@ public class UserController {
 //    })
 
     @PostMapping("/signIn")
-    public void signIn (@Valid @RequestBody LoginDto loginDto, HttpServletResponse response){
-        String token = userService.signIn(loginDto);
-        response.addHeader("token", token);
+    public ResponseEntity<JWTSuccessLogIn> signIn(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDto.getEmail(),
+                        loginDto.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return ResponseEntity.ok(userService.signIn(loginDto, authentication));
+
     }
 
     @GetMapping("/all")

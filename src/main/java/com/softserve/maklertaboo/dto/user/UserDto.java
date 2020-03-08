@@ -15,6 +15,7 @@ public class UserDto {
     private String username;
     @NotNull
     @NotBlank
+//    @Email(message = "Email should be valid")
     private String email;
     @NotNull
     @NotBlank
