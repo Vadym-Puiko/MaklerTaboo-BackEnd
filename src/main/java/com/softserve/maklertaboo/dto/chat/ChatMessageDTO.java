@@ -2,7 +2,7 @@ package com.softserve.maklertaboo.dto.chat;
 
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;git
+import lombok.Setter;
 
 @Data
 @Getter

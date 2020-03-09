@@ -38,7 +38,7 @@ public class ChatService {
     }
 
     public List<Chat> getChatByUserId(Long senderId) {
-        return chatRepository.findAllBySenderId(senderId);
+        return chatRepository.findAllBySender_Id(senderId);
     }
 
     public void deleteChatById(Long id) {
@@ -62,6 +62,37 @@ public class ChatService {
         return messageRepository.countByChatId(chatId);
     }
 
+    public Long getChatId(String recieverName, Long senderId) {
+
+        User reciever = userRepository.findUserByUsername(recieverName);
+        User sender = userRepository.findById(senderId).get();
+
+        if(sender.getId().equals(reciever.getId())){
+            throw new IllegalArgumentException("YOU CANT CHAT WITH YOURSELF");
+        }
+
+        List<Chat> chatList1 = chatRepository.findAllBySender_Id(senderId);
+        List<Chat> chatList2 = chatRepository.findAllByReceiver_Id(senderId);
+        chatList1.addAll(chatList2);
+        Long result=null;
+
+        for(Chat chat: chatList1){
+            if(chat.getReceiver().getId().equals(reciever.getId()) ||
+                    chat.getSender().getId().equals(reciever.getId())){
+                result = chat.getId();
+                break;
+            }
+        }
+
+        if(result!=null){
+            return result;
+        }
+        Chat chat = new Chat();
+        chat.setReceiver(reciever);
+        chat.setSender(sender);
+        return chatRepository.save(chat).getId();
+
+    }
 }
 
 
