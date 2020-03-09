@@ -1,15 +1,15 @@
 package com.softserve.maklertaboo.controller;
 
-        import com.softserve.maklertaboo.dto.chat.ChatDTO;
-        import com.softserve.maklertaboo.service.ChatService;
-        import lombok.extern.slf4j.Slf4j;
-        import org.modelmapper.ModelMapper;
-        import org.springframework.beans.factory.annotation.Autowired;
-        import org.springframework.http.HttpStatus;
-        import org.springframework.web.bind.annotation.*;
+import com.softserve.maklertaboo.dto.chat.ChatDTO;
+import com.softserve.maklertaboo.service.ChatService;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-        import java.util.List;
-        import java.util.stream.Collectors;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
