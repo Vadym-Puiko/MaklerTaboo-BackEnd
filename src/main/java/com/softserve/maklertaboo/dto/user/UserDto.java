@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.dto.user;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,17 +11,17 @@ import javax.validation.constraints.*;
 public class UserDto {
 
     private Long id;
-    @NotNull
     @NotBlank
+    @NotNull
     private String username;
-    @NotNull
     @NotBlank
+    @NotNull
     private String email;
-    @NotNull
     @NotBlank
+    @NotNull
     private String password;
-    @NotNull
     @NotBlank
+    @NotNull
     private String phoneNumber;
     private String photoUrl;
 
