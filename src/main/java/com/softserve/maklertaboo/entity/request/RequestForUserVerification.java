@@ -16,9 +16,6 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = true)
 public class RequestForUserVerification extends RequestForVerification {
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @NotNull
-    private User user;
 
     @NotNull
     @Enumerated(EnumType.STRING)
