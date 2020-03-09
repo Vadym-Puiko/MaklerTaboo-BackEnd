@@ -8,13 +8,13 @@ import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 import org.hibernate.search.annotations.*;
+import org.hibernate.search.bridge.builtin.IntegerBridge;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-
-import static org.hibernate.search.annotations.Index.YES;
 
 @Data
 @Entity
@@ -24,20 +24,27 @@ public class Flat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer monthPrice;
+
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-    @Field(index= YES, analyze=Analyze.YES, store=Store.YES)
+    @Field
     private String description;
 
-    @Field(index= YES, analyze=Analyze.YES, store=Store.YES)
+    @Field
     private String title;
+
+    @Field @NumericField
+    private Integer monthPrice;
+
+    @Field @NumericField
     private Integer numberOfRooms;
+
+    @Field @NumericField
     private Integer floor;
 
-    @Field(index= YES, analyze=Analyze.YES, store=Store.YES)
+    @Field
     private String district;
     private Boolean isActive;
 
@@ -51,6 +58,7 @@ public class Flat {
     @OneToMany(cascade = CascadeType.ALL)
     private List<FlatPhoto> flatPhotoList;
 
+    @IndexedEmbedded(includePaths = {"name"})
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Tag> tags;
 
@@ -61,4 +69,16 @@ public class Flat {
     @IndexedEmbedded
     private List<FlatComment> commentFlatList;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flat flat = (Flat) o;
+        return Objects.equals(id, flat.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
