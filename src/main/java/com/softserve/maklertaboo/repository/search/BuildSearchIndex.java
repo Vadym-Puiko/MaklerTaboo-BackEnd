@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.repository.search;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -12,6 +13,7 @@ import javax.transaction.Transactional;
 
 @Component
 @Transactional
+@Slf4j
 public class BuildSearchIndex
         implements ApplicationListener<ApplicationReadyEvent> {
 
@@ -26,9 +28,7 @@ public class BuildSearchIndex
             fullTextEntityManager.createIndexer().startAndWait();
         }
         catch (InterruptedException e) {
-            System.out.println(
-                    "An error occurred trying to build the serach index: " +
-                            e.toString());
+            log.error("An error occurred trying to build the serach index: ", e);
         }
     }
 

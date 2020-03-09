@@ -30,9 +30,6 @@ public class FlatController {
     FlatDetailMapper flatDetailMapper;
 
     @Autowired
-    FlatFullTextSearch flatFullTextSearch;
-
-    @Autowired
     public FlatController(FlatService flatService, FlatMapper flatMapper,
                           FlatDetailMapper flatDetailMapper) {
         this.flatService = flatService;
@@ -47,11 +44,8 @@ public class FlatController {
 
     @PutMapping("/search/{page}")
     public Page<FlatDto> getByParameters(@PathVariable Integer page, @RequestBody FlatSearchParametersDto flatParameters) {
-        if(flatParameters==null || flatParameters.isEmpty()){
-            Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE, Sort.by("id").descending());
-            return flatService.getAll(pageable).map(flatMapper::convertToDto);
-        }
-        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE);
+
+        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE, Sort.by("id").descending());
         return flatService.getByParameters(flatParameters, pageable).map(flatMapper::convertToDto);
     }
 
@@ -70,8 +64,4 @@ public class FlatController {
         flatService.deactivateFlat(id);
     }
 
-    @GetMapping("/full")
-    public List<FlatDto> full(@RequestParam String search){
-        return flatFullTextSearch.search(search).stream().map(flatMapper::convertToDto).collect(Collectors.toList());
-    }
 }
