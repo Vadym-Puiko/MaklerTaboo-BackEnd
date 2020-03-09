@@ -9,7 +9,10 @@ import com.softserve.maklertaboo.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,6 +96,14 @@ public class AdminController {
         return statisticsService.getCountOfActiveLandlords();
     }
 
+
+    @GetMapping("statistics/count-comments")
+    public List<Long> getCountOfActiveComments() {
+        return Arrays.asList(statisticsService.getCountOfActiveUsersComments(),
+                             statisticsService.getCountOfActiveFlatsComments());
+    }
+
+
     @GetMapping("statistics/users-landlords")
     public List<Long> getCountOfUsersByRole() {
         return Arrays.asList(statisticsService.getCountOfActiveRenters(),
@@ -106,39 +117,54 @@ public class AdminController {
                 statisticsService.getCountOfUnactiveFlats());
     }
 
-    @GetMapping("statistics/user-regisration-dynamics")
-    public List<Long> getCountOfRegisteredUsersForLastWeek() {
-        return statisticsService.getCountOfRegisteredUsersForLastDays(7);
+    @GetMapping("statistics/user-registration-dynamics/{days}")
+    public List<Long> getCountOfRegisteredUsersForLastDays(@PathVariable("days") int days) {
+        return statisticsService.getCountOfRegisteredUsersForLastDays(days);
     }
 
-    @GetMapping("statistics/flat-creation-dynamics")
-    public List<Long> getCountOfCreatedFlatsForLastWeek() {
-        return statisticsService.getCountOfPostedFlatsForLastDays(7);
+    @GetMapping("statistics/flat-creation-dynamics/{days}")
+    public List<Long> getCountOfCreatedFlatsForLastDays(@PathVariable("days") int days) {
+        return statisticsService.getCountOfPostedFlatsForLastDays(days);
     }
 
     @GetMapping("statistics/users-dynamics/{fromMonth}/{toMonth}")
-    public List<Long> getCountOfUsersForMount(@PathVariable("fromMonth") date fromMonth, @PathVariable("toMonth") int toMonth) {
-        return statisticsService.getCountOfUsersForBetweenMonths(fromMonth, toMonth);
+    public List<Long> getCountOfUsersForMount(@PathVariable("fromMonth") String fromMonth,
+                                              @PathVariable("toMonth") String toMonth) {
+        return statisticsService.getCountOfUsersForBetweenMonths(asDate(fromMonth), asDate(toMonth));
     }
 
     @GetMapping("statistics/landlords-dynamics/{fromMonth}/{toMonth}")
-    public List<Long> getCountOfLandlordsForMount(@PathVariable("fromMonth") int fromMonth, @PathVariable("toMonth") int toMonth) {
-        return statisticsService.getCountOfLandlordsForBetweenMonths(fromMonth, toMonth);
+    public List<Long> getCountOfLandlordsForMount(@PathVariable("fromMonth") String fromMonth,
+                                                  @PathVariable("toMonth") String toMonth) {
+        return statisticsService.getCountOfLandlordsForBetweenMonths(asDate(fromMonth), asDate(toMonth));
     }
 
     @GetMapping("statistics/month-names/{fromMonth}/{toMonth}")
-    public List<String> getNameOfMonthsInRange(@PathVariable("fromMonth") int fromMonth, @PathVariable("toMonth") int toMonth) {
-        return statisticsService.getNameOfMonthsInRange(fromMonth, toMonth);
+    public List<String> getNameOfMonthsInRange(@PathVariable("fromMonth") String fromMonth,
+                                               @PathVariable("toMonth") String toMonth) {
+        return statisticsService.getNameOfMonthsInRange(asDate(fromMonth), asDate(toMonth));
     }
 
 
-    @GetMapping("statistics/user-comments-dynamics")
-    public List<Long> getCountOfUserCommentsForMount() {
-        return statisticsService.getCountOfPostedUserCommentsForLastMonths(7);
+    @GetMapping("statistics/user-comments-dynamics/{days}")
+    public List<Long> getCountOfUserCommentsForLastDays(@PathVariable("days") int days) {
+        return statisticsService.getCountOfPostedUsersCommentsFlatsLastDays(days);
     }
 
-    @GetMapping("statistics/flat-comments-dynamics")
-    public List<Long> getCountOfFlatCommentsForMount() {
-        return statisticsService.getCountOfPostedFlatCommentsForLastMonths(7);
+    @GetMapping("statistics/flat-comments-dynamics/{days}")
+    public List<Long> getCountOfFlatCommentsForLastDays(@PathVariable("days") int days) {
+        return statisticsService.getCountOfPostedFlatsCommentsFlatsLastDays(days);
     }
+
+    private Date asDate(String date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM");
+        Date date1 = null;
+        try {
+            date1 = formatter.parse(date);
+        } catch (ParseException e) {
+
+        }
+        return date1;
+    }
+
 }

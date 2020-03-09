@@ -8,6 +8,8 @@ import java.util.Date;
 
 @Repository
 public interface RequestForFlatVerificationRepository extends RequestBaseRepository<RequestForFlatVerification> {
-    @Query("SELECT COUNT(f) FROM RequestForFlatVerification f WHERE  f.status='APPROVED' AND f.verificationDate between ?1 AND ?2")
-    long countAllVerificationDateBetweenAndStatus_Approved(Date start, Date end);
+    @Query("SELECT COUNT(f)" +
+            " FROM RequestForFlatVerification f" +
+            " WHERE  f.status='APPROVED' AND f.verificationDate between ?1 AND ?2")
+    long countAllVerificationDateBetweenAndStatusIsApproved(Date start, Date end);
 }

@@ -10,8 +10,10 @@ import java.util.Date;
 
 @Repository
 public interface RequestForUserVerificationRepository extends RequestBaseRepository<RequestForUserVerification> {
-    @Query("SELECT COUNT(f) FROM RequestForUserVerification f WHERE f.status='APPROVED' AND f.type=:type AND f.verificationDate <:start")
-    long countAllVerificationDateLessAndStatus_Approved(Date start, RequestForVerificationType type);
+    @Query("SELECT COUNT(f)" +
+            " FROM RequestForUserVerification" +
+            " f WHERE f.status='APPROVED' AND f.type=:type AND f.verificationDate <:start")
+    long countAllVerificationDateLessAndStatusIsApproved(Date start, RequestForVerificationType type);
 }
 
 

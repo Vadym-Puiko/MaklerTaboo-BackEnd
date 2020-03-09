@@ -15,4 +15,5 @@ public interface UserCommentRepository extends JpaRepository<UserComment, Long> 
 
     long countAllByPublicationDateBetween(LocalDateTime start, LocalDateTime end);
 
+    long countAllByIsActiveTrue();
 }
