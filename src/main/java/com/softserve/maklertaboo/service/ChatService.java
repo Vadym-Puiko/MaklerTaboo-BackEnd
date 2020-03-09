@@ -8,6 +8,7 @@ import com.softserve.maklertaboo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,6 +37,10 @@ public class ChatService {
         return chatRepository.findById(chatId).orElseThrow(IllegalArgumentException::new);
     }
 
+    public List<Chat> getChatByUserId(Long senderId) {
+        return chatRepository.findAllBySenderId(senderId);
+    }
+
     public void deleteChatById(Long id) {
         Optional<Chat> chat = chatRepository.findById(id);
         if (chat.isPresent()) {
@@ -48,8 +53,6 @@ public class ChatService {
         return chatRepository.findAllBySenderId(id);
     }
 */
-
-
     public User findOne(Long id) {
         return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
       /*  .orElseThrow(IllegalArgumentException::new)*/

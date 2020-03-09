@@ -24,16 +24,16 @@ import static java.lang.String.format;
 @RestController
 /*@RequestMapping("/chat/")*/
 public class ChatWebSocketController {
-    private final SimpMessagingTemplate  simpMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
     private ChatService chatService;
     private MessageService messageService;
     private ModelMapper modelMapper;
     private UserService userService;
 
     @Autowired
-    public ChatWebSocketController(SimpMessagingTemplate  simpMessagingTemplate, UserService userService, ChatService chatService, MessageService messageService, ModelMapper modelMapper) {
+    public ChatWebSocketController(SimpMessagingTemplate simpMessagingTemplate, UserService userService, ChatService chatService, MessageService messageService, ModelMapper modelMapper) {
         this.simpMessagingTemplate = simpMessagingTemplate;
-        this.userService =userService;
+        this.userService = userService;
         this.chatService = chatService;
         this.messageService = messageService;
         this.modelMapper = modelMapper;
@@ -78,7 +78,7 @@ public class ChatWebSocketController {
         message.setContent(chatMessageInfoDTO.getContent());
 
         Message sendBackMessage = messageService.addMessage(message);
-        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s",chatMessageInfoDTO.getChatId()), modelMapper.map(sendBackMessage, ChatMessageDTO.class));
+        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", chatMessageInfoDTO.getChatId()), modelMapper.map(sendBackMessage, ChatMessageDTO.class));
 
     }
 
@@ -92,7 +92,7 @@ public class ChatWebSocketController {
         DeletedMessageDTO deletedMessageDTO = new DeletedMessageDTO();
         deletedMessageDTO.setMessageId(deleteMessageInfoDTO.getMessageId());
         deletedMessageDTO.setStatus("deleted");
-        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s",deleteMessageInfoDTO.getChatId()),deletedMessageDTO);
+        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", deleteMessageInfoDTO.getChatId()), deletedMessageDTO);
     }
 
 /*    @PutMapping("/update/message")
