@@ -9,6 +9,7 @@ import com.softserve.maklertaboo.entity.enums.UserRole;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 
@@ -54,4 +55,7 @@ public class User {
     public void prePersist() {
         setRole(UserRole.USER);
     }
+
+    @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()")
+    private Date registrationDate;
 }

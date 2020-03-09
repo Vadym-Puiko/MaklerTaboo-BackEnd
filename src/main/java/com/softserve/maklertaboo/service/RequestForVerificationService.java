@@ -66,10 +66,10 @@ public class RequestForVerificationService {
 
         switch (requestForUserVerification.getType()) {
             case LANDLORD:
-                userService.makeLandlord(requestForUserVerification.getUser().getId());
+                userService.makeLandlord(requestForUserVerification.getAuthor().getId());
                 break;
             case MODERATOR:
-                userService.makeModerator(requestForUserVerification.getUser().getId());
+                userService.makeModerator(requestForUserVerification.getAuthor().getId());
                 break;
         }
         requestUserRepository.save(requestForUserVerification);
