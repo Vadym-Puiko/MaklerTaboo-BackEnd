@@ -73,8 +73,8 @@ public class FlatFullTextSearch {
 
         BooleanQuery luceneBooleanQuery = new BooleanQuery();
         luceneBooleanQuery.add(monthPriceQuery, BooleanClause.Occur.MUST);
-        luceneBooleanQuery.add(numberOfRoomsQuery, BooleanClause.Occur.MUST);
-        luceneBooleanQuery.add(floorQuery, BooleanClause.Occur.MUST);
+        luceneBooleanQuery.add(numberOfRoomsQuery, BooleanClause.Occur.SHOULD);
+        luceneBooleanQuery.add(floorQuery, BooleanClause.Occur.SHOULD);
         if(generateTextQuery(queryBuilder,params)!=null) {
             luceneBooleanQuery.add(generateTextQuery(queryBuilder, params), BooleanClause.Occur.MUST);
         }
