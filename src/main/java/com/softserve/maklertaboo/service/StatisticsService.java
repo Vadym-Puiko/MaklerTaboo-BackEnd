@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-public class StatisticsService<RequestForFlatVerificationService> {
+public class StatisticsService {
     private final UserRepository userRepository;
     private final FlatRepository flatRepository;
     private final RequestForFlatVerificationRepository requestFlatRepository;

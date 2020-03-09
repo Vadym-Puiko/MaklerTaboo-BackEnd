@@ -2,10 +2,11 @@ package com.softserve.maklertaboo.entity.request;
 
 
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
-import com.softserve.maklertaboo.service.RequestForVerificationService;
+import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
@@ -23,4 +24,8 @@ public abstract class RequestForVerification {
     private Date creationDate;
 
     private Date verificationDate;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @NotNull
+    private User author;
 }
