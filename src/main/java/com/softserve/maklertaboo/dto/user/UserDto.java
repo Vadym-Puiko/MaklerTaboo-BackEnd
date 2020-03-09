@@ -22,7 +22,6 @@ public class UserDto {
     @Length(min = 6)
     private String password;
     @NotBlank
-    @NotNull
     private String phoneNumber;
     private String photoUrl;
 
