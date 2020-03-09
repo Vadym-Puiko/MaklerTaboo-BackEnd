@@ -25,7 +25,7 @@ public class FlatDetailMapper implements MapperToDto<Flat, FlatDetailDto> {
             flatDetailDto.setUserPhoto(flat.getOwner().getPhotoUrl());
         }
         if (flat.getOwner() != null) {
-            flatDetailDto.setCreationDate(flat.getCreationDate().toString());
+            flatDetailDto.setCreationDate(String.valueOf(flat.getCreationDate()));
         }
         flatDetailDto.setAddress(flat.getAddress());
         flatDetailDto.setRegion(flat.getDistrict());
