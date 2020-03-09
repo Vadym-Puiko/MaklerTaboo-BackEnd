@@ -1,5 +1,4 @@
 package com.softserve.maklertaboo.controller;
-
 import com.softserve.maklertaboo.dto.passport.PassportDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.service.PassportService;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 @CrossOrigin
 @RestController
@@ -33,7 +33,11 @@ public class PassportController {
     }
 
     @RequestMapping(value = "/passport", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updatePassportData(@RequestBody List<PassportDto> passportDto){
+    public void updatePassportData(@RequestBody @Valid List<PassportDto> passportDto){
         passportService.updatePassport(passportDto);
+    }
+    @RequestMapping(value = "/userUpdate/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void updateUserData(@PathVariable Long id, @RequestBody @Valid UserDto userDto){
+        userService.updateUser(id, userDto);
     }
 }

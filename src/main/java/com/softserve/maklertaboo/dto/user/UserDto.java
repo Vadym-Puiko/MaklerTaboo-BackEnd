@@ -10,16 +10,12 @@ import javax.validation.constraints.*;
 public class UserDto {
 
     private Long id;
-    @NotNull
     @NotBlank
     private String username;
-    @NotNull
     @NotBlank
     private String email;
-    @NotNull
     @NotBlank
     private String password;
-    @NotNull
     @NotBlank
     private String phoneNumber;
     private String photoUrl;

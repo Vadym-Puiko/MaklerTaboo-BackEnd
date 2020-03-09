@@ -43,7 +43,7 @@ public class PassportService {
             dto2.setDateOfIssue(dto.getDateOfIssue());
             dto2.setBirthPlace(dto.getBirthPlace());
             dto2.setBirthDate(dto.getBirthDate());
-            dto2.setAuthority(dto2.getAuthority());
+            dto2.setAuthority(dto.getAuthority());
         }
         passportRepository.save(passportMapper.convertToEntity(dto2));
     }

@@ -1,7 +1,10 @@
 package com.softserve.maklertaboo.entity;
 
+import com.softserve.maklertaboo.entity.flat.Flat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.util.List;
@@ -19,11 +22,14 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Field
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Order> orders;
 
+    @ContainedIn
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Flat> flats;
 

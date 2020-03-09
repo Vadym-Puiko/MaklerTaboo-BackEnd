@@ -8,6 +8,8 @@ import java.util.Set;
 @Data
 public class NewFlatDto {
 
+    private String username;
+
     private String description;
     private String title;
 
