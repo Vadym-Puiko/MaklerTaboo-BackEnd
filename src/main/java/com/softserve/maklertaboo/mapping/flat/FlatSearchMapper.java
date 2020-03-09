@@ -38,6 +38,7 @@ public class FlatSearchMapper implements MapperToEntity<FlatSearchParametersDto,
             for (String tag : dto.getTags()) {
                 if (tagRepository.findByName(tag).isEmpty()) {
                     searchText.add(tag);
+                    dto.getTags().remove(tag);
                 }
             }
         }

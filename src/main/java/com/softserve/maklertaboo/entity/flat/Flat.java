@@ -8,14 +8,13 @@ import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 import org.hibernate.search.annotations.*;
+import org.hibernate.search.bridge.builtin.IntegerBridge;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import static org.hibernate.search.annotations.Index.YES;
 
 @Data
 @Entity
@@ -26,8 +25,6 @@ public class Flat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Field
-    private Integer monthPrice;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
@@ -38,10 +35,13 @@ public class Flat {
     @Field
     private String title;
 
-    @Field
+    @Field @NumericField
+    private Integer monthPrice;
+
+    @Field @NumericField
     private Integer numberOfRooms;
 
-    @Field
+    @Field @NumericField
     private Integer floor;
 
     @Field

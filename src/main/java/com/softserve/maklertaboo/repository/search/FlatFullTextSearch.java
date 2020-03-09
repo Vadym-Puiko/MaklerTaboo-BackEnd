@@ -2,6 +2,9 @@ package com.softserve.maklertaboo.repository.search;
 
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.flat.FlatSearchParameters;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -41,7 +44,7 @@ public class FlatFullTextSearch {
                 fullTextEntityManager.getSearchFactory()
                         .buildQueryBuilder().forEntity(Flat.class).get();
 
-        Query query = generateQuery(queryBuilder, flatSearchParameters);
+        Query query = generateIntegerQuery(queryBuilder, flatSearchParameters);
 
         org.hibernate.search.jpa.FullTextQuery jpaQuery =
                 fullTextEntityManager.createFullTextQuery(query, Flat.class);
@@ -53,52 +56,53 @@ public class FlatFullTextSearch {
 
         return new PageImpl<Flat>(results, pageable, results.size());
     }
+        //todo remove all souts
+    //todo rewrite code exceptions
+    //todo create exceptions
+    //etc
 
-    private Query generateQuery(QueryBuilder queryBuilder, FlatSearchParameters params) {
+    private BooleanQuery generateIntegerQuery(QueryBuilder queryBuilder, FlatSearchParameters params){
+        NumericRangeQuery<Integer> monthPriceQuery = NumericRangeQuery.newIntRange("monthPrice",
+                params.getPriceLow(),
+                params.getPriceHigh(), true, true);
 
-        String searchText = StringUtils.join(params.getSearchText()).replaceAll(",", " ");
-        System.out.println(params.toString());
-        BooleanJunction booleanJunction = queryBuilder
-                .bool()
-                .should(
-                        queryBuilder
-                                .range()
-                                .onField("monthPrice")
-                                .from(params
-                                        .getPriceLow())
-                                .to(params
-                                        .getFloorHigh())
-                                .createQuery())
-                .should(
-                        queryBuilder
-                                .range()
-                                .onField("numberOfRooms")
-                                .from(params
-                                        .getMinNumberOfRooms())
-                                .to(params
-                                        .getMaxNumberOfRooms())
-                                .createQuery())
-                .should(
-                        queryBuilder
-                                .range()
-                                .onField("floor")
-                                .from(params
-                                        .getFloorLow())
-                                .to(params
-                                        .getFloorHigh())
-                                .createQuery());
+        NumericRangeQuery<Integer> numberOfRoomsQuery = NumericRangeQuery.newIntRange("numberOfRooms",
+                params.getMinNumberOfRooms(),
+                params.getMaxNumberOfRooms(), true, true);
+
+        NumericRangeQuery<Integer> floorQuery = NumericRangeQuery.newIntRange("floor",
+                params.getFloorLow(),
+                params.getFloorHigh(), true, true);
+
+
+        BooleanQuery luceneBooleanQuery = new BooleanQuery();
+        luceneBooleanQuery.add(monthPriceQuery, BooleanClause.Occur.MUST);
+        luceneBooleanQuery.add(numberOfRoomsQuery, BooleanClause.Occur.MUST);
+        luceneBooleanQuery.add(floorQuery, BooleanClause.Occur.MUST);
+        if(generateTextQuery(queryBuilder,params)!=null) {
+            luceneBooleanQuery.add(generateTextQuery(queryBuilder, params), BooleanClause.Occur.MUST);
+        }
+
+        return luceneBooleanQuery;
+    }
+
+    private Query generateTextQuery(QueryBuilder queryBuilder, FlatSearchParameters params) {
+
+        String searchText = StringUtils.join(params.getSearchText());
+        System.out.println(searchText);
+        System.out.println(params.getTags().toString());
+        BooleanJunction booleanJunction = queryBuilder.bool();
+
         if (searchText.length() > 3) {
             booleanJunction
-                    .must(queryBuilder
-                            .phrase()
-                            .onField("description")
-                            .andField("district")
-                            .andField("title")
-                            .sentence(searchText)
+                    .should(queryBuilder
+                            .keyword()
+                            .onFields("description","district","title")
+                            .matching(searchText)
                             .createQuery()
                     );
         }
-        if (params.getRegions()!=null && params.getRegions().size()>0) {
+        if (params.getRegions() != null && params.getRegions().size() > 0) {
             booleanJunction
                     .must(queryBuilder
                             .keyword()
@@ -108,7 +112,7 @@ public class FlatFullTextSearch {
                     );
         }
 
-        if (params.getTags()!=null && params.getTags().size()>0) {
+        if (params.getTags() != null && params.getTags().size() > 0) {
             booleanJunction
                     .must(queryBuilder
                             .keyword()
@@ -116,6 +120,9 @@ public class FlatFullTextSearch {
                             .matching(params.getTags().toString().replaceAll(",", " "))
                             .createQuery()
                     );
+        }
+        if(booleanJunction.isEmpty()){
+            return null;
         }
         return booleanJunction.createQuery();
     }

@@ -1,6 +1,5 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.dto.flat.FlatDetailDto;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParametersDto;
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
 import com.softserve.maklertaboo.entity.flat.Flat;
@@ -12,16 +11,12 @@ import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.search.FlatFullTextSearch;
 import com.softserve.maklertaboo.repository.search.FlatSearchRepository;
 import lombok.Data;
-import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Service
@@ -58,8 +53,12 @@ public class FlatService {
     public Page<Flat> getByParameters(FlatSearchParametersDto flatParametersDto, Pageable pageable) {
 
         FlatSearchParameters flatParameters = flatSearchMapper.convertToEntity(flatParametersDto);
+        if (flatParameters.getPriceHigh() != null) {
+            return flatFullTextSearch.search(flatParameters, pageable);
+        } else {
+            return getAll(pageable);
+        }
 
-        return flatFullTextSearch.search(flatParameters,pageable);
     }
 
     @Cacheable("flats")
