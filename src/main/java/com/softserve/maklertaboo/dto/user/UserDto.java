@@ -2,25 +2,24 @@ package com.softserve.maklertaboo.dto.user;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 public class UserDto {
 
     private Long id;
-    @NotNull
     @NotBlank
     private String username;
-    @NotNull
     @NotBlank
-//    @Email(message = "Email should be valid")
+    @Email(message = "Email should be valid")
     private String email;
-    @NotNull
     @NotBlank
+    @Length(min = 6)
     private String password;
-    @NotNull
     @NotBlank
     private String phoneNumber;
     private String photoUrl;

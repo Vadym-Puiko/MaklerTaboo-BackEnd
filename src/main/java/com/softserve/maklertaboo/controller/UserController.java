@@ -31,23 +31,15 @@ public class UserController {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
-    //    @ApiResponses(value = {
-//            @ApiResponse(code = 200, message = "Created"),
-//            @ApiResponse(code = 400, message = "User already exists")
-//    })
-    @PostMapping
+    @PostMapping("/create")
     public void createUser(@Valid @RequestBody UserDto userDto) {
         userService.saveUser(userDto);
     }
 
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200, message = "OK"),
-//            @ApiResponse(code = 400, message = "Bad request")
-//    })
-
     @PostMapping("/signIn")
     public ResponseEntity<JWTSuccessLogIn> signIn(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
         JWTSuccessLogIn jwtSuccessLogIn = userService.validateLogin(loginDto);
+        userService.comparePasswordLogin(loginDto, passwordEncoder);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),

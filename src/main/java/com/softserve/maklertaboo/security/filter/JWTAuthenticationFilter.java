@@ -1,15 +1,18 @@
 package com.softserve.maklertaboo.security.filter;
 
-import com.softserve.maklertaboo.security.jwt.JwtTokenProvider;
+import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
+import com.softserve.maklertaboo.security.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -22,32 +25,35 @@ import java.io.IOException;
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
-    private JwtTokenProvider jwtTokenProvider;
+    private JWTTokenProvider jwtTokenProvider;
     private AuthenticationManager authenticationManager;
+    private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public JWTAuthenticationFilter(JwtTokenProvider jwtTokenProvider, @Lazy AuthenticationManager authenticationManager) {
+    public JWTAuthenticationFilter(JWTTokenProvider jwtTokenProvider, @Lazy AuthenticationManager authenticationManager,
+                                   UserDetailsServiceImpl userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = httpServletRequest.getHeader("accessToken");
-        System.out.println(accessToken);
-        if (accessToken != null) {
-            try {
-                if (jwtTokenProvider.isTokenValid(accessToken)) {
-                    Authentication authentication = authenticationManager
-                            .authenticate(new UsernamePasswordAuthenticationToken(accessToken, null));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            } catch (ExpiredJwtException e) {
-                log.info("Token has expired: " + accessToken);
-            } catch (Exception e) {
-                log.info("Access denied with token: " + e.getMessage());
+        try {
+            String accessToken = httpServletRequest.getHeader("accessToken");
+            if (StringUtils.hasText(accessToken) && jwtTokenProvider.isTokenValid(accessToken)) {
+                String email = jwtTokenProvider.getEmailFromJWT(accessToken);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+        } catch (ExpiredJwtException e) {
+            log.info("Token has expired: ");
+        } catch (Exception e) {
+            log.info("Access denied with token: " + e.getMessage());
         }
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
+        filterChain.doFilter(httpServletRequest,httpServletResponse);
     }
 }
+

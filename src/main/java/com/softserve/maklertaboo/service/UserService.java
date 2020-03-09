@@ -11,7 +11,7 @@ import com.softserve.maklertaboo.mapping.UserMapper;
 
 import com.softserve.maklertaboo.repository.user.UserRepository;
 
-import com.softserve.maklertaboo.security.jwt.JwtTokenProvider;
+import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +27,10 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JWTTokenProvider jwtTokenProvider;
 
     @Autowired
-    public UserService(UserMapper userMapper, UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+    public UserService(UserMapper userMapper, UserRepository userRepository, JWTTokenProvider jwtTokenProvider) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -48,7 +48,7 @@ public class UserService {
     public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
         User user = userRepository.findUserByEmail (loginDto.getEmail());
         if (user == null) {
-            throw new BadEmailOrPasswordException("Email or password is not valid");
+            throw new BadEmailOrPasswordException("Email is not valid");
         }
         return new JWTSuccessLogIn(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
@@ -116,8 +116,8 @@ public class UserService {
     }
 
     public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
-        if(!passwordEncoder.matches(loginDto.getPassword(), findByUsername(loginDto.getEmail()).getPassword())){
-            throw new BadEmailOrPasswordException("Email or password is not valid");
+        if(!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())){
+            throw new BadEmailOrPasswordException("Password is not valid");
         }
         return true;
     }

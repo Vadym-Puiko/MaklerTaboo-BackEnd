@@ -1,11 +1,8 @@
 package com.softserve.maklertaboo.security.jwt;
 
-import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.security.entity.UserDetailsImpl;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.impl.DefaultJwtParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -16,7 +13,7 @@ import java.util.Date;
 
 @Slf4j
 @Component
-public class JwtTokenProvider implements Serializable {
+public class JWTTokenProvider implements Serializable {
 
     @Value("${spring.security.token.accessExpirationTime}")
     private String accessExpirationTime;
@@ -28,7 +25,7 @@ public class JwtTokenProvider implements Serializable {
         return this.generateAccessToken(((UserDetailsImpl) authentication.getPrincipal()));
     }
 
-    public String generateAccessToken(UserDetailsImpl user) {
+    private String generateAccessToken(UserDetailsImpl user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         Date expiryDate = new Date(new Date().getTime() + Long.valueOf(accessExpirationTime));
         log.info("Access Token for " + user.getUsername() + " created.");
@@ -40,22 +37,14 @@ public class JwtTokenProvider implements Serializable {
                 .compact();
     }
 
-//    public String getUsernameFromToken(String token) {
-//        return getClaimFromToken(token, Claims::getSubject);
-//    }
-//
-//    public Date getExpirationDateFromToken(String token) {
-//        return getClaimFromToken(token, Claims::getExpiration);
-//    }
-//
-//    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-//        final Claims claims = getAllClaimsFromToken(token);
-//        return claimsResolver.apply(claims);
-//    }
-//
-//    private Claims getAllClaimsFromToken(String token) {
-//        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-//    }
+    public String getEmailFromJWT(String token) {
+        String[] splitToken = token.split("\\.");
+        String unsignedToken = splitToken[0] + "." + splitToken[1] + ".";
+        DefaultJwtParser parser = new DefaultJwtParser();
+        Jwt<?, ?> jwt = parser.parse(unsignedToken);
+        log.info("Email " + ((Claims) jwt.getBody()).getSubject() + " from token: " + token);
+        return ((Claims) jwt.getBody()).getSubject();
+    }
 
     public boolean isTokenValid(String token) {
         try{
