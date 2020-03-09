@@ -12,7 +12,6 @@ import java.util.Optional;
 public interface FlatRepository extends JpaRepository<Flat, Long> {
 
     Optional<Flat> findById(Long id);
-
     Page<Flat> findAllByIsActiveIsTrue(Pageable pageable);
 
     List<Flat> findByOwner(User author);
