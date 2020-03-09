@@ -31,6 +31,7 @@ public class UserController {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
+
     @PostMapping("/create")
     public void createUser(@Valid @RequestBody UserDto userDto) {
         userService.saveUser(userDto);
@@ -58,9 +59,9 @@ public class UserController {
         return userService.findAllUser();
     }
 
-    @GetMapping("/all/{page}")
-    public Page<UserDto> getAllUser(@PathVariable Integer page) {
-        Pageable pageable = PageRequest.of(page, 3);
+    @GetMapping("/all/{page}/{size}")
+    public Page<UserDto> getAllUser(@PathVariable Integer page, @PathVariable Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
         return userService.findByPage(pageable);
     }
 
@@ -85,8 +86,8 @@ public class UserController {
     }
 
     @PutMapping("/update/all")
-    public void updateUser(Long id, @RequestBody UserDto userDto) {
-        userService.updateUser(id, userDto);
+    public void updateUser(@RequestBody UserDto userDto) {
+        userService.updateUser(userDto.getId(), userDto);
     }
 
     @PutMapping("/update/{photo}")
