@@ -54,15 +54,15 @@ public class StatisticsService {
     }
 
     public Long getCountOfActiveRenters() {
-        return userRepository.countAllByRole(UserRole.RENTER);
+        return userRepository.countAllByRole(UserRole.ROLE_RENTER);
     }
 
     public Long getCountOfActiveLandlords() {
-        return userRepository.countAllByRole(UserRole.LANDLORD);
+        return userRepository.countAllByRole(UserRole.ROLE_LANDLORD);
     }
 
     public Long getCountOfActiveModerators() {
-        return userRepository.countAllByRole(UserRole.MODERATOR);
+        return userRepository.countAllByRole(UserRole.ROLE_MODERATOR);
     }
 
     public Long getCountOfActiveUsersComments() {
