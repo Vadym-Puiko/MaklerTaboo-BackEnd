@@ -30,7 +30,7 @@ public class User {
     private String password;
     @Column(unique = true, nullable = false)
     private String phoneNumber;
-
+    @Column(length = 65535, columnDefinition = "text")
     private String photoUrl;
 
     @Enumerated(value = EnumType.STRING)
