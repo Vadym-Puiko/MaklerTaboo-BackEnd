@@ -1,11 +1,11 @@
 package com.softserve.maklertaboo.controller;
-
 import com.softserve.maklertaboo.dto.flat.FlatDetailDto;
 import com.softserve.maklertaboo.dto.flat.FlatDto;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParametersDto;
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
 import com.softserve.maklertaboo.mapping.flat.FlatDetailMapper;
 import com.softserve.maklertaboo.mapping.flat.FlatMapper;
+import com.softserve.maklertaboo.repository.search.FlatFullTextSearch;
 import com.softserve.maklertaboo.service.FlatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -40,11 +43,8 @@ public class FlatController {
 
     @PutMapping("/search/{page}")
     public Page<FlatDto> getByParameters(@PathVariable Integer page, @RequestBody FlatSearchParametersDto flatParameters) {
-        if(flatParameters==null || flatParameters.isEmpty()){
-            Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE, Sort.by("id").descending());
-            return flatService.getAll(pageable).map(flatMapper::convertToDto);
-        }
-        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE);
+
+        Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE, Sort.by("id").descending());
         return flatService.getByParameters(flatParameters, pageable).map(flatMapper::convertToDto);
     }
 
@@ -62,4 +62,5 @@ public class FlatController {
     public void remove(@RequestBody Long id) {
         flatService.deactivateFlat(id);
     }
+
 }

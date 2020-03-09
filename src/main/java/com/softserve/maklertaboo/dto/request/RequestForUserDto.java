@@ -12,5 +12,5 @@ public class RequestForUserDto {
     private RequestForVerificationStatus status;
     private Date creationDate;
     private Date verificationDate;
-    private UserDto user;
+    private UserDto author;
 }

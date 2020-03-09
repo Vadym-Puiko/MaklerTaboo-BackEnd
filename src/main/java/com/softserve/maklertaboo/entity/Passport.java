@@ -18,10 +18,10 @@ public class Passport {
     private String firstName;
     private String lastName;
     private String middleName;
-    private Boolean gender;
+    private String gender;
     private String birthDate;
     private String birthPlace;
-    private Boolean passportType;
+    private String passportType;
     private String nationality;
     private String authority;
     private String dateOfIssue;

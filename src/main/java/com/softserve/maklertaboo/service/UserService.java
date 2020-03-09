@@ -8,10 +8,9 @@ import com.softserve.maklertaboo.entity.user.User;
 
 import com.softserve.maklertaboo.exception.BadEmailOrPasswordException;
 import com.softserve.maklertaboo.mapping.UserMapper;
-
 import com.softserve.maklertaboo.repository.user.UserRepository;
-
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -90,6 +89,7 @@ public class UserService {
         user.setPhotoUrl(photo);
         userRepository.save(user);
     }
+
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);

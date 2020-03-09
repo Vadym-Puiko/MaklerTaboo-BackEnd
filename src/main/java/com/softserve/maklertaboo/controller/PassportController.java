@@ -1,24 +1,43 @@
 package com.softserve.maklertaboo.controller;
 import com.softserve.maklertaboo.dto.passport.PassportDto;
+import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.service.PassportService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.softserve.maklertaboo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
-
+@CrossOrigin
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 public class PassportController {
 
     private final PassportService passportService;
+    private final UserService userService;
 
-    public PassportController(PassportService passportService) {
+    @Autowired
+    public PassportController(PassportService passportService, UserService userService) {
         this.passportService = passportService;
+        this.userService = userService;
     }
 
-    @GetMapping("/passport")
-    public List<PassportDto> getUsers() {
-        return passportService.findAll();
+    @GetMapping("/passport/{id}")
+    public List<PassportDto> getPassportData(@PathVariable  Long id ) {
+        return passportService.getPassport(id);
+    }
+
+    @GetMapping("/user/{id}")
+    public UserDto getUserData(@PathVariable  Long id) {
+        return userService.findUserById(id);
+    }
+
+    @RequestMapping(value = "/passport", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void updatePassportData(@RequestBody @Valid List<PassportDto> passportDto){
+        passportService.updatePassport(passportDto);
+    }
+    @RequestMapping(value = "/userUpdate/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void updateUserData(@PathVariable Long id, @RequestBody @Valid UserDto userDto){
+        userService.updateUser(id, userDto);
     }
 }

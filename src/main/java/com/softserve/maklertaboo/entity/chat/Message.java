@@ -25,4 +25,11 @@ public class Message {
 
     @ManyToOne
     private Chat chat;
+
+  /*  public void setChat(Optional<Chat> chatById) {
+    }
+*/
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
 }
