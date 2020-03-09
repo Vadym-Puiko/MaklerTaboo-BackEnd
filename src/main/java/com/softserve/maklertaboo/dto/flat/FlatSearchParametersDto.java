@@ -20,26 +20,5 @@ public class FlatSearchParametersDto {
     private Integer priceLow;
     private Integer priceHigh;
 
-
-    public boolean isEmpty() {
-        if (regions != null) {
-            return false;
-        }
-        if (tags != null) {
-            return false;
-        }
-        if (minNumberOfRooms != null || maxNumberOfRooms != null) {
-            return false;
-        }
-        if (floorLow != null || floorHigh != null) {
-            return false;
-        }
-        if (priceLow != null || priceHigh != null) {
-            return false;
-        }
-
-        return true;
-    }
-
 }
 

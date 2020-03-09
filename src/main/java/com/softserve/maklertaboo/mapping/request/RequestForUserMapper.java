@@ -29,7 +29,7 @@ public class RequestForUserMapper implements MapperToDto<RequestForUserVerificat
 
         requestForUserDto.setStatus(requestForUser.getStatus());
 
-        requestForUserDto.setUser(userMapper.convertToDto(requestForUser.getUser()));
+        requestForUserDto.setAuthor(userMapper.convertToDto(requestForUser.getAuthor()));
 
         return requestForUserDto;
     }

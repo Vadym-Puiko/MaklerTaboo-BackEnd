@@ -1,6 +1,4 @@
 package com.softserve.maklertaboo.controller;
-
-
 import com.softserve.maklertaboo.entity.Tag;
 import com.softserve.maklertaboo.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
