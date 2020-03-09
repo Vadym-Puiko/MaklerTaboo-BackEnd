@@ -56,10 +56,6 @@ public class FlatFullTextSearch {
 
         return new PageImpl<Flat>(results, pageable, results.size());
     }
-        //todo remove all souts
-    //todo rewrite code exceptions
-    //todo create exceptions
-    //etc
 
     private BooleanQuery generateIntegerQuery(QueryBuilder queryBuilder, FlatSearchParameters params){
         NumericRangeQuery<Integer> monthPriceQuery = NumericRangeQuery.newIntRange("monthPrice",
@@ -89,8 +85,6 @@ public class FlatFullTextSearch {
     private Query generateTextQuery(QueryBuilder queryBuilder, FlatSearchParameters params) {
 
         String searchText = StringUtils.join(params.getSearchText());
-        System.out.println(searchText);
-        System.out.println(params.getTags().toString());
         BooleanJunction booleanJunction = queryBuilder.bool();
 
         if (searchText.length() > 3) {

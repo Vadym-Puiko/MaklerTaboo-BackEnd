@@ -62,14 +62,6 @@ public class FlatService {
     }
 
     @Cacheable("flats")
-    public Page<Flat> getByParametersTEST(FlatSearchParametersDto flatParametersDto, Pageable pageable) {
-
-        FlatSearchParameters flatParameters = flatSearchMapper.convertToEntity(flatParametersDto);
-
-        return flatSearchRepository.findByParams(flatParameters, pageable);
-    }
-
-    @Cacheable("flats")
     public Flat getById(Integer id) {
         return flatRepository.findById(Long.parseLong(id + "")).get();
     }
