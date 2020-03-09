@@ -1,0 +1,75 @@
+tags:
+    Wash
+    Garage
+    Pets
+    Smoking
+    No Smoking
+    Hot Water
+    Flat
+    For Family
+    Furniture
+    Without Furniture
+
+user(id 1):
+    123qwe
+    123qwe
+
+flat1:
+    {
+      "base64Photos": [
+        "string"
+      ],
+      "description": " The reason is that these companies failed to protect customers´ privacy. the past that they must take precautions to keep real-time ",
+      "district": "Gal",
+      "flatNumber": 2,
+      "floor": 5,
+      "houseNumber": 1,
+      "monthPrice": 9800,
+      "numberOfRooms": 3,
+      "street": "Vul Morg",
+      "tags": [
+        "Wash", "Garage", "Pets","Smoking"
+      ],
+      "title": "Some officials criticize that the process took too long.",
+      "username": "123qwe"
+    }
+
+flat2:
+    {
+      "base64Photos": [
+        "string"
+      ],
+      "description": " Prince Harry and his wife Meghan, the Duchess of Sussex, will lose security provided by the Canadian government. This change is caused by the couple´s decision to step back from their royal duties that will officially happen on March 31.",
+      "district": "Frank",
+      "flatNumber": 4,
+      "floor": 2,
+      "houseNumber": 3,
+      "monthPrice": 100,
+      "numberOfRooms": 1,
+      "street": "Vul Nauk",
+      "tags": [
+        "No Smoking", "Hot Water", "Furniture","Without Furniture"
+      ],
+      "title": "Canadian police have been assisting UK police",
+      "username": "123qwe"
+    }
+
+flat3:
+    {
+      "base64Photos": [
+        "string"
+      ],
+      "description": " The Russian-born tennis player, Maria Sharapova, has announced her retirement from the sport at the age of 32. She became famous almost overnight when she beat Serena Williams in the Wimbledon final.",
+      "district": "Zal",
+      "flatNumber": 3,
+      "floor": 10,
+      "houseNumber": 8,
+      "monthPrice": 12500,
+      "numberOfRooms": 5,
+      "street": "Vul Gorod",
+      "tags": [
+        "For Family"
+      ],
+      "title": "Since she returned to tennis, she had various shoulder injuries",
+      "username": "123qwe"
+    }
