@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @RestController
 @CrossOrigin
 @RequestMapping("/")
-//@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 public class MessageController {
     private MessageService messageService;
     private ModelMapper modelMapper;
@@ -25,7 +24,6 @@ public class MessageController {
         this.modelMapper = modelMapper;
     }
 
-    //    @PreAuthorize("hasRole('USER')")
     @GetMapping("/messages/{id}")
     public List<ChatMessageDTO> getCurrentMessagesByChatId(@PathVariable Long id) {
         log.info("MessagesController get messages by chat id");

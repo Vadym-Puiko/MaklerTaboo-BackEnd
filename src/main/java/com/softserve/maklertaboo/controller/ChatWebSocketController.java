@@ -22,7 +22,6 @@ import static java.lang.String.format;
 @Slf4j
 @CrossOrigin
 @RestController
-/*@RequestMapping("/chat/")*/
 public class ChatWebSocketController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private ChatService chatService;
@@ -72,7 +71,6 @@ public class ChatWebSocketController {
         log.info("ChatWebsocketController send message");
         log.info(chatMessageInfoDTO.getChatId() + "    " + chatMessageInfoDTO.getContent());
         Message message = new Message();
-
         message.setSender(chatService.findOne(chatMessageInfoDTO.getUserId()));
         message.setChat(chatService.getChatById(chatMessageInfoDTO.getChatId()));
         message.setContent(chatMessageInfoDTO.getContent());
