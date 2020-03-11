@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.dto.user;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -23,5 +24,6 @@ public class UserDto {
     @NotBlank
     private String phoneNumber;
     private String photoUrl;
+    private String userRole;
 
 }

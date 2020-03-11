@@ -1,16 +1,14 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
-import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
-
 import com.softserve.maklertaboo.exception.BadEmailOrPasswordException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
+import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
