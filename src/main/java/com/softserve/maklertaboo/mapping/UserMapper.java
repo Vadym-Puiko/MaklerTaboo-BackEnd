@@ -21,6 +21,7 @@ public class UserMapper implements MapperToDto<User, UserDto>, MapperToEntity<Us
         userDto.setPassword(user.getPassword());
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setPhotoUrl(user.getPhotoUrl());
+        userDto.setUserRole(user.getRole().getStatus());
         return userDto;
     }
 

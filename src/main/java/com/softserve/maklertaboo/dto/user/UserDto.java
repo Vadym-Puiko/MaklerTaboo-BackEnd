@@ -24,5 +24,6 @@ public class UserDto {
     @NotBlank
     private String phoneNumber;
     private String photoUrl;
+    private String userRole;
 
 }
