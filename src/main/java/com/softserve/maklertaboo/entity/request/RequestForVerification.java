@@ -1,6 +1,5 @@
 package com.softserve.maklertaboo.entity.request;
 
-
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;

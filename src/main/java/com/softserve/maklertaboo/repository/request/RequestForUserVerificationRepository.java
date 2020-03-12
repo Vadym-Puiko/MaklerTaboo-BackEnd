@@ -1,7 +1,6 @@
 package com.softserve.maklertaboo.repository.request;
 
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
-import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
