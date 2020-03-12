@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+
 @CrossOrigin
 @RestController
 @RequestMapping("/flat")
@@ -46,7 +47,7 @@ public class FlatController {
     }
 
     @PostMapping("activate/{id}")
-    public void setActive(@PathVariable Long id){
+    public void setActive(@PathVariable Long id) {
         flatService.activate(id);
     }
 

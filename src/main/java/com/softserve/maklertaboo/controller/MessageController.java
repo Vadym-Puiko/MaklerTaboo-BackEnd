@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@CrossOrigin
+
 @RequestMapping("/")
-//@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+//(origins = "http://localhost:4200", maxAge = 3600)
 public class MessageController {
     private MessageService messageService;
     private ModelMapper modelMapper;

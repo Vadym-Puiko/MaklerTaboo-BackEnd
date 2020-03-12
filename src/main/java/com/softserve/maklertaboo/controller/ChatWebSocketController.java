@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static java.lang.String.format;
 
 @Slf4j
-@CrossOrigin
+
 @RestController
 /*@RequestMapping("/chat/")*/
 public class ChatWebSocketController {
