@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -88,6 +89,11 @@ public class UserController {
     @PutMapping("/update/all")
     public void updateUser(@RequestBody UserDto userDto) {
         userService.updateUser(userDto.getId(), userDto);
+    }
+
+    @PostMapping("/userUpdate/{id}")
+    public void updateUserData(@PathVariable Long id, @RequestBody @Valid UserDto userDto) {
+        userService.updateUser(id, userDto);
     }
 
     @PutMapping("/update/{photo}")
