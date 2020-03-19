@@ -91,11 +91,6 @@ public class UserController {
         userService.updateUser(userDto.getId(), userDto);
     }
 
-    @PostMapping("/userUpdate/{id}")
-    public void updateUserData(@PathVariable Long id, @RequestBody @Valid UserDto userDto) {
-        userService.updateUser(id, userDto);
-    }
-
     @PutMapping("/update/{photo}")
     public void updateUserPhoto(Long id, @PathVariable String photo) {
         userService.updateUserPhoto(id, photo);
