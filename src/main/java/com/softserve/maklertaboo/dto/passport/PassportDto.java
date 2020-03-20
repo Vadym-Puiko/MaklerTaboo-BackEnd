@@ -33,9 +33,8 @@ public class PassportDto {
     @NotBlank
     private String expirationDate;
     @NotBlank
-    @NotNull
     private String passportNumber;
-    @NotBlank
+    @NotNull
     private Integer identificationNumber;
 
 }
