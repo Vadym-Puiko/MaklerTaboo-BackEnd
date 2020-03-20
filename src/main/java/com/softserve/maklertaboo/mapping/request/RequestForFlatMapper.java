@@ -6,6 +6,8 @@ import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.mapping.MapperToDto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
+import com.softserve.maklertaboo.mapping.UserMapper;
+import com.softserve.maklertaboo.mapping.flat.FlatMapper;
 import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +20,18 @@ public class RequestForFlatMapper implements MapperToDto<RequestForFlatVerificat
 
     private UserRepository userRepository;
     private FlatRepository flatRepository;
+    private UserMapper userMapper;
+    private FlatMapper flatMapper;
 
     @Autowired
-    public RequestForFlatMapper(UserRepository userRepository, FlatRepository flatRepository) {
+    public RequestForFlatMapper(UserRepository userRepository, FlatRepository flatRepository,
+                                UserMapper userMapper, FlatMapper flatMapper) {
         this.userRepository = userRepository;
         this.flatRepository = flatRepository;
+        this.userMapper = userMapper;
+        this.flatMapper = flatMapper;
     }
+
 
     @Override
     public RequestForFlatDto convertToDto(RequestForFlatVerification requestForFlat) {
@@ -37,9 +45,9 @@ public class RequestForFlatMapper implements MapperToDto<RequestForFlatVerificat
 
         requestForFlatDto.setStatus(requestForFlat.getStatus());
 
-        requestForFlatDto.setFlatId(requestForFlat.getFlat().getId());
+        requestForFlatDto.setFlat(flatMapper.convertToDto(requestForFlat.getFlat()));
 
-        requestForFlatDto.setAuthorId(requestForFlat.getAuthor().getId());
+        requestForFlatDto.setAuthor(userMapper.convertToDto(requestForFlat.getAuthor()));
 
         return requestForFlatDto;
     }
@@ -50,11 +58,11 @@ public class RequestForFlatMapper implements MapperToDto<RequestForFlatVerificat
 
         requestForFlatVerification.setCreationDate(dto.getCreationDate());
 
-        User user = userRepository.findById(dto.getAuthorId()).orElseThrow(IllegalAccessError::new);
+        User user = userRepository.findById(dto.getAuthor().getId()).orElseThrow(IllegalAccessError::new);
 
         requestForFlatVerification.setAuthor(user);
 
-        Flat flat = flatRepository.findById(dto.getFlatId()).orElseThrow(IllegalAccessError::new);
+        Flat flat = flatRepository.findById(dto.getFlat().getId()).orElseThrow(IllegalAccessError::new);
 
         requestForFlatVerification.setFlat(flat);
 

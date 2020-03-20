@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/requests")
 public class RequestForVerificationController {
 
     RequestForVerificationService requestForVerificationService;
@@ -29,7 +29,7 @@ public class RequestForVerificationController {
         this.requestForUserMapper = requestForUserMapper;
     }
 
-    @GetMapping("/requests/flats")
+    @GetMapping("/flats")
     public List<RequestForFlatDto> getRequestsForFlats() {
         return requestForVerificationService
                 .getAllRequestsForFlatVerification().stream()
@@ -37,7 +37,7 @@ public class RequestForVerificationController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/requests/users/renters")
+    @GetMapping("/users/renters")
     public List<RequestForUserDto> getRequestsForRenters() {
         return requestForVerificationService
                 .getAllRequestsForRenterVerification().stream()
@@ -45,7 +45,7 @@ public class RequestForVerificationController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/requests/users/landlords")
+    @GetMapping("/users/landlords")
     public List<RequestForUserDto> getRequestsForLandlords() {
         return requestForVerificationService
                 .getAllRequestsForLandlordVerification().stream()
@@ -53,7 +53,7 @@ public class RequestForVerificationController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/requests/users/moderators")
+    @GetMapping("/users/moderators")
     public List<RequestForUserDto> getRequestsForModerators() {
         return requestForVerificationService
                 .getAllRequestsForModeratorVerification().stream()
@@ -61,42 +61,42 @@ public class RequestForVerificationController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/requests/create/renter")
+    @PostMapping("/create/renter")
     public void createRenterRequest(@RequestBody RequestForUserDto requestDto) {
         requestForVerificationService.createRequestForUserVerification(requestDto, RequestForVerificationType.RENTER);
     }
 
-    @PostMapping("/requests/create/landlord")
+    @PostMapping("/create/landlord")
     public void createLandlordRequest(@RequestBody RequestForUserDto requestDto) {
         requestForVerificationService.createRequestForUserVerification(requestDto, RequestForVerificationType.LANDLORD);
     }
 
-    @PostMapping("/requests/create/moderator")
+    @PostMapping("/create/moderator")
     public void createModeratorRequest(@RequestBody RequestForUserDto requestDto) {
         requestForVerificationService.createRequestForUserVerification(requestDto, RequestForVerificationType.MODERATOR);
     }
 
-    @PostMapping("/requests/create/flat")
+    @PostMapping("/create/flat")
     public void createFlatRequest(@RequestBody RequestForFlatDto requestDto) {
         requestForVerificationService.createRequestForFlatVerification(requestDto);
     }
 
-    @PutMapping("requests/flats/{id}/approve")
+    @PutMapping("/flats/{id}/approve")
     public void approveRequestForFlat(@PathVariable Long id) {
         requestForVerificationService.approveFlatRequest(id);
     }
 
-    @PutMapping("requests/flats/{id}/decline")
+    @PutMapping("/flats/{id}/decline")
     public void declineRequestForFlat(@PathVariable Long id) {
         requestForVerificationService.declineFlatRequest(id);
     }
 
-    @PutMapping("requests/users/{id}/approve")
+    @PutMapping("/users/{id}/approve")
     public void approveRequestForUser(@PathVariable Long id) {
         requestForVerificationService.approveUserRequest(id);
     }
 
-    @PutMapping("requests/users/{id}/decline")
+    @PutMapping("/users/{id}/decline")
     public void declineRequestForUser(@PathVariable Long id) {
         requestForVerificationService.declineUserRequest(id);
     }

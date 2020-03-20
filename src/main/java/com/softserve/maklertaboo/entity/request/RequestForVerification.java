@@ -27,4 +27,14 @@ public abstract class RequestForVerification {
     @ManyToOne(cascade = CascadeType.ALL)
     @NotNull
     private User author;
+
+    @PrePersist
+    public void prePersist() {
+        if (status == null) {
+            status = RequestForVerificationStatus.VERIFYING;
+        }
+        if (creationDate == null) {
+            creationDate = new Date();
+        }
+    }
 }

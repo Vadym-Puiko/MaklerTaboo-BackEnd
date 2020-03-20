@@ -35,7 +35,7 @@ public class RequestForUserMapper implements MapperToDto<RequestForUserVerificat
 
         requestForUserDto.setStatus(requestForUser.getStatus());
 
-        requestForUserDto.setAuthorId(requestForUser.getId());
+        requestForUserDto.setAuthor(userMapper.convertToDto(requestForUser.getAuthor()));
 
         return requestForUserDto;
     }
@@ -45,7 +45,7 @@ public class RequestForUserMapper implements MapperToDto<RequestForUserVerificat
 
         RequestForUserVerification request = new RequestForUserVerification();
 
-        User user = userRepository.findById(dto.getAuthorId()).orElseThrow(IllegalAccessError::new);
+        User user = userRepository.findById(dto.getAuthor().getId()).orElseThrow(IllegalAccessError::new);
 
         request.setAuthor(user);
 

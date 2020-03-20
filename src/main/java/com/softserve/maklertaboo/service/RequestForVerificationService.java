@@ -36,6 +36,7 @@ public class RequestForVerificationService {
                                          RequestForUserVerificationRepository requestForUserVerificationRepository,
                                          FlatService flatService, UserService userService,
                                          RequestForUserMapper requestForUserMapper, RequestForFlatMapper requestForFlatMapper) {
+
         this.requestFlatRepository = requestForFlatVerificationRepository;
         this.requestUserRepository = requestForUserVerificationRepository;
         this.flatService = flatService;
