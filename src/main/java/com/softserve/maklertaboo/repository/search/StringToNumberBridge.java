@@ -6,7 +6,7 @@ import org.hibernate.search.bridge.TwoWayStringBridge;
 public class StringToNumberBridge implements TwoWayStringBridge {
 
     public static String PADDING_PROPERTY = "padding";
-    private int padding = 7; //default
+    private int padding = 7;
 
     public String objectToString(Object object) {
 
@@ -36,7 +36,6 @@ public class StringToNumberBridge implements TwoWayStringBridge {
             else {
                 return "";
             }
-            //return object.toString();
         }
         catch (Exception e) {
             return null;
