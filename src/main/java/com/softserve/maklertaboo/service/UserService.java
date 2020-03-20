@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.Role;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,12 +39,12 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public String generateToken(Authentication auth){
+    public String generateToken(Authentication auth) {
         return jwtTokenProvider.generateAccessToken(auth);
     }
 
     public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
-        User user = userRepository.findUserByEmail (loginDto.getEmail());
+        User user = userRepository.findUserByEmail(loginDto.getEmail());
         if (user == null) {
             throw new BadEmailOrPasswordException("Email is not valid");
         }
@@ -88,7 +89,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
@@ -101,20 +101,14 @@ public class UserService {
         return userRepository.findAll(pageable).map(userMapper::convertToDto);
     }
 
-    public void makeLandlord(Long id) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setRole(UserRole.ROLE_LANDLORD);
-        userRepository.save(user);
-    }
-
-    public void makeModerator(Long id) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setRole(UserRole.ROLE_MODERATOR);
+    public void updateRole(Long userId, UserRole role) {
+        User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+        user.setRole(role);
         userRepository.save(user);
     }
 
     public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
-        if(!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())){
+        if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
             throw new BadEmailOrPasswordException("Password is not valid");
         }
         return true;

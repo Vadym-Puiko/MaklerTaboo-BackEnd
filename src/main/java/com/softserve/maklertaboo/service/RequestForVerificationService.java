@@ -1,11 +1,16 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.dto.request.RequestForFlatDto;
+import com.softserve.maklertaboo.dto.request.RequestForUserDto;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
+import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.entity.request.RequestForVerification;
 import com.softserve.maklertaboo.exception.DataNotFoundException;
+import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
+import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.repository.request.RequestBaseRepository;
 import com.softserve.maklertaboo.repository.request.RequestForFlatVerificationRepository;
 import com.softserve.maklertaboo.repository.request.RequestForUserVerificationRepository;
@@ -23,20 +28,41 @@ public class RequestForVerificationService {
     private final RequestForUserVerificationRepository requestUserRepository;
     private final FlatService flatService;
     private final UserService userService;
+    private final RequestForUserMapper requestForUserMapper;
+    private final RequestForFlatMapper requestForFlatMapper;
 
     @Autowired
     public RequestForVerificationService(RequestForFlatVerificationRepository requestForFlatVerificationRepository,
                                          RequestForUserVerificationRepository requestForUserVerificationRepository,
-                                         FlatService flatService, UserService userService) {
-
+                                         FlatService flatService, UserService userService,
+                                         RequestForUserMapper requestForUserMapper, RequestForFlatMapper requestForFlatMapper) {
         this.requestFlatRepository = requestForFlatVerificationRepository;
         this.requestUserRepository = requestForUserVerificationRepository;
         this.flatService = flatService;
         this.userService = userService;
+        this.requestForUserMapper = requestForUserMapper;
+        this.requestForFlatMapper = requestForFlatMapper;
+    }
+
+    public void createRequestForUserVerification(RequestForUserDto requestForUserDto, RequestForVerificationType type) {
+        RequestForUserVerification requestForUserVerification = requestForUserMapper.convertToEntity(requestForUserDto);
+        requestForUserVerification.setType(type);
+        requestUserRepository.save(requestForUserVerification);
+    }
+
+    public void createRequestForFlatVerification(RequestForFlatDto requestForFlatDto) {
+        RequestForFlatVerification requestForFlatVerification = requestForFlatMapper.convertToEntity(requestForFlatDto);
+        requestFlatRepository.save(requestForFlatVerification);
     }
 
     public List<RequestForFlatVerification> getAllRequestsForFlatVerification() {
         return requestFlatRepository.findAll();
+    }
+
+    public List<RequestForUserVerification> getAllRequestsForRenterVerification() {
+        return requestUserRepository.findAll().stream()
+                .filter(request -> request.getType() == RequestForVerificationType.RENTER)
+                .collect(Collectors.toList());
     }
 
     public List<RequestForUserVerification> getAllRequestsForLandlordVerification() {
@@ -65,11 +91,14 @@ public class RequestForVerificationService {
         requestForUserVerification.setVerificationDate(new Date());
 
         switch (requestForUserVerification.getType()) {
+            case RENTER:
+                userService.updateRole(requestForUserVerification.getAuthor().getId(), UserRole.ROLE_RENTER);
+                break;
             case LANDLORD:
-                userService.makeLandlord(requestForUserVerification.getAuthor().getId());
+                userService.updateRole(requestForUserVerification.getAuthor().getId(), UserRole.ROLE_LANDLORD);
                 break;
             case MODERATOR:
-                userService.makeModerator(requestForUserVerification.getAuthor().getId());
+                userService.updateRole(requestForUserVerification.getAuthor().getId(), UserRole.ROLE_MODERATOR);
                 break;
         }
         requestUserRepository.save(requestForUserVerification);

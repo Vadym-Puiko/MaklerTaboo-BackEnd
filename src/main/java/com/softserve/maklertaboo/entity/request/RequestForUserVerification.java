@@ -17,3 +17,4 @@ public class RequestForUserVerification extends RequestForVerification {
     @Enumerated(EnumType.STRING)
     private RequestForVerificationType type;
 }
+

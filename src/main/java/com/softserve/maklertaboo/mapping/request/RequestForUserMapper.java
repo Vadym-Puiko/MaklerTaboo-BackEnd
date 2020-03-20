@@ -2,9 +2,11 @@ package com.softserve.maklertaboo.mapping.request;
 
 import com.softserve.maklertaboo.dto.request.RequestForUserDto;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
+import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.mapping.MapperToDto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
 import com.softserve.maklertaboo.mapping.UserMapper;
+import com.softserve.maklertaboo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,29 +15,42 @@ public class RequestForUserMapper implements MapperToDto<RequestForUserVerificat
         MapperToEntity<RequestForUserDto, RequestForUserVerification> {
 
     private UserMapper userMapper;
+    private UserRepository userRepository;
 
     @Autowired
-    public RequestForUserMapper(UserMapper flatMapper) {
+    public RequestForUserMapper(UserMapper flatMapper, UserRepository userRepository) {
         this.userMapper = flatMapper;
+        this.userRepository = userRepository;
     }
 
     @Override
     public RequestForUserDto convertToDto(RequestForUserVerification requestForUser) {
         RequestForUserDto requestForUserDto = new RequestForUserDto();
+
         requestForUserDto.setCreationDate(requestForUser.getCreationDate());
 
         requestForUserDto.setVerificationDate(requestForUser.getVerificationDate());
+
         requestForUserDto.setId(requestForUser.getId());
 
         requestForUserDto.setStatus(requestForUser.getStatus());
 
-        requestForUserDto.setAuthor(userMapper.convertToDto(requestForUser.getAuthor()));
+        requestForUserDto.setAuthorId(requestForUser.getId());
 
         return requestForUserDto;
     }
 
     @Override
     public RequestForUserVerification convertToEntity(RequestForUserDto dto) {
-        return null;
+
+        RequestForUserVerification request = new RequestForUserVerification();
+
+        User user = userRepository.findById(dto.getAuthorId()).orElseThrow(IllegalAccessError::new);
+
+        request.setAuthor(user);
+
+        request.setCreationDate(dto.getCreationDate());
+
+        return request;
     }
 }

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
-@Entity
+@MappedSuperclass
 public abstract class RequestForVerification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public abstract class RequestForVerification {
 
     private Date verificationDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @NotNull
     private User author;
 }
