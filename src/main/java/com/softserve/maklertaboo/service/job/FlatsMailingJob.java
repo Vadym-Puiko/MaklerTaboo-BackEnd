@@ -7,6 +7,6 @@ import org.quartz.JobExecutionException;
 public class FlatsMailingJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
+        System.out.println("MY JOB WORKESS");
     }
 }
