@@ -10,15 +10,16 @@ import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 
 @Configuration
 public class QuartzSubmitJobs {
-    private static final String CRON_EVERY_FIVE_MINUTES = "0 0/5 * ? * * *";
+    private static final String CRON_EVERY_ONE_MINUTE = "0 0/1 * ? * * *";
+    private static final String CRON_EVERY_HALF_AN_HOUR = "0 0/30 * ? * * *";
 
-    @Bean(name = "memberClassStats")
+    @Bean(name = "FlatsMailingJob")
     public JobDetailFactoryBean jobMemberClassStats() {
-        return QuartzConfig.createJobDetail(FlatsMailingJob.class, "Class Statistics Job");
+        return QuartzConfig.createJobDetail(FlatsMailingJob.class, "Flats Mailing Job");
     }
 
-    @Bean(name = "memberClassStatsTrigger")
-    public CronTriggerFactoryBean triggerMemberClassStats(@Qualifier("memberClassStats") JobDetail jobDetail) {
-        return QuartzConfig.createCronTrigger(jobDetail, CRON_EVERY_FIVE_MINUTES, "Class Statistics Trigger");
+    @Bean(name = "FlatsMailingJobTrigger")
+    public CronTriggerFactoryBean triggerMemberClassStats(@Qualifier("FlatsMailingJob") JobDetail jobDetail) {
+        return QuartzConfig.createCronTrigger(jobDetail, CRON_EVERY_ONE_MINUTE, "Flats Mailing Job Trigger");
     }
 }
