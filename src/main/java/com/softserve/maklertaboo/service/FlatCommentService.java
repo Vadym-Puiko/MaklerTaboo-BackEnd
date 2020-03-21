@@ -2,6 +2,7 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.comment.FlatCommentDto;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
+import com.softserve.maklertaboo.entity.comment.UserComment;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.mapping.comment.FlatCommentMapper;
 import com.softserve.maklertaboo.repository.FlatRepository;
@@ -29,18 +30,31 @@ public class FlatCommentService {
 
     public void saveFlatComment(FlatCommentDto flatCommentDto){
         FlatComment flatComment=flatCommentMapper.convertToEntity(flatCommentDto);
-        flatComment.setPublicationDate(LocalDateTime.now());
+        flatCommentRepository.save(flatComment);
+    }
+    public void saveCommentAboutComment(FlatCommentDto flatCommentDto){
+        FlatComment flatComment=flatCommentMapper.convertToEntity(flatCommentDto);
         flatCommentRepository.save(flatComment);
     }
 
     public void deleteFlatComment(Long id){
-        flatCommentRepository.deleteById(id);
+        FlatComment flatComment=flatCommentRepository.getOne(id);
+        flatComment.setIsActive(false);
+        flatComment.setDeletedDate(LocalDateTime.now());
+        flatCommentRepository.save(flatComment);
     }
 
     public List<FlatCommentDto> getAllFlatCommentsForFlat(Long id){
         Flat flat=flatRepository.getOne(id);
-        return flatCommentRepository.findByFlat(flat).stream().map(flatCommentMapper::convertToDto).collect(Collectors.toList());
+        List<FlatComment> list=flatCommentRepository.findByFlatAndIsActiveIsTrue(flat);
+        return list.stream().map(flatCommentMapper::convertToDto).collect(Collectors.toList());
     }
+
+    public List<FlatCommentDto> getAllCommentsForComment(Long commentAboutComment){
+        List<FlatComment> list=flatCommentRepository.findAllByCommentAboutCommentAndIsActiveIsTrue(commentAboutComment);
+        return list.stream().map(flatCommentMapper::convertToDto).collect(Collectors.toList());
+    }
+
 }
 
 

@@ -9,6 +9,7 @@ public class UserCommentDto {
     private Long id;
     private Long userId;
     private UserDto userAuthor;
+    private Long commentAboutComment;
     private String text;
     private LocalDateTime publicationDate;
 }

@@ -11,6 +11,7 @@ public class FlatCommentDto {
     private Long id;
     private Long flatId;
     private UserDto userAuthor;
+    private Long commentAboutComment;
     private String text;
     private List<String> commentPhotos;
     private LocalDateTime publicationDate;

@@ -23,5 +23,4 @@ public class UserDto {
     private String phoneNumber;
     private String photoUrl;
     private String userRole;
-
 }
