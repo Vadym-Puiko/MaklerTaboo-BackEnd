@@ -5,12 +5,13 @@ import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.service.PassportService;
 import com.softserve.maklertaboo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/passport")
+@Validated
 public class PassportController {
 
     private final PassportService passportService;
@@ -22,14 +23,15 @@ public class PassportController {
         this.userService = userService;
     }
 
-    @GetMapping("/passport/{id}")
-    public PassportDto getPassportData(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public  PassportDto getPassportData(@PathVariable Long id) {
         return passportService.getPassport(id);
     }
 
-    @RequestMapping(value = "/passport/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/{id}")
     public void updatePassportData(@PathVariable Long id, @RequestBody @Valid PassportDto passportDto) {
-        passportService.updatePassport(id, passportDto);
+        UserDto userDto = userService.findUserById(id);
+        passportService.updatePassport(userDto, passportDto);
     }
 
 }

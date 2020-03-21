@@ -1,9 +1,13 @@
 package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.passport.PassportDto;
+import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.Passport;
+import com.softserve.maklertaboo.entity.enums.UserRole;
+import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.mapping.PassportMapper;
 import com.softserve.maklertaboo.repository.passport.PassportRepository;
+import com.softserve.maklertaboo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,20 +16,30 @@ public class PassportService {
 
     private final PassportRepository passportRepository;
     private final PassportMapper passportMapper;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PassportService(PassportRepository passportRepository, PassportMapper passportMapper) {
+    public PassportService(PassportRepository passportRepository, PassportMapper passportMapper, UserRepository userRepository) {
         this.passportRepository = passportRepository;
         this.passportMapper = passportMapper;
+        this.userRepository = userRepository;
     }
 
     public PassportDto getPassport(Long id) {
-        Passport passport = passportRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Passport passport;
+        User user = userRepository.findById(id).get();
+        passport = user.getPassport();
+        if (passport==null){
+            passport= new Passport();
+        }
         return passportMapper.convertToDto(passport);
     }
 
-    public void updatePassport(Long id, PassportDto passportDto) {
-        Passport passport = passportRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public void updatePassport(UserDto userDto, PassportDto passportDto) {
+        Passport passport = new Passport();
+        User user = new User();
+
+        passport.setId(userDto.getId());
         passport.setPassportType(passportDto.getPassportType());
         passport.setPassportNumber(passportDto.getPassportNumber());
         passport.setNationality(passportDto.getNationality());
@@ -39,6 +53,17 @@ public class PassportService {
         passport.setBirthPlace(passportDto.getBirthPlace());
         passport.setBirthDate(passportDto.getBirthDate());
         passport.setAuthority(passportDto.getAuthority());
+
+        user.setId(userDto.getId());
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setPhotoUrl(userDto.getPhotoUrl());
+        user.setRole(UserRole.valueOf(userDto.getUserRole()));
+        user.setPassport(passport);
+
+        userRepository.save(user);
         passportRepository.save(passport);
     }
 

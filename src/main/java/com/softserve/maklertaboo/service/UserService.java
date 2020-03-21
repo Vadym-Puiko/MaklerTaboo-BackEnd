@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,7 +86,6 @@ public class UserService {
         user.setPhotoUrl(photo);
         userRepository.save(user);
     }
-
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
