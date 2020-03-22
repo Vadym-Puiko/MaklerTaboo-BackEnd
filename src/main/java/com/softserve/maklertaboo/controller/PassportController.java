@@ -5,13 +5,11 @@ import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.service.PassportService;
 import com.softserve.maklertaboo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/passport")
-@Validated
 public class PassportController {
 
     private final PassportService passportService;
