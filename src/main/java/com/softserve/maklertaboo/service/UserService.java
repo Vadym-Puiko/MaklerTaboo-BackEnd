@@ -3,7 +3,8 @@ package com.softserve.maklertaboo.service;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
-import com.softserve.maklertaboo.exception.BadEmailOrPasswordException;
+import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
+import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
@@ -34,18 +35,20 @@ public class UserService {
     }
 
     public void saveUser(UserDto userDto) {
+
         User user = userMapper.convertToEntity(userDto);
+
         userRepository.save(user);
     }
 
-    public String generateToken(Authentication auth){
+    public String generateToken(Authentication auth) {
         return jwtTokenProvider.generateAccessToken(auth);
     }
 
     public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
-        User user = userRepository.findUserByEmail (loginDto.getEmail());
+        User user = userRepository.findUserByEmail(loginDto.getEmail());
         if (user == null) {
-            throw new BadEmailOrPasswordException("Email is not valid");
+            throw new BadEmailOrPasswordException();
         }
         return new JWTSuccessLogIn(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
@@ -58,7 +61,7 @@ public class UserService {
     }
 
     public UserDto findUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         return userMapper.convertToDto(user);
     }
 
@@ -114,8 +117,8 @@ public class UserService {
     }
 
     public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
-        if(!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())){
-            throw new BadEmailOrPasswordException("Password is not valid");
+        if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
+            throw new BadEmailOrPasswordException();
         }
         return true;
     }
