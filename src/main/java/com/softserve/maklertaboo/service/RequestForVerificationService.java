@@ -1,15 +1,17 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.entity.request.RequestForVerification;
-import com.softserve.maklertaboo.exception.DataNotFoundException;
+import com.softserve.maklertaboo.exception.exceptions.RequestNotFoundException;
 import com.softserve.maklertaboo.repository.request.RequestBaseRepository;
 import com.softserve.maklertaboo.repository.request.RequestForFlatVerificationRepository;
 import com.softserve.maklertaboo.repository.request.RequestForUserVerificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -96,7 +98,7 @@ public class RequestForVerificationService {
         if (request.isPresent()) {
             return request.get();
         } else {
-            throw new DataNotFoundException();
+            throw new RequestNotFoundException(ErrorMessage.REQUEST_NOT_FOUND + id);
         }
     }
 
