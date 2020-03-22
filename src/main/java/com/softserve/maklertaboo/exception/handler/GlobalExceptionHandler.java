@@ -37,7 +37,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BadEmailOrPasswordException.class)
-    public final ResponseEntity<Object> handleRuntimeException(BadEmailOrPasswordException exception, WebRequest request) {
+    public final ResponseEntity<Object> handleBadEmailOrPasswordException(BadEmailOrPasswordException exception, WebRequest request) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RequestNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(RequestNotFoundException exception, WebRequest request) {
+    public ResponseEntity<Object> handleRequestNotFoundException(RequestNotFoundException exception, WebRequest request) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);

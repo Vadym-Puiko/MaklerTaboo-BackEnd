@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
@@ -48,7 +49,7 @@ public class UserService {
     public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
         User user = userRepository.findUserByEmail(loginDto.getEmail());
         if (user == null) {
-            throw new BadEmailOrPasswordException();
+            throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
         }
         return new JWTSuccessLogIn(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
@@ -61,7 +62,7 @@ public class UserService {
     }
 
     public UserDto findUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
         return userMapper.convertToDto(user);
     }
 
@@ -118,7 +119,7 @@ public class UserService {
 
     public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
-            throw new BadEmailOrPasswordException();
+            throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
         }
         return true;
     }
