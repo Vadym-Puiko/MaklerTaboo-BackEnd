@@ -15,7 +15,7 @@ public abstract class RequestForVerification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "varchar(255) default 'VERIFYING'")
+    @Column(columnDefinition = "varchar(255) default 'NEW'")
     @Enumerated(EnumType.STRING)
     private RequestForVerificationStatus status;
 
@@ -31,7 +31,7 @@ public abstract class RequestForVerification {
     @PrePersist
     public void prePersist() {
         if (status == null) {
-            status = RequestForVerificationStatus.VERIFYING;
+            status = RequestForVerificationStatus.NEW;
         }
         if (creationDate == null) {
             creationDate = new Date();
