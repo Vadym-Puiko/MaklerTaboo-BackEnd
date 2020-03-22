@@ -12,11 +12,13 @@ import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,12 +29,20 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
+    private final AmazonStorageService amazonStorageService;
+    private String endpointUrl;
 
     @Autowired
-    public UserService(UserMapper userMapper, UserRepository userRepository, JWTTokenProvider jwtTokenProvider) {
+    public UserService(UserMapper userMapper,
+                       UserRepository userRepository,
+                       JWTTokenProvider jwtTokenProvider,
+                       AmazonStorageService amazonStorageService,
+                       @Value("${ENDPOINT_URL}") String endpointUrl) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.amazonStorageService = amazonStorageService;
+        this.endpointUrl = endpointUrl;
     }
 
     public void saveUser(UserDto userDto) {
@@ -68,7 +78,9 @@ public class UserService {
 
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email);
-        return userMapper.convertToDto(user);
+        UserDto userDto = userMapper.convertToDto(user);
+        userDto.setPhotoUrl(endpointUrl + user.getPhotoUrl());
+        return userDto;
     }
 
     public UserDto findByUsername(String username) {
@@ -86,12 +98,22 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updateUserPhoto(Long id, String photo) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setPhotoUrl(photo);
+    public void updatePhoto(MultipartFile multipartFile, String email) {
+        User user = userRepository.findUserByEmail(email);
+        if (user.getPhotoUrl() != null) {
+            amazonStorageService.deleteFile(user.getPhotoUrl());
+        }
+        String photoName = amazonStorageService.uploadFile(multipartFile);
+        user.setPhotoUrl(photoName);
         userRepository.save(user);
     }
 
+    public void deletePhoto(String email) {
+        User user = userRepository.findUserByUsername(email);
+        amazonStorageService.deleteFile(user.getPhotoUrl());
+        user.setPhotoUrl(null);
+        userRepository.save(user);
+    }
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
