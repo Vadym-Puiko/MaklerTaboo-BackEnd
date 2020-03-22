@@ -5,7 +5,6 @@ import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.service.UserService;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
