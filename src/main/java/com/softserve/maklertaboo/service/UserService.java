@@ -1,20 +1,24 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
-import com.softserve.maklertaboo.exception.BadEmailOrPasswordException;
+import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
+import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,27 +29,37 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
+    private final AmazonStorageService amazonStorageService;
+    private String endpointUrl;
 
     @Autowired
-    public UserService(UserMapper userMapper, UserRepository userRepository, JWTTokenProvider jwtTokenProvider) {
+    public UserService(UserMapper userMapper,
+                       UserRepository userRepository,
+                       JWTTokenProvider jwtTokenProvider,
+                       AmazonStorageService amazonStorageService,
+                       @Value("${ENDPOINT_URL}") String endpointUrl) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.amazonStorageService = amazonStorageService;
+        this.endpointUrl = endpointUrl;
     }
 
     public void saveUser(UserDto userDto) {
+
         User user = userMapper.convertToEntity(userDto);
+
         userRepository.save(user);
     }
 
-    public String generateToken(Authentication auth){
+    public String generateToken(Authentication auth) {
         return jwtTokenProvider.generateAccessToken(auth);
     }
 
     public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
-        User user = userRepository.findUserByEmail (loginDto.getEmail());
+        User user = userRepository.findUserByEmail(loginDto.getEmail());
         if (user == null) {
-            throw new BadEmailOrPasswordException("Email is not valid");
+            throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
         }
         return new JWTSuccessLogIn(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
@@ -58,13 +72,15 @@ public class UserService {
     }
 
     public UserDto findUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
         return userMapper.convertToDto(user);
     }
 
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email);
-        return userMapper.convertToDto(user);
+        UserDto userDto = userMapper.convertToDto(user);
+        userDto.setPhotoUrl(endpointUrl + user.getPhotoUrl());
+        return userDto;
     }
 
     public UserDto findByUsername(String username) {
@@ -82,12 +98,22 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updateUserPhoto(Long id, String photo) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setPhotoUrl(photo);
+    public void updatePhoto(MultipartFile multipartFile, String email) {
+        User user = userRepository.findUserByEmail(email);
+        if (user.getPhotoUrl() != null) {
+            amazonStorageService.deleteFile(user.getPhotoUrl());
+        }
+        String photoName = amazonStorageService.uploadFile(multipartFile);
+        user.setPhotoUrl(photoName);
         userRepository.save(user);
     }
 
+    public void deletePhoto(String email) {
+        User user = userRepository.findUserByUsername(email);
+        amazonStorageService.deleteFile(user.getPhotoUrl());
+        user.setPhotoUrl(null);
+        userRepository.save(user);
+    }
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
@@ -114,8 +140,8 @@ public class UserService {
     }
 
     public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
-        if(!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())){
-            throw new BadEmailOrPasswordException("Password is not valid");
+        if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
+            throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
         }
         return true;
     }
