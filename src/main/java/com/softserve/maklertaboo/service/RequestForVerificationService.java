@@ -5,16 +5,25 @@ import com.softserve.maklertaboo.dto.request.RequestForUserDto;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
 import com.softserve.maklertaboo.entity.enums.UserRole;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.entity.request.RequestForVerification;
+import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.DataNotFoundException;
 import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
+import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.request.RequestBaseRepository;
 import com.softserve.maklertaboo.repository.request.RequestForFlatVerificationRepository;
 import com.softserve.maklertaboo.repository.request.RequestForUserVerificationRepository;
+import com.softserve.maklertaboo.repository.user.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class RequestForVerificationService {
     private final RequestForFlatVerificationRepository requestFlatRepository;
@@ -30,12 +40,14 @@ public class RequestForVerificationService {
     private final UserService userService;
     private final RequestForUserMapper requestForUserMapper;
     private final RequestForFlatMapper requestForFlatMapper;
+    private final UserRepository userRepository;
+    private final FlatRepository flatRepository;
 
     @Autowired
     public RequestForVerificationService(RequestForFlatVerificationRepository requestForFlatVerificationRepository,
                                          RequestForUserVerificationRepository requestForUserVerificationRepository,
                                          FlatService flatService, UserService userService,
-                                         RequestForUserMapper requestForUserMapper, RequestForFlatMapper requestForFlatMapper) {
+                                         RequestForUserMapper requestForUserMapper, RequestForFlatMapper requestForFlatMapper, UserRepository userRepository, FlatRepository flatRepository) {
 
         this.requestFlatRepository = requestForFlatVerificationRepository;
         this.requestUserRepository = requestForUserVerificationRepository;
@@ -43,6 +55,8 @@ public class RequestForVerificationService {
         this.userService = userService;
         this.requestForUserMapper = requestForUserMapper;
         this.requestForFlatMapper = requestForFlatMapper;
+        this.userRepository = userRepository;
+        this.flatRepository = flatRepository;
     }
 
     public void createRequestForUserVerification(RequestForUserDto requestForUserDto, RequestForVerificationType type) {
@@ -136,4 +150,69 @@ public class RequestForVerificationService {
         requestForVerification.setVerificationDate(new Date());
         requestBaseRepository.save(requestForVerification);
     }
+
+
+    public Page<RequestForFlatVerification> getRequestsForFlatVerification(Integer page, Integer size,
+                                                                           RequestForVerificationStatus status) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("creationDate")));
+        return requestFlatRepository.findAllByStatus(pageable, status);
+    }
+
+    public Page<RequestForUserVerification> getRequestsForRenterVerification(Integer page, Integer size,
+                                                                             RequestForVerificationStatus status) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("creationDate")));
+        return requestUserRepository.findAllByStatusAndType(pageable, status, RequestForVerificationType.RENTER);
+    }
+
+    public Page<RequestForUserVerification> getRequestsForLandlordVerification(Integer page, Integer size,
+                                                                               RequestForVerificationStatus status) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("creationDate")));
+        return requestUserRepository.findAllByStatusAndType(pageable, status, RequestForVerificationType.LANDLORD);
+    }
+
+    public Page<RequestForUserVerification> getRequestsForModeratorVerification(Integer page, Integer size,
+                                                                                RequestForVerificationStatus status) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("creationDate")));
+        return requestUserRepository.findAllByStatusAndType(pageable, status, RequestForVerificationType.MODERATOR);
+    }
+
+    public void reviewFlatRequest(Long id) {
+        RequestForFlatVerification request = getRequestsForFlatVerificationById(id);
+        request.setStatus(RequestForVerificationStatus.VIEWED);
+        requestFlatRepository.save(request);
+    }
+
+    public void reviewUserRequest(Long id) {
+        RequestForUserVerification request = getRequestsForUserVerificationById(id);
+        request.setStatus(RequestForVerificationStatus.VIEWED);
+        requestUserRepository.save(request);
+    }
+
+
+    public Long getCountOfNewRequests(RequestForVerificationStatus status) {
+        return requestFlatRepository.countAllByStatus(status) +
+                requestUserRepository.countAllByStatus(status);
+    }
+
+    public void createFlatRequest(Flat flat) {
+        RequestForFlatVerification request = new RequestForFlatVerification();
+        request.setFlat(flat);
+        request.setAuthor(flat.getOwner());
+        requestFlatRepository.save(request);
+    }
+
+    public void createRenterRequest(User user) {
+        RequestForUserVerification request = new RequestForUserVerification();
+        request.setAuthor(user);
+        request.setType(RequestForVerificationType.RENTER);
+        requestUserRepository.save(request);
+    }
+
+    public void createLandlordRequest(User user) {
+        RequestForUserVerification request = new RequestForUserVerification();
+        request.setAuthor(user);
+        request.setType(RequestForVerificationType.LANDLORD);
+        requestUserRepository.save(request);
+    }
+
 }

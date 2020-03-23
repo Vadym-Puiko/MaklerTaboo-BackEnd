@@ -2,14 +2,13 @@ package com.softserve.maklertaboo.controller;
 
 import com.softserve.maklertaboo.dto.request.RequestForFlatDto;
 import com.softserve.maklertaboo.dto.request.RequestForUserDto;
+import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
 import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.service.RequestForVerificationService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @CrossOrigin
@@ -29,57 +28,38 @@ public class RequestForVerificationController {
         this.requestForUserMapper = requestForUserMapper;
     }
 
-    @GetMapping("/flats")
-    public List<RequestForFlatDto> getRequestsForFlats() {
-        return requestForVerificationService
-                .getAllRequestsForFlatVerification().stream()
-                .map(requestForFlatMapper::convertToDto)
-                .collect(Collectors.toList());
+    @GetMapping(path = "/flats", params = {"page", "size", "status"})
+    public Page<RequestForFlatDto> getRequestsForFlats(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                       @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                                       @RequestParam(name = "status", defaultValue = "NEW") RequestForVerificationStatus status) {
+        return requestForVerificationService.getRequestsForFlatVerification(page, size, status)
+                .map(requestForFlatMapper::convertToDto);
     }
 
-    @GetMapping("/users/renters")
-    public List<RequestForUserDto> getRequestsForRenters() {
-        return requestForVerificationService
-                .getAllRequestsForRenterVerification().stream()
-                .map(requestForUserMapper::convertToDto)
-                .collect(Collectors.toList());
+    @GetMapping(path = "/renters", params = {"page", "size", "status"})
+    public Page<RequestForUserDto> getRequestsForRenters(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                         @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                                         @RequestParam(name = "status", defaultValue = "NEW") RequestForVerificationStatus status) {
+        return requestForVerificationService.getRequestsForRenterVerification(page, size, status)
+                .map(requestForUserMapper::convertToDto);
     }
 
-    @GetMapping("/users/landlords")
-    public List<RequestForUserDto> getRequestsForLandlords() {
-        return requestForVerificationService
-                .getAllRequestsForLandlordVerification().stream()
-                .map(requestForUserMapper::convertToDto)
-                .collect(Collectors.toList());
+    @GetMapping(path = "/landlords", params = {"page", "size", "status"})
+    public Page<RequestForUserDto> getRequestsForLandlords(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                           @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                                           @RequestParam(name = "status", defaultValue = "NEW") RequestForVerificationStatus status) {
+        return requestForVerificationService.getRequestsForLandlordVerification(page, size, status)
+                .map(requestForUserMapper::convertToDto);
     }
 
-    @GetMapping("/users/moderators")
-    public List<RequestForUserDto> getRequestsForModerators() {
-        return requestForVerificationService
-                .getAllRequestsForModeratorVerification().stream()
-                .map(requestForUserMapper::convertToDto)
-                .collect(Collectors.toList());
+    @GetMapping(path = "/moderators", params = {"page", "size", "status"})
+    public Page<RequestForUserDto> getRequestsForModerators(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                            @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                                            @RequestParam(name = "status", defaultValue = "NEW") RequestForVerificationStatus status) {
+        return requestForVerificationService.getRequestsForModeratorVerification(page, size, status)
+                .map(requestForUserMapper::convertToDto);
     }
 
-    @PostMapping("/create/renter")
-    public void createRenterRequest(@RequestBody RequestForUserDto requestDto) {
-        requestForVerificationService.createRequestForUserVerification(requestDto, RequestForVerificationType.RENTER);
-    }
-
-    @PostMapping("/create/landlord")
-    public void createLandlordRequest(@RequestBody RequestForUserDto requestDto) {
-        requestForVerificationService.createRequestForUserVerification(requestDto, RequestForVerificationType.LANDLORD);
-    }
-
-    @PostMapping("/create/moderator")
-    public void createModeratorRequest(@RequestBody RequestForUserDto requestDto) {
-        requestForVerificationService.createRequestForUserVerification(requestDto, RequestForVerificationType.MODERATOR);
-    }
-
-    @PostMapping("/create/flat")
-    public void createFlatRequest(@RequestBody RequestForFlatDto requestDto) {
-        requestForVerificationService.createRequestForFlatVerification(requestDto);
-    }
 
     @PutMapping("/flats/{id}/approve")
     public void approveRequestForFlat(@PathVariable Long id) {
@@ -99,6 +79,22 @@ public class RequestForVerificationController {
     @PutMapping("/users/{id}/decline")
     public void declineRequestForUser(@PathVariable Long id) {
         requestForVerificationService.declineUserRequest(id);
+    }
+
+    @PutMapping("/review/flat/{id}")
+    public void reviewFlatRequest(@PathVariable Long id) {
+        requestForVerificationService.reviewFlatRequest(id);
+    }
+
+    @PutMapping("/review/user/{id}")
+    public void reviewUserRequest(@PathVariable Long id) {
+        requestForVerificationService.reviewUserRequest(id);
+    }
+
+    @GetMapping("/new")
+    public Long getCountOfNewRequests() {
+        return requestForVerificationService.getCountOfNewRequests(RequestForVerificationStatus.NEW);
+
     }
 
 }

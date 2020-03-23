@@ -21,5 +21,4 @@ public interface FlatRepository extends JpaRepository<Flat, Long> {
 
     long countAllByCreationDateBetween(Date start, Date end);
 
-
 }

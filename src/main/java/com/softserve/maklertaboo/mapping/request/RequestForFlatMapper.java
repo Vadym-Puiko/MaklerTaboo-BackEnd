@@ -1,6 +1,7 @@
 package com.softserve.maklertaboo.mapping.request;
 
 import com.softserve.maklertaboo.dto.request.RequestForFlatDto;
+import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.user.User;
@@ -45,6 +46,7 @@ public class RequestForFlatMapper implements MapperToDto<RequestForFlatVerificat
 
         requestForFlatDto.setStatus(requestForFlat.getStatus());
 
+
         requestForFlatDto.setFlat(flatMapper.convertToDto(requestForFlat.getFlat()));
 
         requestForFlatDto.setAuthor(userMapper.convertToDto(requestForFlat.getAuthor()));
@@ -55,8 +57,6 @@ public class RequestForFlatMapper implements MapperToDto<RequestForFlatVerificat
     @Override
     public RequestForFlatVerification convertToEntity(RequestForFlatDto dto) {
         RequestForFlatVerification requestForFlatVerification = new RequestForFlatVerification();
-
-        requestForFlatVerification.setCreationDate(dto.getCreationDate());
 
         User user = userRepository.findById(dto.getAuthor().getId()).orElseThrow(IllegalAccessError::new);
 

@@ -45,11 +45,11 @@ public class RequestForUserMapper implements MapperToDto<RequestForUserVerificat
 
         RequestForUserVerification request = new RequestForUserVerification();
 
+        request.setType(dto.getType());
+
         User user = userRepository.findById(dto.getAuthor().getId()).orElseThrow(IllegalAccessError::new);
 
         request.setAuthor(user);
-
-        request.setCreationDate(dto.getCreationDate());
 
         return request;
     }
