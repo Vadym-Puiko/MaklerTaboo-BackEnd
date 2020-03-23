@@ -5,7 +5,6 @@ import com.softserve.maklertaboo.dto.flat.FlatSearchParametersDto;
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
 import com.softserve.maklertaboo.mapping.flat.FlatDetailMapper;
 import com.softserve.maklertaboo.mapping.flat.FlatMapper;
-import com.softserve.maklertaboo.repository.search.FlatFullTextSearch;
 import com.softserve.maklertaboo.service.FlatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/flat")
 public class FlatController {

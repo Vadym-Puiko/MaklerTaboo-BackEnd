@@ -3,7 +3,6 @@ package com.softserve.maklertaboo.entity.chat;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,10 +17,9 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull
+    /*@NonNull*/
     @OneToMany(cascade = CascadeType.ALL)
     private List<Message> messages;
-
 
     @ManyToOne
     private User sender;

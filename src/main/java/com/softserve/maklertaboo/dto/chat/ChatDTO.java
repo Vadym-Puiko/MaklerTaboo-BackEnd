@@ -10,8 +10,10 @@ import lombok.Setter;
 
 public class ChatDTO {
     private Long id;
-    private String message;
+    private String messages;
     private Long senderId;
-    private String username;
+    private Long receiverId;
+    private String senderUsername;
+    private String receiverUsername;
     private Long chatId;
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class ChatController {
     }
 
     @GetMapping("/chats/{id}")
-    public List<ChatDTO> getCurrentChatsByUserId(@PathVariable Long id) {
+        public List<ChatDTO> getCurrentChatsByUserId(@Valid @PathVariable Long id) {
         log.info("MessagesController get chats by userId");
         return chatService.getChatByUserId(id)
                 .stream()
@@ -43,4 +44,6 @@ public class ChatController {
     public Long getChat(@RequestParam String recieverName, @RequestParam Long senderId) {
         return chatService.getChatId(recieverName, senderId);
     }
+
+
 }
