@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @AllArgsConstructor
 public class UserMapper implements MapperToDto<User, UserDto>, MapperToEntity<UserDto, User> {
@@ -33,6 +35,7 @@ public class UserMapper implements MapperToDto<User, UserDto>, MapperToEntity<Us
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setPhoneNumber(userDto.getPhoneNumber());
         user.setPhotoUrl(userDto.getPhotoUrl());
+        user.setRefreshKey(UUID.randomUUID().toString());
         return user;
     }
 
