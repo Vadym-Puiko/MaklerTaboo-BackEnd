@@ -5,6 +5,7 @@ import com.softserve.maklertaboo.security.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +30,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private AuthenticationManager authenticationManager;
     private UserDetailsServiceImpl userDetailsService;
 
+    @Value("${spring.security.token.secret}")
+    private String secret;
+
     @Autowired
     public JWTAuthenticationFilter(JWTTokenProvider jwtTokenProvider, @Lazy AuthenticationManager authenticationManager,
                                    UserDetailsServiceImpl userDetailsService) {
@@ -40,8 +44,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String accessToken = httpServletRequest.getHeader("accessToken");
-            if (StringUtils.hasText(accessToken) && jwtTokenProvider.isTokenValid(accessToken)) {
+            String accessToken = httpServletRequest.getHeader("Authorization");
+            if (StringUtils.hasText(accessToken) && jwtTokenProvider.isTokenValid(accessToken, secret)) {
                 String email = jwtTokenProvider.getEmailFromJWT(accessToken);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
