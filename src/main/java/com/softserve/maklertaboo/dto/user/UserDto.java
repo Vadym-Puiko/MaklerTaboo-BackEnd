@@ -17,7 +17,7 @@ public class UserDto {
     @Email(message = "Email should be valid")
     private String email;
     @NotBlank
-    @Length(min = 6)
+    @Length(min = 6, max = 30)
     private String password;
     @NotBlank
     private String phoneNumber;
