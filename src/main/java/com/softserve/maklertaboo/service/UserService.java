@@ -109,7 +109,7 @@ public class UserService {
     }
 
     public void deletePhoto(String email) {
-        User user = userRepository.findUserByUsername(email);
+        User user = userRepository.findUserByEmail(email);
         amazonStorageService.deleteFile(user.getPhotoUrl());
         user.setPhotoUrl(null);
         userRepository.save(user);
