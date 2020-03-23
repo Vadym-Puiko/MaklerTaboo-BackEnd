@@ -1,4 +1,5 @@
 package com.softserve.maklertaboo.controller;
+
 import com.softserve.maklertaboo.dto.flat.FlatDetailDto;
 import com.softserve.maklertaboo.dto.flat.FlatDto;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParametersDto;

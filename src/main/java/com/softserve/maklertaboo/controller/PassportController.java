@@ -7,6 +7,7 @@ import com.softserve.maklertaboo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 
 @RestController
@@ -26,18 +27,9 @@ public class PassportController {
         return passportService.getPassport(id);
     }
 
-    @GetMapping("/user/{id}")
-    public UserDto getUserData(@PathVariable Long id) {
-        return userService.findUserById(id);
-    }
-
     @RequestMapping(value = "/passport/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void updatePassportData(@PathVariable Long id, @RequestBody @Valid PassportDto passportDto) {
         passportService.updatePassport(id, passportDto);
     }
 
-    @RequestMapping(value = "/userUpdate/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updateUserData(@PathVariable Long id, @RequestBody @Valid UserDto userDto) {
-        userService.updateUser(id, userDto);
-    }
 }
