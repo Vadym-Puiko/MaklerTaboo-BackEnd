@@ -20,6 +20,6 @@ public class QuartzSubmitJobs {
 
     @Bean(name = "FlatsMailingJobTrigger")
     public CronTriggerFactoryBean triggerMemberClassStats(@Qualifier("FlatsMailingJob") JobDetail jobDetail) {
-        return QuartzConfig.createCronTrigger(jobDetail, CRON_EVERY_ONE_MINUTE, "Flats Mailing Job Trigger");
+        return QuartzConfig.createCronTrigger(jobDetail, CRON_EVERY_HALF_AN_HOUR, "Flats Mailing Job Trigger");
     }
 }

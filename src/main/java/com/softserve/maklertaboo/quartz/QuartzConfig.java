@@ -38,8 +38,6 @@ public class QuartzConfig {
         SchedulerFactoryBean schedulerFactory = new SchedulerFactoryBean();
 
         Properties properties = new Properties();
-        properties.setProperty("org.quartz.scheduler.instanceName", "MyInstanceName");
-        properties.setProperty("org.quartz.scheduler.instanceId", "Instance1");
 
         schedulerFactory.setOverwriteExistingJobs(true);
         schedulerFactory.setAutoStartup(true);

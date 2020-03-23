@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.service.job;
 
+import com.softserve.maklertaboo.service.CachingService;
 import com.softserve.maklertaboo.service.MailingService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -13,9 +14,12 @@ public class FlatsMailingJob implements Job {
     @Autowired
     private MailingService mailingService;
 
+    @Autowired
+    private CachingService cachingService;
+
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         mailingService.checkFlatsByUserRequests();
-        System.out.println("job works, BUT !!! check email");
+        cachingService.evictAllCacheValues("flats");
     }
 }
