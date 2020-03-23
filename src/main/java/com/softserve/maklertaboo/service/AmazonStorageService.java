@@ -6,6 +6,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -96,7 +97,8 @@ public class AmazonStorageService {
      * @author Vadym Puiko
      */
     public void deleteFile(String fileUrl) {
-        s3client.deleteObject(bucketName, fileUrl);
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+        s3client.deleteObject(bucketName, fileName);
         log.info("Successfully deleted");
     }
 
