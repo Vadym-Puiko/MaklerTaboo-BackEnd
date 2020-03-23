@@ -7,6 +7,7 @@ import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.service.RequestForVerificationService;
 import com.softserve.maklertaboo.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 
 @RestController
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping("/admin")
 public class AdminController {
 
