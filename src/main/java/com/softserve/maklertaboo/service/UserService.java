@@ -110,7 +110,7 @@ public class UserService {
     }
 
     public void deletePhoto(String email) {
-        User user = userRepository.findUserByUsername(email);
+        User user = userRepository.findUserByEmail(email);
         amazonStorageService.deleteFile(user.getPhotoUrl());
         user.setPhotoUrl(null);
         userRepository.save(user);
@@ -128,15 +128,9 @@ public class UserService {
         return userRepository.findAll(pageable).map(userMapper::convertToDto);
     }
 
-    public void makeLandlord(Long id) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setRole(UserRole.ROLE_LANDLORD);
-        userRepository.save(user);
-    }
-
-    public void makeModerator(Long id) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setRole(UserRole.ROLE_MODERATOR);
+    public void updateRole(Long userId, UserRole role) {
+        User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+        user.setRole(role);
         userRepository.save(user);
     }
 
