@@ -12,6 +12,7 @@ import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.search.FlatFullTextSearch;
 import com.softserve.maklertaboo.repository.search.FlatSearchRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.service.mailer.BASE64DecodedMultipartFile;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
@@ -36,6 +37,8 @@ public class FlatService {
     private final TagService tagService;
     private final UserRepository userRepository;
     private final FlatMapper flatMapper;
+    private final AmazonStorageService amazonStorageService;
+    ;
 
     @Autowired
     public FlatService(FlatRepository flatRepository,
@@ -45,7 +48,8 @@ public class FlatService {
                        FlatSearchMapper flatSearchMapper,
                        TagService tagService,
                        UserRepository userRepository,
-                       FlatMapper flatMapper) {
+                       FlatMapper flatMapper,
+                       AmazonStorageService amazonStorageService) {
         this.flatRepository = flatRepository;
         this.flatSearchRepository = flatSearchRepository;
         this.newFlatMapper = newFlatMapper;
@@ -54,6 +58,7 @@ public class FlatService {
         this.tagService = tagService;
         this.userRepository = userRepository;
         this.flatMapper = flatMapper;
+        this.amazonStorageService = amazonStorageService;
     }
 
     @Cacheable("flats")
@@ -87,13 +92,16 @@ public class FlatService {
 
             FlatPhoto flatPhoto = new FlatPhoto();
             flatPhoto.setFlat(flat);
-            flatPhoto.setUrl(base64);
+            flatPhoto.setUrl(
+                    amazonStorageService
+                            .uploadFile(BASE64DecodedMultipartFile
+                                    .base64ToMultipart(base64)));
             photos.add(flatPhoto);
         }
         flat.setFlatPhotoList(photos);
         flat.setTags(tagService.getTags(newFlatDto.getTags()));
         flat.setOwner(
-                userRepository.getByUsername(newFlatDto.getUsername())
+                userRepository.findUserByEmail(newFlatDto.getEmail())
         );
         flat.setCreationDate(new Date());
         flatRepository.save(flat);
@@ -116,4 +124,5 @@ public class FlatService {
             flatRepository.save(flat);
         }
     }
+
 }

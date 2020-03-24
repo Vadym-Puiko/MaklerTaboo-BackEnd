@@ -3,6 +3,7 @@ package com.softserve.maklertaboo.controller;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParametersDto;
 import com.softserve.maklertaboo.entity.Subscription;
 import com.softserve.maklertaboo.entity.flat.FlatSearchParameters;
+import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import com.softserve.maklertaboo.service.MailingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,9 +17,12 @@ public class UpdateSubscriptionController {
 
     private final MailingService mailingService;
 
+    private final JWTTokenProvider jwtTokenProvider;
+
     @Autowired
-    public UpdateSubscriptionController(MailingService mailingService) {
+    public UpdateSubscriptionController(MailingService mailingService,JWTTokenProvider jwtTokenProvider) {
         this.mailingService = mailingService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @GetMapping("{userId}")
@@ -27,8 +31,8 @@ public class UpdateSubscriptionController {
     }
 
     @PostMapping
-    public void subscribe(@RequestBody FlatSearchParametersDto parameters, @RequestHeader("accestoken") String token){
-        System.out.println(token);
-        //mailingService.subscribe(parameters,email);
+    public void subscribe(@RequestBody FlatSearchParametersDto parameters, @RequestHeader("Authorization") String token){
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        mailingService.subscribe(parameters,email);
     }
 }

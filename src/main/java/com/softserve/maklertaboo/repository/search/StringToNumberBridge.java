@@ -20,8 +20,6 @@ public class StringToNumberBridge implements TwoWayStringBridge {
                 {
                     decimalPoint=rawInteger.substring(rawInteger.indexOf("."));
                     rawInteger=rawInteger.substring(0,rawInteger.indexOf("."));
-                    System.out.println(decimalPoint);
-                    System.out.println(rawInteger);
                 }
                 if (rawInteger.length() > padding)
                     throw new IllegalArgumentException("Try to pad on a number too big");
