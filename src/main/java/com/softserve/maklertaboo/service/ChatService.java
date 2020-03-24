@@ -23,7 +23,7 @@ public class ChatService {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
     }
-
+    
     public Chat createChat(Chat chat) {
         return chatRepository.save(chat);
     }

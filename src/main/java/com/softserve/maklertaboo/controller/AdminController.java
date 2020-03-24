@@ -15,7 +15,7 @@ import static com.softserve.maklertaboo.utils.DateUtils.asDate;
 
 @CrossOrigin
 @RestController
-@PreAuthorize("hasRole('ROLE_ADMIN')")
+@PreAuthorize("ROLE_ADMIN")
 @RequestMapping("/admin")
 public class AdminController {
 
