@@ -4,9 +4,10 @@ import com.softserve.maklertaboo.entity.chat.Message;
 import com.softserve.maklertaboo.repository.chat.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -20,21 +21,11 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
-/*    public void updateMessage(Long id){
-        Optional<Message> message = messageRepository.findById(id);
-        if(message.isPresent()){
-            messageRepository.updateById(id);
-        }
-    }*/
-
-
     public void updateMessage(Long id, String content) {
         Message message = messageRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         message.setContent(content);
         messageRepository.save(message);
     }
-
-
 
     public void deleteMessage(Long id) {
         Optional<Message> message = messageRepository.findById(id);
@@ -43,7 +34,7 @@ public class MessageService {
         }
     }
 
-    public List<Message> getMessageByChatId(Long chatId) {
-        return messageRepository.findAllByChatId(chatId);
+    public Page<Message> getMessageByChatId(Long chatId, Pageable pageable) {
+        return messageRepository.findAllByChatId(chatId, pageable);
     }
 }
