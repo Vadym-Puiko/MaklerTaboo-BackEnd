@@ -7,6 +7,7 @@ import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
 import com.softserve.maklertaboo.exception.exceptions.BadRefreshTokenException;
+import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExists;
 import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
@@ -51,10 +52,15 @@ public class UserService {
     }
 
     public void saveUser(UserDto userDto) {
-
-        User user = userMapper.convertToEntity(userDto);
-
-        userRepository.save(user);
+        User userByName = userRepository.findUserByUsername(userDto.getUsername());
+        User userByEmail = userRepository.findUserByEmail(userDto.getEmail());
+        User userByPhone = userRepository.findUserByPhoneNumber(userDto.getPhoneNumber());
+        if ((userByName != null) || (userByEmail != null) || (userByPhone != null)) {
+            throw new UserAlreadyExists(ErrorMessage.USER_ALREADY_EXISTS);
+        } else {
+            User user = userMapper.convertToEntity(userDto);
+            userRepository.save(user);
+        }
     }
 
     public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
@@ -86,6 +92,11 @@ public class UserService {
 
     public UserDto findByUsername(String username) {
         User user = userRepository.findUserByUsername(username);
+        return userMapper.convertToDto(user);
+    }
+
+    public UserDto findUserByPhoneNumber(String phoneNumber) {
+        User user = userRepository.findUserByPhoneNumber(phoneNumber);
         return userMapper.convertToDto(user);
     }
 
@@ -149,7 +160,7 @@ public class UserService {
         } catch (ExpiredJwtException e) {
             throw new BadRefreshTokenException("Refresh token is not valid");
         }
-        User user = userRepository.findUserByEmail (email);
+        User user = userRepository.findUserByEmail(email);
         if (user == null) {
             throw new BadEmailOrPasswordException("Email is not valid");
         }

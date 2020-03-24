@@ -7,6 +7,7 @@ import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import com.softserve.maklertaboo.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
@@ -75,7 +76,7 @@ public class UserController {
     })
     @GetMapping("/refreshTokens")
     public ResponseEntity updateAccessToken(@RequestParam @NotBlank String refreshToken,
-                                                             HttpServletResponse response) {
+                                            HttpServletResponse response) {
         JwtTokensDto newTokens = userService.updateAccessTokens(refreshToken);
         response.addHeader("accessToken", newTokens.getAccessToken());
         response.addHeader("refreshToken", newTokens.getRefreshToken());
