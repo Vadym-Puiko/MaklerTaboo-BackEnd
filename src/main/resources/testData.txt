@@ -10,6 +10,24 @@ tags:
     Furniture
     Without Furniture
 
+[
+  "Wash",
+  "Garage",
+  "Pets",
+  "Smoking",
+  "No Smoking",
+  "Hot Water",
+  "Flat",
+  "Furniture",
+  "Without Furniture",
+  "WiFi",
+  "Garden",
+  "Heating",
+  "Houskeeping",
+  "Elevator",
+  "Parking"
+]
+
 user(id 1):
     123qwe
     123qwe
@@ -17,59 +35,280 @@ user(id 1):
 flat1:
     {
       "base64Photos": [
-        "string"
+        "https://r-cf.bstatic.com/images/hotel/max1024x768/233/233124903.jpg", "https://r-cf.bstatic.com/images/hotel/max1024x768/236/236601371.jpg", "https://q-cf.bstatic.com/data/landmark/600x400/188/188299.jpg"
       ],
-      "description": " The reason is that these companies failed to protect customers´ privacy. the past that they must take precautions to keep real-time ",
+      "description": " In the Hammersmith and Fulham district of London, close to Eventim Apollo, A Classic Designer Flat with Garden has a garden, free WiFi and a washing machine. Offering private parking, the apartment is 1.9 km from Olympia Exhibition Centre.",
       "district": "Gal",
-      "flatNumber": 2,
-      "floor": 5,
-      "houseNumber": 1,
+      "flatNumber": 17,
+      "floor": 1,
+      "houseNumber": 57,
       "monthPrice": 9800,
-      "numberOfRooms": 3,
-      "street": "Vul Morg",
+      "numberOfRooms": 22,
+      "street": "Morg str.",
       "tags": [
-        "Wash", "Garage", "Pets","Smoking"
+        "Parking", "Garage", "Pets", "Smoking", "Garden"
       ],
-      "title": "Some officials criticize that the process took too long.",
-      "username": "123qwe"
+      "title": "A Classic Designer Flat with Garden",
+      "username": "FlatFixer"
     }
 
 flat2:
     {
       "base64Photos": [
-        "string"
+        "https://q-cf.bstatic.com/images/hotel/max1024x768/106/10606777.jpg", "https://q-cf.bstatic.com/images/hotel/max1024x768/106/10606938.jpg", "https://q-cf.bstatic.com/images/hotel/max1024x768/106/10606645.jpg","https://q-cf.bstatic.com/images/hotel/max1024x768/106/10606620.jpg"
       ],
-      "description": " Prince Harry and his wife Meghan, the Duchess of Sussex, will lose security provided by the Canadian government. This change is caused by the couple´s decision to step back from their royal duties that will officially happen on March 31.",
+      "description": " 2-minute walk from Monument tube (subway) station, Fraser Residence City features air-conditioned apartments with city views, full kitchens and an iPod docking station. A wide range of restaurants, pubs and shops can be found in the local area.",
       "district": "Frank",
       "flatNumber": 4,
       "floor": 2,
       "houseNumber": 3,
-      "monthPrice": 100,
-      "numberOfRooms": 1,
-      "street": "Vul Nauk",
+      "monthPrice": 8500,
+      "numberOfRooms": 4,
+      "street": "Naukova str.",
       "tags": [
-        "No Smoking", "Hot Water", "Furniture","Without Furniture"
+       "Parking",  "Flat",  "WiFi", "Heating"
       ],
-      "title": "Canadian police have been assisting UK police",
-      "username": "123qwe"
+      "title": "Fraser Residence City",
+      "username": "Polymorphsm_User"
     }
 
 flat3:
     {
       "base64Photos": [
-        "string"
+        "https://q-cf.bstatic.com/images/hotel/max1024x768/247/247779853.jpg", "https://r-cf.bstatic.com/images/hotel/max1024x768/247/247779859.jpg", "https://q-cf.bstatic.com/images/hotel/max1024x768/247/247779871.jpg"
       ],
-      "description": " The Russian-born tennis player, Maria Sharapova, has announced her retirement from the sport at the age of 32. She became famous almost overnight when she beat Serena Williams in the Wimbledon final.",
+      "description": "The apartment comes with 3 bedrooms, a TV with cable channels and a fully equipped kitchen that provides guests with a dishwasher, a microwave, a washing machine, a fridge and an oven.",
       "district": "Zal",
       "flatNumber": 3,
       "floor": 10,
       "houseNumber": 8,
-      "monthPrice": 12500,
+      "monthPrice": 15698,
       "numberOfRooms": 5,
-      "street": "Vul Gorod",
+      "street": "Gorodotska str.",
       "tags": [
-        "For Family"
+        "WiFi", "Heating",  "Parking", "Elevator"
       ],
-      "title": "Since she returned to tennis, she had various shoulder injuries",
-      "username": "123qwe"
+      "title": "Perfect Luxury Apartment in Paddington",
+      "username": "Polymorphsm_User"
     }
+
+flat4:
+    {
+      "base64Photos": [
+        "https://q-cf.bstatic.com/images/hotel/max1024x768/240/240965044.jpg", "https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722279.jpg","https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722082.jpg"
+      ],
+      "description": " Accommodations at Studios2Let features a mix of contemporary design and wooden furnishings. They all come equipped with a flat-screen LCD TV featuring free digital channels and an private bathroom. ",
+      "district": "Frank",
+      "flatNumber": 3,
+      "floor": 9,
+      "houseNumber": 3,
+      "monthPrice": 1500,
+      "numberOfRooms": 1,
+      "street": "Rubchaka str.",
+      "tags": [
+       "Parking",  "Flat", "Garage", "Pets", "Smoking","Wash"
+      ],
+      "title": "Studios2Let - North Gower ",
+      "username": "Polymorphsm_User"
+    }
+
+flat5:
+    {
+      "base64Photos": [
+        "https://q-cf.bstatic.com/images/hotel/max1024x768/185/185838987.jpg", "https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722279.jpg","https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722082.jpg"
+      ],
+      "description": " Accommodations at Studios2Let features a mix of contemporary design and wooden furnishings. They all come equipped with a flat-screen LCD TV featuring free digital channels and an private bathroom. ",
+      "district": "Frank",
+      "flatNumber": 3,
+      "floor": 3,
+      "houseNumber": 58,
+      "monthPrice": 1500,
+      "numberOfRooms": 1,
+      "street": "Stryiska str.",
+      "tags": [
+       "Parking",  "Flat", "Garage", "Pets", "Smoking","Wash"
+      ],
+      "title": "Marbel Apartments",
+      "username": "FlatFixer"
+    }
+
+--flat6:
+    {
+      "base64Photos": [
+        "https://r-cf.bstatic.com/images/hotel/max1024x768/247/247254283.jpg", "https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722279.jpg","https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722082.jpg"
+      ],
+      "description": "London Bridge is 4.3 km from the apartment, while Borough Market is 4.3 km from the property. The nearest airport is London City Airport, 11.3 km from 1, 2 & 3 bedroom new build fully. Southwark is a great choice for travelers interested in architecture, city walks and tourist attractions.",
+      "district": "Frank",
+      "flatNumber": 7,
+      "floor": 2,
+      "houseNumber": 58,
+      "monthPrice": 1500,
+      "numberOfRooms": 1,
+      "street": "Stryiska str.",
+      "tags": [
+       "Pets", "Smoking", "Smoking", "Hot Water", "Flat", "Furniture"
+      ],
+      "title": " a central location in the Les Corts district",
+      "username": "FlatFixer"
+    }
+
+
+
+flat1:
+    {
+      "base64Photos": [
+         "https://r-cf.bstatic.com/images/hotel/max1024x768/236/236601371.jpg", "https://q-cf.bstatic.com/data/landmark/600x400/188/188299.jpg"
+      ],
+      "description": " close to Eventim Apollo, A Classic Designer Flat with Garden has a garden, free WiFi and a washing machine. Offering private parking, the apartment is 1.9 km from Olympia Exhibition Centre.",
+      "district": "Gal",
+      "flatNumber": 17,
+      "floor": 1,
+      "houseNumber": 57,
+      "monthPrice": 9800,
+      "numberOfRooms": 22,
+      "street": "Morg str.",
+      "tags": [
+        "Parking", "Garage", "Pets", "Smoking", "Garden"
+      ],
+      "title": "close to Eventim Apollo",
+      "username": "incapsulated"
+    }
+
+flat2:
+    {
+      "base64Photos": [
+         "https://q-cf.bstatic.com/images/hotel/max1024x768/106/10606938.jpg", "https://q-cf.bstatic.com/images/hotel/max1024x768/106/10606645.jpg","https://q-cf.bstatic.com/images/hotel/max1024x768/106/10606620.jpg"
+      ],
+      "description": "On-site parking Just 5 minutes’ walk from Barcelona’s Mar Bella Beach, these air-conditioned apartments and suites feature a shared outdoor pool and rooftop terrace. Free WiFi is available at Urban District Rambla ",
+      "district": "Frank",
+      "flatNumber": 4,
+      "floor": 2,
+      "houseNumber": 3,
+      "monthPrice": 8500,
+      "numberOfRooms": 4,
+      "street": "Naukova str.",
+      "tags": [
+       "Parking",  "Flat",  "WiFi", "Heating"
+      ],
+      "title": "On-site parking Just 5 minutesites",
+      "username": "incapsulated"
+    }
+
+flat3:
+    {
+      "base64Photos": [
+         "https://r-cf.bstatic.com/images/hotel/max1024x768/247/247779859.jpg", "https://q-cf.bstatic.com/images/hotel/max1024x768/247/247779871.jpg"
+      ],
+      "description": "The apartment comes with 3 bedrooms, a TV with cable channels and a fully equipped kitchen that provides guests with a dishwasher, a microwave, a washing machine, a fridge and an oven.",
+      "district": "Zal",
+      "flatNumber": 3,
+      "floor": 10,
+      "houseNumber": 8,
+      "monthPrice": 15698,
+      "numberOfRooms": 5,
+      "street": "Gorodotska str.",
+      "tags": [
+        "WiFi", "Heating",  "Parking", "Elevator"
+      ],
+      "title": " Apartment apartment comes with ",
+      "username": "LordOfFLATS"
+    }
+
+flat4:
+    {
+      "base64Photos": [
+       "https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722279.jpg","https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722082.jpg"
+      ],
+      "description": " Accommodations at Studios2Let features a mix of contemporary design and wooden furnishings. They all come equipped with a flat-screen LCD TV featuring free digital channels and an private bathroom. ",
+      "district": "Gal",
+      "flatNumber": 3,
+      "floor": 9,
+      "houseNumber": 3,
+      "monthPrice": 1500,
+      "numberOfRooms": 1,
+      "street": "Rubchaka str.",
+      "tags": [
+       "Parking",  "Flat", "Garage", "Pets", "Smoking","Wash"
+      ],
+      "title": "compact flat central",
+      "username": "LordOfFLATS"
+    }
+
+flat5:
+    {
+      "base64Photos": [
+         "https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722279.jpg","https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722082.jpg"
+      ],
+      "description": " Accommodations at Studios2Let features a mix of contemporary design and wooden furnishings. They all come equipped with a flat-screen LCD TV featuring free digital channels and an private bathroom. ",
+      "district": "Shev",
+      "flatNumber": 3,
+      "floor": 3,
+      "houseNumber": 58,
+      "monthPrice": 4300,
+      "numberOfRooms": 1,
+      "street": "Bohdana Hmelnytskoho str.",
+      "tags": [
+       "Pets", "Smoking","Wash"
+      ],
+      "title": "New Spacious 3 Bedroom Apartment",
+      "username": "Polymorphsm_User"
+    }
+
+-flat6:
+    {
+      "base64Photos": [
+        "https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722279.jpg","https://r-cf.bstatic.com/images/hotel/max1024x768/246/246722082.jpg"
+      ],
+      "description": "London Bridge is 4.3 km from the apartment, while Borough Market is 4.3 km from the property. The nearest airport is London City Airport, 11.3 km from 1, 2 & 3 bedroom new build fully. Southwark is a great choice for travelers interested in architecture, city walks and tourist attractions.",
+      "district": "Frank",
+      "flatNumber": 7,
+      "floor": 14,
+      "houseNumber": 58,
+      "monthPrice": 15600,
+      "numberOfRooms": 8,
+      "street": "Stryiska str.",
+      "tags": [
+       "Wash", "Hot Water", "Flat", "Furniture"
+      ],
+      "title": "Stunning Family Apartment",
+      "username": "Polymorphsm_User"
+    }
+
+
+User1:
+        {
+          "email": "string@gmail.com",
+          "id": 0,
+          "password": "string",
+          "phoneNumber": "380675847564",
+          "photoUrl": "string",
+          "username": "Polymorphsm_User"
+        }
+
+User2:
+        {
+          "email": "strlng@gmail.com",
+          "id": 0,
+          "password": "string",
+          "phoneNumber": "380475847564",
+          "photoUrl": "string",
+          "username": "LordOfFLATS"
+        }
+User3:
+        {
+          "email": "strldng@gmail.com",
+          "id": 0,
+          "password": "string",
+          "phoneNumber": "380475857564",
+          "photoUrl": "string",
+          "username": "incapsulated"
+        }
+User4:
+        {
+          "email": "strldng@gmil.com",
+          "id": 0,
+          "password": "string",
+          "phoneNumber": "380475858764",
+          "photoUrl": "string",
+          "username": "FlatFixer"
+        }

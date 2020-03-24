@@ -6,7 +6,7 @@ import org.hibernate.search.bridge.TwoWayStringBridge;
 public class StringToNumberBridge implements TwoWayStringBridge {
 
     public static String PADDING_PROPERTY = "padding";
-    private int padding = 7; //default
+    private int padding = 7;
 
     public String objectToString(Object object) {
 
@@ -20,8 +20,6 @@ public class StringToNumberBridge implements TwoWayStringBridge {
                 {
                     decimalPoint=rawInteger.substring(rawInteger.indexOf("."));
                     rawInteger=rawInteger.substring(0,rawInteger.indexOf("."));
-                    System.out.println(decimalPoint);
-                    System.out.println(rawInteger);
                 }
                 if (rawInteger.length() > padding)
                     throw new IllegalArgumentException("Try to pad on a number too big");
@@ -36,7 +34,6 @@ public class StringToNumberBridge implements TwoWayStringBridge {
             else {
                 return "";
             }
-            //return object.toString();
         }
         catch (Exception e) {
             return null;

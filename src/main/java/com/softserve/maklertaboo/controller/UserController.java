@@ -1,9 +1,11 @@
 package com.softserve.maklertaboo.controller;
 
 import com.softserve.maklertaboo.constant.HttpStatuses;
+import com.softserve.maklertaboo.dto.user.JwtTokensDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
 import com.softserve.maklertaboo.security.dto.LoginDto;
+import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import com.softserve.maklertaboo.service.UserService;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -19,9 +21,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 
@@ -32,6 +36,7 @@ public class UserController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
+    private final JWTTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     @ApiResponses(value = {
@@ -58,10 +63,23 @@ public class UserController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String accessToken = userService.generateToken(authentication);
-        response.addHeader("accessToken", accessToken);
+        response.addHeader("accessToken", jwtTokenProvider.generateAccessToken(authentication));
+        response.addHeader("refreshToken", jwtTokenProvider.generateRefreshToken(authentication));
         return ResponseEntity.ok(jwtSuccessLogIn);
+    }
 
+    @ApiOperation("Updating access token by refresh token")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Refresh token is not valid")
+    })
+    @GetMapping("/refreshTokens")
+    public ResponseEntity updateAccessToken(@RequestParam @NotBlank String refreshToken,
+                                                             HttpServletResponse response) {
+        JwtTokensDto newTokens = userService.updateAccessTokens(refreshToken);
+        response.addHeader("accessToken", newTokens.getAccessToken());
+        response.addHeader("refreshToken", newTokens.getRefreshToken());
+        return ResponseEntity.ok().build();
     }
 
     @ApiResponses(value = {
@@ -149,15 +167,11 @@ public class UserController {
         userService.updateUser(userDto.getId(), userDto);
     }
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = HttpStatuses.OK),
-            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
-    })
-    @PutMapping("/update/{photo}")
-    public void updateUserPhoto(Long id, @PathVariable String photo) {
-        userService.updateUserPhoto(id, photo);
+    @PutMapping("/profile/updatePhoto")
+    public void updateUserPhoto(@RequestPart(value = "file") MultipartFile file,
+                                @RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        userService.updatePhoto(file, email);
     }
 
     @ApiResponses(value = {
@@ -169,6 +183,12 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+    }
+
+    @DeleteMapping("/profile/deletePhoto")
+    public void deletePhoto(@RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        userService.deletePhoto(email);
     }
 }
 

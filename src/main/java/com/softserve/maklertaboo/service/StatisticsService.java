@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
@@ -21,6 +19,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.softserve.maklertaboo.utils.DateUtils.*;
 
 @Service
 public class StatisticsService {
@@ -82,11 +82,6 @@ public class StatisticsService {
                 .collect(Collectors.toList());
     }
 
-    public Long getCountOfRegisteredUsersByDay(LocalDate day) {
-        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
-        return userRepository.countAllByRegistrationDateBetween(asDate(endOfDay.minusDays(1)), asDate(endOfDay));
-    }
-
 
     public List<Long> getCountOfPostedFlatsForLastDays(int numberOfDays) {
         LocalDate date = LocalDate.now().minusDays(numberOfDays);
@@ -96,36 +91,21 @@ public class StatisticsService {
                 .collect(Collectors.toList());
     }
 
-    public Long getCountOfPostedFlatsByDay(LocalDate day) {
-        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
-        return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(asDate(endOfDay.minusDays(1)), asDate(endOfDay));
-    }
-
 
     public List<Long> getCountOfUsersForBetweenMonths(Date from, Date to) {
         LocalDate date = asLocalDate(from);
-        return IntStream.rangeClosed(0, (int) ChronoUnit.MONTHS.between(asLocalDate(from), asLocalDate(to)))
+        return IntStream.rangeClosed(0, monthsBetween(from, to))
                 .mapToObj(date::plusMonths)
                 .map(this::getCountOfUsersBeforeMonth)
                 .collect(Collectors.toList());
     }
 
-    public Long getCountOfUsersBeforeMonth(LocalDate month) {
-        LocalDate endOfMont = month.with(TemporalAdjusters.lastDayOfMonth());
-        return userRepository.countAllByRegistrationDateBefore(asDate(endOfMont));
-    }
-
     public List<Long> getCountOfLandlordsForBetweenMonths(Date from, Date to) {
         LocalDate date = asLocalDate(from);
-        return IntStream.rangeClosed(0, (int) ChronoUnit.MONTHS.between(asLocalDate(from), asLocalDate(to)))
+        return IntStream.rangeClosed(0, monthsBetween(from, to))
                 .mapToObj(date::plusMonths)
                 .map(this::getCountOfLandlordsBeforeMonth)
                 .collect(Collectors.toList());
-    }
-
-    public Long getCountOfLandlordsBeforeMonth(LocalDate month) {
-        LocalDate endOfMont = month.with(TemporalAdjusters.lastDayOfMonth());
-        return requestUserRepository.countAllVerificationDateLessAndStatusIsApproved(asDate(endOfMont), RequestForVerificationType.LANDLORD);
     }
 
 
@@ -137,10 +117,6 @@ public class StatisticsService {
                 .collect(Collectors.toList());
     }
 
-    public Long getCountOfPostedUsersCommentsFlatsByDay(LocalDate day) {
-        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
-        return userCommentRepository.countAllByPublicationDateBetween(endOfDay.minusDays(1), endOfDay);
-    }
 
     public List<Long> getCountOfPostedFlatsCommentsFlatsLastDays(int numberOfDays) {
         LocalDate date = LocalDate.now().minusDays(numberOfDays);
@@ -150,36 +126,43 @@ public class StatisticsService {
                 .collect(Collectors.toList());
     }
 
-    public Long getCountOfPostedFlatsCommentsFlatsByDay(LocalDate day) {
-        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
-        return flatCommentRepository.countAllByPublicationDateBetween(endOfDay.minusDays(1), endOfDay);
-    }
-
 
     public List<String> getNameOfMonthsInRange(Date from, Date to) {
         LocalDate date = asLocalDate(from);
-        return IntStream.rangeClosed(0, (int) ChronoUnit.MONTHS.between(asLocalDate(from), asLocalDate(to)))
+        return IntStream.rangeClosed(0, monthsBetween(from, to))
                 .mapToObj(date::plusMonths)
                 .map(LocalDate::getMonth)
                 .map(Objects::toString)
                 .collect(Collectors.toList());
     }
 
-    private Date asDate(LocalDate localDate) {
-        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    private Long getCountOfPostedFlatsCommentsFlatsByDay(LocalDate day) {
+        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
+        return flatCommentRepository.countAllByPublicationDateBetween(endOfDay.minusDays(1), endOfDay);
     }
 
-    private Date asDate(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    private Long getCountOfRegisteredUsersByDay(LocalDate day) {
+        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
+        return userRepository.countAllByRegistrationDateBetween(asDate(endOfDay.minusDays(1)), asDate(endOfDay));
     }
 
-    private LocalDate asLocalDate(Date date) {
-        return date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+    private Long getCountOfPostedFlatsByDay(LocalDate day) {
+        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
+        return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(asDate(endOfDay.minusDays(1)), asDate(endOfDay));
     }
 
-    private LocalDateTime asLocalDateTime(LocalDate localDate) {
-        return LocalDateTime.of(localDate, LocalTime.now());
+    private Long getCountOfUsersBeforeMonth(LocalDate month) {
+        LocalDate endOfMonth = month.with(TemporalAdjusters.lastDayOfMonth());
+        return userRepository.countAllByRegistrationDateBefore(asDate(endOfMonth));
+    }
+
+    private Long getCountOfLandlordsBeforeMonth(LocalDate month) {
+        LocalDate endOfMonth = month.with(TemporalAdjusters.lastDayOfMonth());
+        return requestUserRepository.countAllVerificationDateLessAndStatusIsApproved(asDate(endOfMonth), RequestForVerificationType.LANDLORD);
+    }
+
+    private Long getCountOfPostedUsersCommentsFlatsByDay(LocalDate day) {
+        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
+        return userCommentRepository.countAllByPublicationDateBetween(endOfDay.minusDays(1), endOfDay);
     }
 }
