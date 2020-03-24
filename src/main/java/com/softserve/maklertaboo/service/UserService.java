@@ -1,26 +1,31 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.dto.user.JwtTokensDto;
 import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
+import com.softserve.maklertaboo.exception.exceptions.BadRefreshTokenException;
 import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,10 +55,6 @@ public class UserService {
         User user = userMapper.convertToEntity(userDto);
 
         userRepository.save(user);
-    }
-
-    public String generateToken(Authentication auth) {
-        return jwtTokenProvider.generateAccessToken(auth);
     }
 
     public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
@@ -109,7 +110,7 @@ public class UserService {
     }
 
     public void deletePhoto(String email) {
-        User user = userRepository.findUserByUsername(email);
+        User user = userRepository.findUserByEmail(email);
         amazonStorageService.deleteFile(user.getPhotoUrl());
         user.setPhotoUrl(null);
         userRepository.save(user);
@@ -127,15 +128,9 @@ public class UserService {
         return userRepository.findAll(pageable).map(userMapper::convertToDto);
     }
 
-    public void makeLandlord(Long id) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setRole(UserRole.ROLE_LANDLORD);
-        userRepository.save(user);
-    }
-
-    public void makeModerator(Long id) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setRole(UserRole.ROLE_MODERATOR);
+    public void updateRole(Long userId, UserRole role) {
+        User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+        user.setRole(role);
         userRepository.save(user);
     }
 
@@ -144,5 +139,27 @@ public class UserService {
             throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
         }
         return true;
+    }
+
+    @Transactional
+    public JwtTokensDto updateAccessTokens(String refreshToken) {
+        String email;
+        try {
+            email = jwtTokenProvider.getEmailFromJWT(refreshToken);
+        } catch (ExpiredJwtException e) {
+            throw new BadRefreshTokenException("Refresh token is not valid");
+        }
+        User user = userRepository.findUserByEmail (email);
+        if (user == null) {
+            throw new BadEmailOrPasswordException("Email is not valid");
+        }
+        userRepository.updateRefreshKey(UUID.randomUUID().toString(), user.getId());
+        if (jwtTokenProvider.isTokenValid(refreshToken, user.getRefreshKey())) {
+            return new JwtTokensDto(
+                    jwtTokenProvider.generateAccessToken(SecurityContextHolder.getContext().getAuthentication()),
+                    jwtTokenProvider.generateRefreshToken(SecurityContextHolder.getContext().getAuthentication())
+            );
+        }
+        throw new BadRefreshTokenException("Refresh token is not valid");
     }
 }

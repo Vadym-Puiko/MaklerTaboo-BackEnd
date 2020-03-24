@@ -1,9 +1,10 @@
 package com.softserve.maklertaboo.entity.enums;
 
 public enum RequestForVerificationStatus {
+    NEW,
+    VIEWED,
     APPROVED,
-    DECLINED,
-    VERIFYING;
+    DECLINED;
 
     public String getStatus() {
         return this.name();

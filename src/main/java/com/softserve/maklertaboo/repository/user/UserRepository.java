@@ -5,6 +5,8 @@ import com.softserve.maklertaboo.entity.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -29,5 +31,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     long countAllByRegistrationDateBetween(Date start, Date end);
 
     long countAllByRegistrationDateBefore(Date start);
+
+    @Modifying
+    @Query("update User u set u.refreshKey= ?1 where u.id = ?2")
+    void updateRefreshKey(String secret, Long id);
+
 
 }

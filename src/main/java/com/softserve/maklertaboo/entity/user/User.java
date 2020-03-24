@@ -51,11 +51,13 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<UserComment> userComments;
 
+    @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()")
+    private Date registrationDate;
+
+    private String refreshKey;
+
     @PrePersist
     public void prePersist() {
         setRole(UserRole.ROLE_USER);
     }
-
-    @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()")
-    private Date registrationDate;
 }
