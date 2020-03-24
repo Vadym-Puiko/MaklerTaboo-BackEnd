@@ -27,9 +27,6 @@ public class FlatFullTextSearch {
     private EntityManager entityManager;
 
     @Autowired
-    private FlatSearchRepository flatSearchRepository;
-
-    @Autowired
     public FlatFullTextSearch(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
