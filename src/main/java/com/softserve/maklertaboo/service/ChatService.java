@@ -27,6 +27,15 @@ public class ChatService {
         this.userRepository = userRepository;
     }
 
+
+    public Chat createChat(Chat chat) {
+        return chatRepository.save(chat);
+    }
+
+    public Chat createChatbyId(Chat chat) {
+        return chatRepository.save(chat);
+    }
+
     public Chat getChatById(Long chatId) {
         return chatRepository.findById(chatId).orElseThrow(IllegalArgumentException::new);
     }

@@ -5,6 +5,7 @@ import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.lang.annotation.Retention;
 import java.time.LocalDate;
 import java.util.List;
 
