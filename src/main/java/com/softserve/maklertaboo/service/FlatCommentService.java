@@ -54,6 +54,10 @@ public class FlatCommentService {
     }
     public void saveCommentAboutComment(FlatCommentDto flatCommentDto){
         FlatComment flatComment=flatCommentMapper.convertToEntity(flatCommentDto);
+        String accessToken = httpServletRequest.getHeader("Authorization");
+        String email = jwtTokenProvider.getEmailFromJWT(accessToken);
+        User user = userRepository.findUserByEmail(email);
+        flatComment.setUserAuthor(user);
         flatCommentRepository.save(flatComment);
     }
 
