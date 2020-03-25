@@ -23,16 +23,23 @@ public class UserCommentController {
         userCommentService.saveUserComment(userCommentDto);
     }
 
+    @PostMapping("/createcommentaboutcomment")
+    public void addNewCommentAboutComment(@RequestBody UserCommentDto userCommentDto) {
+        userCommentService.saveCommentAboutComment(userCommentDto);
+    }
+
     @DeleteMapping("/delete/{id}")
-    public void deleteUserComment(@PathVariable Long id) {
+    public void deleteUserComment(@RequestParam  Long id) {
         userCommentService.deleteUserComment(id);
     }
 
-    @GetMapping("/getall")
-    public List<UserCommentDto> getAllUserCommentsAboutUser(UserCommentDto userCommentDto){
-        return  userCommentService.getAllUserCommentsForUser(userCommentDto);
+    @GetMapping("/getall/{id}")
+    public List<UserCommentDto> getAllUserCommentsAboutUser(@RequestParam  Long id){
+        return  userCommentService.getAllUserCommentsForUser(id);
     }
 
-
-
+    @GetMapping("/getallaboutcomment/{id}")
+    public List<UserCommentDto> getAllCommentsAboutComment(@RequestParam  Long id){
+        return  userCommentService.getAllCommentsForComment(id);
+    }
 }
