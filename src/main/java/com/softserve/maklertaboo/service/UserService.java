@@ -99,8 +99,8 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
-    public void updateUser(Long id, UserDto userDto) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public void updateUser(String email, UserDto userDto) {
+        User user = userRepository.findUserByEmail(email);
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());

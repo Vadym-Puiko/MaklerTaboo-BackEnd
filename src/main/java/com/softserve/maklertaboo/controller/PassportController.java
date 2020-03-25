@@ -42,7 +42,7 @@ public class PassportController {
     public void EvaluateToLandlord(@RequestHeader("Authorization") String token) {
         String email = jwtTokenProvider.getEmailFromJWT(token);
         UserDto userDto = userService.findByEmail(email);
-        passportService.getAdminApproval(userDto);
+        passportService.getLandlordAdminApproval(userDto);
     }
 
 }

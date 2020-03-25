@@ -170,8 +170,9 @@ public class UserController {
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
     @PutMapping("/update/all")
-    public void updateUser(@RequestBody UserDto userDto) {
-        userService.updateUser(userDto.getId(), userDto);
+    public void updateUser(@RequestBody UserDto userDto, @RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        userService.updateUser(email, userDto);
     }
 
     @PutMapping("/profile/updatePhoto")

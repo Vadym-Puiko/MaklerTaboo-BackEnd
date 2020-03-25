@@ -70,10 +70,19 @@ public class PassportService {
 
         userRepository.save(user);
         passportRepository.save(passport);
-        requestForVerificationService.createRenterRequest(userRepository.findById(userDto.getId()).get());
+
+        getRenterAdminApproval(userDto);
     }
 
-    public void getAdminApproval(UserDto userDto) {
-       requestForVerificationService.createLandlordRequest(userRepository.findById(userDto.getId()).get());
+    public void getRenterAdminApproval(UserDto userDto) {
+        if (UserRole.valueOf(userDto.getUserRole()) != UserRole.ROLE_RENTER) {
+            requestForVerificationService.createRenterRequest(userRepository.findById(userDto.getId()).get());
+        }
+    }
+
+    public void getLandlordAdminApproval(UserDto userDto) {
+        if (UserRole.valueOf(userDto.getUserRole()) != UserRole.ROLE_LANDLORD) {
+            requestForVerificationService.createLandlordRequest(userRepository.findById(userDto.getId()).get());
+        }
     }
 }
