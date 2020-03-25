@@ -59,9 +59,14 @@ public class FlatCommentService {
 
     public void deleteFlatComment(Long id){
         FlatComment flatComment=flatCommentRepository.getOne(id);
-        flatComment.setIsActive(false);
-        flatComment.setDeletedDate(LocalDateTime.now());
-        flatCommentRepository.save(flatComment);
+        String accessToken = httpServletRequest.getHeader("Authorization");
+        String email = jwtTokenProvider.getEmailFromJWT(accessToken);
+        User user = userRepository.findUserByEmail(email);
+        if (flatComment.getUserAuthor().equals(user)){
+            flatComment.setIsActive(false);
+            flatComment.setDeletedDate(LocalDateTime.now());
+            flatCommentRepository.save(flatComment);
+        }
     }
 
     public List<FlatCommentDto> getAllFlatCommentsForFlat(Long id){
