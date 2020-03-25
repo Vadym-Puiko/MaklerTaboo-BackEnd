@@ -24,9 +24,6 @@ public class CommentPhoto {
     @Column(name = "url")
     private String url;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private User userAuthor;
-
 
     @ManyToOne(cascade = CascadeType.ALL)
     private FlatComment flatComment;

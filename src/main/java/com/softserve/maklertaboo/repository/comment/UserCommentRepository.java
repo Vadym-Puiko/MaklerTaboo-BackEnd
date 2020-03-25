@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.repository.comment;
 
+import com.softserve.maklertaboo.entity.comment.Comment;
 import com.softserve.maklertaboo.entity.comment.UserComment;
 import com.softserve.maklertaboo.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,9 +11,9 @@ import java.util.List;
 
 @Repository
 public interface UserCommentRepository extends JpaRepository<UserComment, Long> {
-    List<UserComment> findByUser(User user);
+    List<UserComment> findAllByUserAndIsActiveIsTrue(User user);
+    List<UserComment> findAllByCommentAboutCommentAndIsActiveIsTrue(Long id);
 
     long countAllByPublicationDateBetween(LocalDateTime start, LocalDateTime end);
-
     long countAllByIsActiveTrue();
 }
