@@ -7,6 +7,7 @@ import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
 import com.softserve.maklertaboo.exception.exceptions.BadRefreshTokenException;
+import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExists;
 import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
@@ -51,10 +52,15 @@ public class UserService {
     }
 
     public void saveUser(UserDto userDto) {
-
-        User user = userMapper.convertToEntity(userDto);
-
-        userRepository.save(user);
+        User userByName = userRepository.findUserByUsername(userDto.getUsername());
+        User userByEmail = userRepository.findUserByEmail(userDto.getEmail());
+        User userByPhone = userRepository.findUserByPhoneNumber(userDto.getPhoneNumber());
+        if ((userByName != null) || (userByEmail != null) || (userByPhone != null)) {
+            throw new UserAlreadyExists(ErrorMessage.USER_ALREADY_EXISTS);
+        } else {
+            User user = userMapper.convertToEntity(userDto);
+            userRepository.save(user);
+        }
     }
 
     public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
@@ -89,6 +95,11 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
+    public UserDto findUserByPhoneNumber(String phoneNumber) {
+        User user = userRepository.findUserByPhoneNumber(phoneNumber);
+        return userMapper.convertToDto(user);
+    }
+
     public void updateUser(Long id, UserDto userDto) {
         User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         user.setUsername(userDto.getUsername());
@@ -110,7 +121,7 @@ public class UserService {
     }
 
     public void deletePhoto(String email) {
-        User user = userRepository.findUserByUsername(email);
+        User user = userRepository.findUserByEmail(email);
         amazonStorageService.deleteFile(user.getPhotoUrl());
         user.setPhotoUrl(null);
         userRepository.save(user);
@@ -128,15 +139,9 @@ public class UserService {
         return userRepository.findAll(pageable).map(userMapper::convertToDto);
     }
 
-    public void makeLandlord(Long id) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setRole(UserRole.ROLE_LANDLORD);
-        userRepository.save(user);
-    }
-
-    public void makeModerator(Long id) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setRole(UserRole.ROLE_MODERATOR);
+    public void updateRole(Long userId, UserRole role) {
+        User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+        user.setRole(role);
         userRepository.save(user);
     }
 
@@ -155,7 +160,7 @@ public class UserService {
         } catch (ExpiredJwtException e) {
             throw new BadRefreshTokenException("Refresh token is not valid");
         }
-        User user = userRepository.findUserByEmail (email);
+        User user = userRepository.findUserByEmail(email);
         if (user == null) {
             throw new BadEmailOrPasswordException("Email is not valid");
         }

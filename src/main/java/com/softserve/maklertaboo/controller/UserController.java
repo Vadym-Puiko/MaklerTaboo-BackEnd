@@ -24,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -77,7 +76,7 @@ public class UserController {
     })
     @GetMapping("/refreshTokens")
     public ResponseEntity updateAccessToken(@RequestParam @NotBlank String refreshToken,
-                                                             HttpServletResponse response) {
+                                            HttpServletResponse response) {
         JwtTokensDto newTokens = userService.updateAccessTokens(refreshToken);
         response.addHeader("accessToken", newTokens.getAccessToken());
         response.addHeader("refreshToken", newTokens.getRefreshToken());
@@ -171,9 +170,8 @@ public class UserController {
 
     @PutMapping("/profile/updatePhoto")
     public void updateUserPhoto(@RequestPart(value = "file") MultipartFile file,
-                                HttpServletRequest httpServletRequest) {
-        String accessToken = httpServletRequest.getHeader("Authorization");
-        String email = jwtTokenProvider.getEmailFromJWT(accessToken);
+                                @RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
         userService.updatePhoto(file, email);
     }
 
@@ -189,9 +187,8 @@ public class UserController {
     }
 
     @DeleteMapping("/profile/deletePhoto")
-    public void deletePhoto(HttpServletRequest httpServletRequest) {
-        String accessToken = httpServletRequest.getHeader("Authorization");
-        String email = jwtTokenProvider.getEmailFromJWT(accessToken);
+    public void deletePhoto(@RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
         userService.deletePhoto(email);
     }
 }

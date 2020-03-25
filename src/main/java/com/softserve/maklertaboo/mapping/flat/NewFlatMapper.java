@@ -16,15 +16,6 @@ import java.util.List;
 @Component
 public class NewFlatMapper implements MapperToEntity<NewFlatDto, Flat> {
 
-    private final TagService tagService;
-    private final UserRepository userRepository;
-
-    @Autowired
-    public NewFlatMapper(TagService tagService, UserRepository userRepository) {
-        this.tagService = tagService;
-        this.userRepository = userRepository;
-    }
-
     public Flat convertToEntity(NewFlatDto flatDto) {
         Flat flat = new Flat();
 
@@ -43,23 +34,6 @@ public class NewFlatMapper implements MapperToEntity<NewFlatDto, Flat> {
         address.setFlatNumber(flatDto.getFlatNumber());
 
         flat.setAddress(address);
-        List<FlatPhoto> photos = new ArrayList<>();
-
-        for (String base64 : flatDto.getBase64Photos()) {
-
-            FlatPhoto flatPhoto = new FlatPhoto();
-
-            flatPhoto.setFlat(flat);
-            flatPhoto.setUrl(base64);
-
-            photos.add(flatPhoto);
-        }
-        flat.setFlatPhotoList(photos);
-        flat.setTags(tagService.getTags(flatDto.getTags()));
-
-        flat.setOwner(
-                userRepository.getByUsername(flatDto.getUsername())
-        );
         return flat;
     }
 }
