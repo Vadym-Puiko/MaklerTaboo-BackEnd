@@ -42,9 +42,8 @@ public class PassportService {
 
     public void updatePassport(UserDto userDto, PassportDto passportDto) {
         Passport passport = new Passport();
-        User user = new User();
+        User user = userRepository.findById(userDto.getId()).get();
 
-        passport.setId(userDto.getId());
         passport.setPassportType(passportDto.getPassportType());
         passport.setPassportNumber(passportDto.getPassportNumber());
         passport.setNationality(passportDto.getNationality());
@@ -59,17 +58,10 @@ public class PassportService {
         passport.setBirthDate(passportDto.getBirthDate());
         passport.setAuthority(passportDto.getAuthority());
 
-        user.setId(userDto.getId());
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
-        user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setPhotoUrl(userDto.getPhotoUrl());
-        user.setRole(UserRole.valueOf(userDto.getUserRole()));
-        user.setPassport(passport);
-
-        userRepository.save(user);
         passportRepository.save(passport);
+        user.setPassport(passport);
+        userRepository.save(user);
+
 
         getRenterAdminApproval(userDto);
     }
