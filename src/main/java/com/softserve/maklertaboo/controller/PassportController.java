@@ -38,4 +38,11 @@ public class PassportController {
         passportService.updatePassport(userDto, passportDto);
     }
 
+    @PostMapping("/landlord")
+    public void EvaluateToLandlord(@RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        UserDto userDto = userService.findByEmail(email);
+        passportService.getAdminApproval(userDto);
+    }
+
 }

@@ -6,6 +6,7 @@ import com.softserve.maklertaboo.entity.Passport;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.mapping.PassportMapper;
+import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.passport.PassportRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +18,24 @@ public class PassportService {
     private final PassportRepository passportRepository;
     private final PassportMapper passportMapper;
     private final UserRepository userRepository;
+    private final RequestForVerificationService requestForVerificationService;
+    private final UserMapper userMapper;
 
     @Autowired
-    public PassportService(PassportRepository passportRepository, PassportMapper passportMapper, UserRepository userRepository) {
+    public PassportService(PassportRepository passportRepository, PassportMapper passportMapper, UserRepository userRepository, RequestForVerificationService requestForVerificationService, UserMapper userMapper) {
         this.passportRepository = passportRepository;
         this.passportMapper = passportMapper;
         this.userRepository = userRepository;
+        this.requestForVerificationService = requestForVerificationService;
+        this.userMapper = userMapper;
     }
 
     public PassportDto getPassport(Long id) {
         Passport passport;
         User user = userRepository.findById(id).get();
         passport = user.getPassport();
-        if (passport==null){
-            passport= new Passport();
+        if (passport == null) {
+            passport = new Passport();
         }
         return passportMapper.convertToDto(passport);
     }
@@ -65,6 +70,10 @@ public class PassportService {
 
         userRepository.save(user);
         passportRepository.save(passport);
+        requestForVerificationService.createRenterRequest(userRepository.findById(userDto.getId()).get());
     }
 
+    public void getAdminApproval(UserDto userDto) {
+       requestForVerificationService.createLandlordRequest(userRepository.findById(userDto.getId()).get());
+    }
 }
