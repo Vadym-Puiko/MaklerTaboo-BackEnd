@@ -76,7 +76,7 @@ public class UserController {
     })
     @GetMapping("/refreshTokens")
     public ResponseEntity updateAccessToken(@RequestParam @NotBlank String refreshToken,
-                                                             HttpServletResponse response) {
+                                            HttpServletResponse response) {
         JwtTokensDto newTokens = userService.updateAccessTokens(refreshToken);
         response.addHeader("accessToken", newTokens.getAccessToken());
         response.addHeader("refreshToken", newTokens.getRefreshToken());
