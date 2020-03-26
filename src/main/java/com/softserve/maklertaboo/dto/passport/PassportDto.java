@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.dto.passport;
 
+import com.softserve.maklertaboo.entity.user.User;
 import lombok.Getter;
 import lombok.Setter;
 import javax.validation.constraints.NotBlank;
@@ -35,6 +36,6 @@ public class PassportDto {
     @NotBlank
     private String passportNumber;
     @NotNull
-    private Integer identificationNumber;
-
+    private Long identificationNumber;
+    private User user;
 }

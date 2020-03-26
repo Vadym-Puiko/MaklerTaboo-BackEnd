@@ -120,6 +120,12 @@ public class UserController {
         return userService.findUserById(id);
     }
 
+    @GetMapping("/currentUser")
+    public UserDto getCurrentUser(@RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        return userService.findByEmail(email);
+    }
+
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
@@ -164,8 +170,9 @@ public class UserController {
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
     @PutMapping("/update/all")
-    public void updateUser(@RequestBody UserDto userDto) {
-        userService.updateUser(userDto.getId(), userDto);
+    public void updateUser(@RequestBody UserDto userDto, @RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        userService.updateUser(email, userDto);
     }
 
     @PutMapping("/profile/updatePhoto")
