@@ -2,6 +2,7 @@ package com.softserve.maklertaboo.exception.handler;
 
 import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
 import com.softserve.maklertaboo.exception.exceptions.RequestNotFoundException;
+import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExists;
 import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
+    @ExceptionHandler(UserAlreadyExists.class)
+    public final ResponseEntity<Object> handleBadEmailOrPasswordException(UserAlreadyExists exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException exception, WebRequest request) {
@@ -80,7 +89,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        body.put("errors", errors);
+        body.put("message", errors);
         log.error(exception.getMessage(), exception);
 
         return new ResponseEntity<>(body, headers, status);
