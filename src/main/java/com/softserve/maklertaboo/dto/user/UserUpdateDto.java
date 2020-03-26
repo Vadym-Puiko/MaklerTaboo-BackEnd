@@ -17,7 +17,7 @@ public class UserUpdateDto {
     @Email(message = "Email should be valid")
     private String email;
     @NotBlank
-    @Pattern(regexp = "[0-9]{9}")
+    @Pattern(regexp = "[0-9]{10}")
     private String phoneNumber;
     private String photoUrl;
     private String userRole;
