@@ -67,7 +67,7 @@ public class UserCommentService {
 
     public List<UserCommentDto> getAllUserCommentsForUser(Long UserId){
         User user=userRepository.getOne(UserId);
-        List<UserComment> list=userCommentRepository.findAllByUserAndIsActiveIsTrue(user);
+        List<UserComment> list=userCommentRepository.findAllByUserAndIsActiveIsTrueAndCommentAboutCommentIsNull(user);
         return list.stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
