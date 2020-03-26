@@ -3,6 +3,7 @@ package com.softserve.maklertaboo.controller;
 import com.softserve.maklertaboo.constant.HttpStatuses;
 import com.softserve.maklertaboo.dto.user.JwtTokensDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
+import com.softserve.maklertaboo.dto.user.UserUpdateDto;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
@@ -23,7 +24,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -170,9 +170,9 @@ public class UserController {
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
     @PutMapping("/update/all")
-    public void updateUser(@RequestBody UserDto userDto, @RequestHeader("Authorization") String token) {
+    public void updateUser(@RequestBody @Valid UserUpdateDto userUpdateDto, @RequestHeader("Authorization") String token) {
         String email = jwtTokenProvider.getEmailFromJWT(token);
-        userService.updateUser(email, userDto);
+        userService.updateUser(email, userUpdateDto);
     }
 
     @PutMapping("/profile/updatePhoto")
