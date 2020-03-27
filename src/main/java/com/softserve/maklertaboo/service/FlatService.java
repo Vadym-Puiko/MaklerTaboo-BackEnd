@@ -17,6 +17,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,6 @@ import java.util.List;
 @Data
 @Service
 public class FlatService {
-
     private final FlatRepository flatRepository;
     private final FlatSearchRepository flatSearchRepository;
     private final NewFlatMapper newFlatMapper;
@@ -50,7 +50,7 @@ public class FlatService {
                        UserRepository userRepository,
                        FlatMapper flatMapper,
                        AmazonStorageService amazonStorageService,
-                       RequestForVerificationService requestForVerificationService) {
+                       @Lazy RequestForVerificationService requestForVerificationService) {
         this.flatRepository = flatRepository;
         this.flatSearchRepository = flatSearchRepository;
         this.newFlatMapper = newFlatMapper;
