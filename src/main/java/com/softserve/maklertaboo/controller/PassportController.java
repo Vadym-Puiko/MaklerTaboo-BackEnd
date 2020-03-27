@@ -7,6 +7,7 @@ import com.softserve.maklertaboo.service.PassportService;
 import com.softserve.maklertaboo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 
 @RestController
@@ -25,7 +26,7 @@ public class PassportController {
     }
 
     @GetMapping("/getPassport")
-    public  PassportDto getPassportData(@RequestHeader("Authorization") String token) {
+    public PassportDto getPassportData(@RequestHeader("Authorization") String token) {
         String email = jwtTokenProvider.getEmailFromJWT(token);
         UserDto userDto = userService.findByEmail(email);
         return passportService.getPassport(userDto.getId());

@@ -3,6 +3,7 @@ package com.softserve.maklertaboo.service;
 import com.softserve.maklertaboo.dto.user.JwtTokensDto;
 import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.user.UserDto;
+import com.softserve.maklertaboo.dto.user.UserUpdateDto;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
@@ -24,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -99,13 +99,11 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
-    public void updateUser(String email, UserDto userDto) {
+    public void updateUser(String email, UserUpdateDto userUpdateDto) {
         User user = userRepository.findUserByEmail(email);
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
-        user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setPhotoUrl(userDto.getPhotoUrl());
+        user.setUsername(userUpdateDto.getUsername());
+        user.setPhoneNumber(userUpdateDto.getPhoneNumber());
+        user.setPhotoUrl(userUpdateDto.getPhotoUrl());
         userRepository.save(user);
     }
 
