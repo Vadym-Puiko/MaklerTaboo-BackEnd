@@ -62,7 +62,6 @@ public class PassportService {
         user.setPassport(passport);
         userRepository.save(user);
 
-
         getRenterAdminApproval(userDto);
     }
 

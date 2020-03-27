@@ -38,7 +38,7 @@ public class FlatService {
     private final UserRepository userRepository;
     private final FlatMapper flatMapper;
     private final AmazonStorageService amazonStorageService;
-    ;
+    private final RequestForVerificationService requestForVerificationService;
 
     @Autowired
     public FlatService(FlatRepository flatRepository,
@@ -49,7 +49,8 @@ public class FlatService {
                        TagService tagService,
                        UserRepository userRepository,
                        FlatMapper flatMapper,
-                       AmazonStorageService amazonStorageService) {
+                       AmazonStorageService amazonStorageService,
+                       RequestForVerificationService requestForVerificationService) {
         this.flatRepository = flatRepository;
         this.flatSearchRepository = flatSearchRepository;
         this.newFlatMapper = newFlatMapper;
@@ -59,6 +60,7 @@ public class FlatService {
         this.userRepository = userRepository;
         this.flatMapper = flatMapper;
         this.amazonStorageService = amazonStorageService;
+        this.requestForVerificationService = requestForVerificationService;
     }
 
     @Cacheable("flats")
@@ -105,6 +107,7 @@ public class FlatService {
         );
         flat.setCreationDate(new Date());
         flatRepository.save(flat);
+        requestForVerificationService.createFlatRequest(flat);
     }
 
     @CachePut("flats")
