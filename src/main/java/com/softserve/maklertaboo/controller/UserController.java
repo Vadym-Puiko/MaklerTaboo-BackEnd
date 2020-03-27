@@ -198,5 +198,6 @@ public class UserController {
         String email = jwtTokenProvider.getEmailFromJWT(token);
         userService.deletePhoto(email);
     }
+
 }
 

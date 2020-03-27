@@ -16,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/flat")
@@ -45,6 +47,15 @@ public class FlatController {
         return flatDetailMapper.convertToDto(flatService.getById(postId));
     }
 
+    @GetMapping("userflat/{userId}")
+    public List<FlatDto> getByUserId(@PathVariable Long userId) {
+        return flatService
+                .findByOwnerId(userId)
+                .stream()
+                .map(flatMapper::convertToDto)
+                .collect(Collectors.toList());
+    }
+
     @PutMapping("/search/{page}")
     public Page<FlatDto> getByParameters(@PathVariable Integer page, @RequestBody FlatSearchParametersDto flatParameters) {
         Pageable pageable = PageRequest.of(page, AMOUNT_OF_FLATS_IN_PAGE, Sort.by("id").descending());
@@ -52,7 +63,7 @@ public class FlatController {
     }
 
     @PostMapping("activate/{id}")
-    public void setActive(@PathVariable Long id){
+    public void setActive(@PathVariable Long id) {
         flatService.activate(id);
     }
 
