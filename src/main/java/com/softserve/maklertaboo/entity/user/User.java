@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.entity.user;
 
+import com.softserve.maklertaboo.entity.flat.FavoriteFlat;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.Order;
 import com.softserve.maklertaboo.entity.Passport;
@@ -7,6 +8,7 @@ import com.softserve.maklertaboo.entity.comment.Comment;
 import com.softserve.maklertaboo.entity.comment.UserComment;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +46,9 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Flat> flats;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<FavoriteFlat> favoriteFlats;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Comment> comments;
