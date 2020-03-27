@@ -5,6 +5,7 @@ import com.softserve.maklertaboo.dto.flat.NewFlatDto;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.entity.photo.FlatPhoto;
+import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.mapping.flat.FlatMapper;
 import com.softserve.maklertaboo.mapping.flat.FlatSearchMapper;
 import com.softserve.maklertaboo.mapping.flat.NewFlatMapper;
@@ -128,4 +129,8 @@ public class FlatService {
         }
     }
 
+    public List<Flat> findByOwnerId(Long id){
+        User user = userRepository.findById(id).get();
+        return flatRepository.findByOwner(user);
+    }
 }
