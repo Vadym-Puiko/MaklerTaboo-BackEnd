@@ -64,5 +64,9 @@ public class User {
     @PrePersist
     public void prePersist() {
         setRole(UserRole.ROLE_USER);
+        if (registrationDate == null) {
+            registrationDate = new Date();
+        }
+
     }
 }
