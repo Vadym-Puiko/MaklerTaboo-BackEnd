@@ -1,7 +1,7 @@
 package com.softserve.maklertaboo.controller;
 
 import com.softserve.maklertaboo.constant.HttpStatuses;
-import com.softserve.maklertaboo.dto.user.JwtTokensDto;
+import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
 import com.softserve.maklertaboo.security.dto.LoginDto;
@@ -64,12 +64,12 @@ public class UserController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        response.addHeader("accessToken", jwtTokenProvider.generateAccessToken(authentication));
-        response.addHeader("refreshToken", jwtTokenProvider.generateRefreshToken(authentication));
+        response.addHeader("accesstoken", jwtTokenProvider.generateAccessToken(authentication));
+        response.addHeader("refreshtoken", jwtTokenProvider.generateRefreshToken(authentication));
         return ResponseEntity.ok(jwtSuccessLogIn);
     }
 
-    @ApiOperation("Updating access token by refresh token")
+    @ApiOperation("Updating access token by refreshKey token")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "Refresh token is not valid")
@@ -78,8 +78,8 @@ public class UserController {
     public ResponseEntity updateAccessToken(@RequestParam @NotBlank String refreshToken,
                                                              HttpServletResponse response) {
         JwtTokensDto newTokens = userService.updateAccessTokens(refreshToken);
-        response.addHeader("accessToken", newTokens.getAccessToken());
-        response.addHeader("refreshToken", newTokens.getRefreshToken());
+        response.addHeader("accesstoken", newTokens.getAccesstoken());
+        response.addHeader("refreshtoken", newTokens.getRefreshtoken());
         return ResponseEntity.ok().build();
     }
 

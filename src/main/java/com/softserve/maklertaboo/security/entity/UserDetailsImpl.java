@@ -2,16 +2,19 @@ package com.softserve.maklertaboo.security.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.softserve.maklertaboo.entity.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
     private Long id;
@@ -22,14 +25,6 @@ public class UserDetailsImpl implements UserDetails {
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
-
-    public UserDetailsImpl(Long id, String email, String password,
-                           Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.username = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
 
     public static UserDetailsImpl create(User user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
