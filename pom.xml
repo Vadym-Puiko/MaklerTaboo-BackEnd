@@ -140,6 +140,11 @@
 			<version>1.11.723</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.telegram</groupId>
+			<artifactId>telegrambots-spring-boot-starter</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

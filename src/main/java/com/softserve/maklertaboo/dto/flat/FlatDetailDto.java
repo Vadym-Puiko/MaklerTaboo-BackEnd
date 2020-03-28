@@ -10,6 +10,7 @@ import java.util.Set;
 public class FlatDetailDto {
 
     private String username;
+    private Long userId;
     private String userPhoto;
 
     private String description;
