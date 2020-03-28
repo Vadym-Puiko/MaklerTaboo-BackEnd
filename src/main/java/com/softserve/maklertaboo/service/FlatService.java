@@ -18,6 +18,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,6 @@ import java.util.List;
 @Data
 @Service
 public class FlatService {
-
     private final FlatRepository flatRepository;
     private final FlatSearchRepository flatSearchRepository;
     private final NewFlatMapper newFlatMapper;
@@ -39,6 +39,7 @@ public class FlatService {
     private final UserRepository userRepository;
     private final FlatMapper flatMapper;
     private final AmazonStorageService amazonStorageService;
+    private final RequestForVerificationService requestForVerificationService; s
 
     @Autowired
     public FlatService(FlatRepository flatRepository,
@@ -49,7 +50,8 @@ public class FlatService {
                        TagService tagService,
                        UserRepository userRepository,
                        FlatMapper flatMapper,
-                       AmazonStorageService amazonStorageService) {
+                       AmazonStorageService amazonStorageService,
+                       @Lazy RequestForVerificationService requestForVerificationService) {
         this.flatRepository = flatRepository;
         this.flatSearchRepository = flatSearchRepository;
         this.newFlatMapper = newFlatMapper;
@@ -59,6 +61,7 @@ public class FlatService {
         this.userRepository = userRepository;
         this.flatMapper = flatMapper;
         this.amazonStorageService = amazonStorageService;
+        this.requestForVerificationService = requestForVerificationService;
     }
 
     @Cacheable("flats")
@@ -105,6 +108,7 @@ public class FlatService {
         );
         flat.setCreationDate(new Date());
         flatRepository.save(flat);
+        requestForVerificationService.createFlatRequest(flat);
     }
 
     @CachePut("flats")
