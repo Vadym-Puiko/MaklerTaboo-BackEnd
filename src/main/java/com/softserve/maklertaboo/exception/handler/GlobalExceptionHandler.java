@@ -121,7 +121,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        body.put("errors", errors);
+        body.put("message", errors);
         log.error(exception.getMessage(), exception);
 
         return new ResponseEntity<>(body, headers, status);

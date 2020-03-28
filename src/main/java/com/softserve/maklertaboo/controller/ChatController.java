@@ -31,6 +31,13 @@ public class ChatController {
         return chatService.getCountOfMessages(chatId);
     }
 
+    @GetMapping(value = "/chats/{chatId}/countUnread")
+    @ResponseStatus(HttpStatus.OK)
+    public Long countOfUnreadMessages(@PathVariable(value = "chatId") Long chatId) {
+        return chatService.getCountOfUnreadMessages(chatId);
+    }
+
+
     @GetMapping("/chats/{id}")
         public List<ChatDTO> getCurrentChatsByUserId(@Valid @PathVariable Long id) {
         log.info("MessagesController get chats by userId");
@@ -44,6 +51,4 @@ public class ChatController {
     public Long getChat(@RequestParam String recieverName, @RequestParam Long senderId) {
         return chatService.getChatId(recieverName, senderId);
     }
-
-
 }

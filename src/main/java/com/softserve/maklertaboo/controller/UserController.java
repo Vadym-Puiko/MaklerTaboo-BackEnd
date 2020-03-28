@@ -126,6 +126,13 @@ public class UserController {
         return userService.findByEmail(email);
     }
 
+    @GetMapping("/currentUserId")
+    public Long getCurrentUserById(@RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        return userService.findByEmail(email).getId();
+    }
+
+
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
