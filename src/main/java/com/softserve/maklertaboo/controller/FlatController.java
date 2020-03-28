@@ -77,7 +77,7 @@ public class FlatController {
     }
 
     @DeleteMapping("{id}")
-    public void remove(@RequestBody Long id, @RequestHeader("Authorization") String token) {
+    public void remove(@PathVariable Long id, @RequestHeader("Authorization") String token) {
         String email = jwtTokenProvider.getEmailFromJWT(token);
         flatService.deactivateFlat(id, email);
     }

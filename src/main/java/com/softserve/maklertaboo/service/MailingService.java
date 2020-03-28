@@ -43,7 +43,7 @@ public class MailingService {
 
     public void checkFlatsByUserRequests() {
         Set<User> usersWithSubscription = subscriptionRepository.
-                findAll()
+                findAllByActiveIsTrue()
                 .stream()
                 .map(Subscription::getUser)
                 .collect(Collectors.toSet());
@@ -54,7 +54,8 @@ public class MailingService {
                     List<Subscription> subscriptions = subscriptionRepository.findAllByUser(user);
                     for(Subscription subscription: subscriptions){
                         if(!flatFullTextSearch.search(subscription.getFlatSearchParameters(), pageable).isEmpty()){
-                            emailSenderService.sendMessage(user.getEmail(),"New Flats upcoming Check our service","soem new flats");
+                            emailSenderService.sendMessage(user.getEmail(),"New Flats upcoming! Check our service",
+                                    "Some new flats with your criterias has been added");
                             break;
                         }
                     }
@@ -66,6 +67,13 @@ public class MailingService {
         Subscription subscription = new Subscription();
         subscription.setFlatSearchParameters(flatParameters);
         subscription.setUser(userRepository.findUserByEmail(email));
+        subscription.setActive(true);
         subscriptionRepository.save(subscription);
+    }
+
+    public void unsubscribe(String email) {
+        List<Subscription> subscriptions = subscriptionRepository.findAllByUser(userRepository.findUserByEmail(email));
+        subscriptions.forEach(x->x.setActive(false));
+        subscriptionRepository.saveAll(subscriptions);
     }
 }
