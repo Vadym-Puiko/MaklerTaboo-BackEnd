@@ -1,7 +1,6 @@
 package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.comment.UserCommentDto;
-import com.softserve.maklertaboo.entity.comment.Comment;
 import com.softserve.maklertaboo.entity.comment.UserComment;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.mapping.comment.UserCommentMapper;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,6 +73,4 @@ public class UserCommentService {
         List<UserComment> list=userCommentRepository.findAllByCommentAboutCommentAndIsActiveIsTrue(CommentAboutComment);
         return list.stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
-
-
 }
