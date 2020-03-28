@@ -39,7 +39,7 @@ public class FlatService {
     private final UserRepository userRepository;
     private final FlatMapper flatMapper;
     private final AmazonStorageService amazonStorageService;
-    private final RequestForVerificationService requestForVerificationService; s
+    private final RequestForVerificationService requestForVerificationService;
 
     @Autowired
     public FlatService(FlatRepository flatRepository,
