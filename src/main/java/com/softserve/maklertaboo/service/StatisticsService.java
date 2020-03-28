@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.List;
@@ -164,5 +163,14 @@ public class StatisticsService {
     private Long getCountOfPostedUsersCommentsFlatsByDay(LocalDate day) {
         LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
         return userCommentRepository.countAllByPublicationDateBetween(endOfDay.minusDays(1), endOfDay);
+    }
+
+    public Long getCountOfFlatsBetween(Date start, Date end) {
+        return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(start, end);
+    }
+
+    public Long getCountofPostedComments(Date start, Date end) {
+        return flatCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end)) +
+                userCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end));
     }
 }

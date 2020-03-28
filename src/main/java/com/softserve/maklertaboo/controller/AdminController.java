@@ -2,34 +2,32 @@ package com.softserve.maklertaboo.controller;
 
 import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
-import com.softserve.maklertaboo.service.RequestForVerificationService;
 import com.softserve.maklertaboo.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static com.softserve.maklertaboo.utils.DateUtils.asDate;
 
 @CrossOrigin
 @RestController
-@PreAuthorize(value = "hasRole('ROLE_ADMIN')")
+//@PreAuthorize(value = "hasRole('ROLE_ADMIN')")
 @RequestMapping("/admin")
 public class AdminController {
 
-    RequestForVerificationService requestForVerificationService;
     RequestForFlatMapper requestForFlatMapper;
     RequestForUserMapper requestForUserMapper;
     StatisticsService statisticsService;
 
     @Autowired
-    public AdminController(RequestForVerificationService requestForVerificationService,
-                           RequestForUserMapper requestForUserMapper,
+    public AdminController(RequestForUserMapper requestForUserMapper,
                            RequestForFlatMapper requestForFlatMapper,
                            StatisticsService statisticsService) {
-        this.requestForVerificationService = requestForVerificationService;
         this.requestForFlatMapper = requestForFlatMapper;
         this.requestForUserMapper = requestForUserMapper;
         this.statisticsService = statisticsService;
@@ -111,5 +109,22 @@ public class AdminController {
         return statisticsService.getCountOfPostedFlatsCommentsFlatsLastDays(days);
     }
 
+    @GetMapping(value = "statistics/count-posted-flats", params = {"start", "end"})
+    public Long getCountOfFlatsBetween(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
+                                       @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date end) {
+        return statisticsService.getCountOfFlatsBetween(start, end);
+    }
+
+//    @GetMapping(value = "statistics/count-orders-between",params = {"start","end"})
+//    public Long getCountOfOrdersBetween(@RequestParam Date start,
+//                                        @RequestParam Date end){
+//        return statisticsService.getCountOfOrdersBetween(start,end);s
+//    }
+
+    @GetMapping(value = "statistics/count-posted-comments", params = {"start", "end"})
+    public Long getCountOfCommentsBetween(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
+                                          @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date end) {
+        return statisticsService.getCountofPostedComments(start, end);
+    }
 
 }
