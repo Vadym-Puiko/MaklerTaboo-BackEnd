@@ -150,6 +150,24 @@ public class UserController {
         return userService.findByUsername(username);
     }
 
+    @GetMapping("/username/{username}/{page}/{size}")
+    public Page<UserDto> findUserByUsername(@PathVariable Integer page, @PathVariable Integer size, @PathVariable String username) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.searchUserByUsername(pageable, username);
+    }
+
+    @GetMapping("/email/{email}/{page}/{size}")
+    public Page<UserDto> findUserByEmail(@PathVariable Integer page, @PathVariable Integer size, @PathVariable String email) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.searchUserByEmail(pageable, email);
+    }
+
+    @GetMapping("/phone/{phone}/{page}/{size}")
+    public Page<UserDto> findUserByPhoneNumber(@PathVariable Integer page, @PathVariable Integer size, @PathVariable String phone) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.searchUserByPhone(pageable, phone);
+    }
+
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
@@ -172,7 +190,12 @@ public class UserController {
     @PutMapping("/update/all")
     public void updateUser(@RequestBody UserDto userDto, @RequestHeader("Authorization") String token) {
         String email = jwtTokenProvider.getEmailFromJWT(token);
-        userService.updateUser(email, userDto);
+        UserDto user = userService.findByEmail(email);
+        if(user.getUserRole().equals("ROLE_ADMIN") || user.getUserRole().equals("ROLE_MODERATOR")) {
+            userService.updateUserIntoAdminPanel(userDto);
+        } else {
+            userService.updateUser(email, userDto);
+        }
     }
 
     @PutMapping("/profile/updatePhoto")

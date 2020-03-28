@@ -25,8 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,6 +93,18 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
+    public Page<UserDto> searchUserByUsername(Pageable pageable, String username) {
+        return userRepository.findAllByUsernameLike(pageable, "%" + username + "%").map(userMapper::convertToDto);
+    }
+
+    public Page<UserDto> searchUserByEmail(Pageable pageable, String email) {
+        return userRepository.findAllByEmailLike(pageable,"%" + email + "%").map(userMapper::convertToDto);
+    }
+
+    public Page<UserDto> searchUserByPhone(Pageable pageable, String phone) {
+        return userRepository.findAllByPhoneNumberLike(pageable,"%" + phone + "%").map(userMapper::convertToDto);
+    }
+
     public UserDto findUserByPhoneNumber(String phoneNumber) {
         User user = userRepository.findUserByPhoneNumber(phoneNumber);
         return userMapper.convertToDto(user);
@@ -106,6 +117,13 @@ public class UserService {
         user.setPassword(userDto.getPassword());
         user.setPhoneNumber(userDto.getPhoneNumber());
         user.setPhotoUrl(userDto.getPhotoUrl());
+        userRepository.save(user);
+    }
+
+    public void updateUserIntoAdminPanel(UserDto userDto) {
+        User user = userRepository.findUserByEmail(userDto.getEmail());
+        user.setUsername(userDto.getUsername());
+        user.setPhoneNumber(userDto.getPhoneNumber());
         userRepository.save(user);
     }
 
