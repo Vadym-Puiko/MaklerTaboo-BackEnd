@@ -7,7 +7,6 @@ import com.softserve.maklertaboo.entity.comment.Comment;
 import com.softserve.maklertaboo.entity.comment.UserComment;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import lombok.Data;
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +35,8 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private Passport passport;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -59,5 +59,9 @@ public class User {
     @PrePersist
     public void prePersist() {
         setRole(UserRole.ROLE_USER);
+        if (registrationDate == null) {
+            registrationDate = new Date();
+        }
+
     }
 }

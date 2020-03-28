@@ -3,6 +3,7 @@ package com.softserve.maklertaboo.controller;
 import com.softserve.maklertaboo.constant.HttpStatuses;
 import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
+import com.softserve.maklertaboo.dto.user.UserUpdateDto;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
@@ -23,7 +24,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -76,7 +76,7 @@ public class UserController {
     })
     @GetMapping("/refreshTokens")
     public ResponseEntity updateAccessToken(@RequestParam @NotBlank String refreshToken,
-                                                             HttpServletResponse response) {
+                                            HttpServletResponse response) {
         JwtTokensDto newTokens = userService.updateAccessTokens(refreshToken);
         response.addHeader("accesstoken", newTokens.getAccesstoken());
         response.addHeader("refreshtoken", newTokens.getRefreshtoken());
@@ -118,6 +118,12 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable Long id) {
         return userService.findUserById(id);
+    }
+
+    @GetMapping("/currentUser")
+    public UserDto getCurrentUser(@RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        return userService.findByEmail(email);
     }
 
     @ApiResponses(value = {
@@ -164,8 +170,9 @@ public class UserController {
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
     @PutMapping("/update/all")
-    public void updateUser(@RequestBody UserDto userDto) {
-        userService.updateUser(userDto.getId(), userDto);
+    public void updateUser(@RequestBody @Valid UserUpdateDto userUpdateDto, @RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        userService.updateUser(email, userUpdateDto);
     }
 
     @PutMapping("/profile/updatePhoto")
@@ -191,5 +198,6 @@ public class UserController {
         String email = jwtTokenProvider.getEmailFromJWT(token);
         userService.deletePhoto(email);
     }
+
 }
 

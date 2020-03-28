@@ -2,10 +2,12 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.user.UserDto;
+import com.softserve.maklertaboo.dto.user.UserUpdateDto;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
 import com.softserve.maklertaboo.exception.exceptions.BadRefreshTokenException;
+import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExists;
 import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
@@ -21,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,10 +52,15 @@ public class UserService {
     }
 
     public void saveUser(UserDto userDto) {
-
-        User user = userMapper.convertToEntity(userDto);
-
-        userRepository.save(user);
+        User userByName = userRepository.findUserByUsername(userDto.getUsername());
+        User userByEmail = userRepository.findUserByEmail(userDto.getEmail());
+        User userByPhone = userRepository.findUserByPhoneNumber(userDto.getPhoneNumber());
+        if ((userByName != null) || (userByEmail != null) || (userByPhone != null)) {
+            throw new UserAlreadyExists(ErrorMessage.USER_ALREADY_EXISTS);
+        } else {
+            User user = userMapper.convertToEntity(userDto);
+            userRepository.save(user);
+        }
     }
 
     public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
@@ -80,7 +86,6 @@ public class UserService {
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email);
         UserDto userDto = userMapper.convertToDto(user);
-        userDto.setPhotoUrl(endpointUrl + user.getPhotoUrl());
         return userDto;
     }
 
@@ -89,13 +94,16 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
-    public void updateUser(Long id, UserDto userDto) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
-        user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setPhotoUrl(userDto.getPhotoUrl());
+    public UserDto findUserByPhoneNumber(String phoneNumber) {
+        User user = userRepository.findUserByPhoneNumber(phoneNumber);
+        return userMapper.convertToDto(user);
+    }
+
+    public void updateUser(String email, UserUpdateDto userUpdateDto) {
+        User user = userRepository.findUserByEmail(email);
+        user.setUsername(userUpdateDto.getUsername());
+        user.setPhoneNumber(userUpdateDto.getPhoneNumber());
+        user.setPhotoUrl(userUpdateDto.getPhotoUrl());
         userRepository.save(user);
     }
 
@@ -148,7 +156,7 @@ public class UserService {
         } catch (ExpiredJwtException e) {
             throw new BadRefreshTokenException(REFRESH_TOKEN_NOT_VALID);
         }
-        User user = userRepository.findUserByEmail (email);
+        User user = userRepository.findUserByEmail(email);
         if (user == null) {
             throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
         }

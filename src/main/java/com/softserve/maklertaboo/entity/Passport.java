@@ -3,7 +3,6 @@ package com.softserve.maklertaboo.entity;
 import com.softserve.maklertaboo.entity.photo.PassportPhoto;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,6 +13,7 @@ import java.util.List;
 public class Passport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     private String firstName;
     private String lastName;
@@ -27,8 +27,7 @@ public class Passport {
     private String dateOfIssue;
     private String expirationDate;
     private String passportNumber;
-    private Integer identificationNumber;
-
+    private Long identificationNumber;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "passport")
     private User user;

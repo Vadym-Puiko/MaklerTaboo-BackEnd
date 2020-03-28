@@ -28,7 +28,9 @@ public class FlatMapper implements MapperToDto<Flat, FlatDto>, MapperToEntity<Fl
         flatDto.setMonthPrice(flat.getMonthPrice());
         flatDto.setTitle(flat.getTitle());
 
-        flatDto.setPhotoUrl(flat.getFlatPhotoList().get(0).getUrl());
+        if(flat.getFlatPhotoList().size()>0) {
+            flatDto.setPhotoUrl(flat.getFlatPhotoList().get(0).getUrl());
+        }
         flatDto.setAddress(flat.getAddress());
 
         flatDto.setTags(
