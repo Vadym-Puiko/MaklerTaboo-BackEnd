@@ -64,6 +64,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
+    @ExceptionHandler(FlatNotFoundException.class)
+    public ResponseEntity<Object> handleFlatNotFoundException(FlatNotFoundException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
+
     @ExceptionHandler(RequestNotFoundException.class)
     public ResponseEntity<Object> handleRequestNotFoundException(RequestNotFoundException exception, WebRequest request) {
 

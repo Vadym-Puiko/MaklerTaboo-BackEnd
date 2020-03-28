@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -68,6 +69,7 @@ public class FlatController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize(value = "hasRole('ROLE_LANDLORD')")
     public void addNewFlat(@Valid @RequestBody NewFlatDto newFlatDto, @RequestHeader("Authorization") String token) {
         String email = jwtTokenProvider.getEmailFromJWT(token);
         newFlatDto.setEmail(email);
@@ -75,8 +77,9 @@ public class FlatController {
     }
 
     @DeleteMapping("{id}")
-    public void remove(@RequestBody Long id) {
-        flatService.deactivateFlat(id);
+    public void remove(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        flatService.deactivateFlat(id, email);
     }
 
 }

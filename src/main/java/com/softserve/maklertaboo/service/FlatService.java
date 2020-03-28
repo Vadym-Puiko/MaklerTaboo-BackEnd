@@ -6,6 +6,8 @@ import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.FlatNotFoundException;
+import com.softserve.maklertaboo.exception.exceptions.NotOwnerException;
 import com.softserve.maklertaboo.mapping.flat.FlatMapper;
 import com.softserve.maklertaboo.mapping.flat.FlatSearchMapper;
 import com.softserve.maklertaboo.mapping.flat.NewFlatMapper;
@@ -13,7 +15,6 @@ import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.search.FlatFullTextSearch;
 import com.softserve.maklertaboo.repository.search.FlatSearchRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
-import com.softserve.maklertaboo.service.mailer.BASE64DecodedMultipartFile;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
@@ -26,6 +27,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.softserve.maklertaboo.constant.ErrorMessage.FLAT_NOT_FOUND_BY_ID;
+import static com.softserve.maklertaboo.constant.ErrorMessage.IS_NOT_OWNER;
 
 @Data
 @Service
@@ -72,7 +76,6 @@ public class FlatService {
 
     @Cacheable("flats")
     public Page<Flat> getByParameters(FlatSearchParametersDto flatParametersDto, Pageable pageable) {
-
         FlatSearchParameters flatParameters = flatSearchMapper.convertToEntity(flatParametersDto);
         if (flatParameters.getPriceHigh() != null) {
             return flatFullTextSearch.search(flatParameters, pageable);
@@ -83,7 +86,11 @@ public class FlatService {
 
     @Cacheable("flats")
     public Flat getById(Integer id) {
-        return flatRepository.findById(Long.parseLong(id + "")).get();
+        Flat flat = flatRepository.findById(Long.parseLong(id + "")).orElse(null);
+        if(flat==null){
+            throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID);
+        }
+        return flat;
     }
 
     @CachePut("flats")
@@ -114,19 +121,26 @@ public class FlatService {
     @CachePut("flats")
     public void activate(Long id) {
         Flat flat = flatRepository.findById(id).orElse(null);
-        if (flat != null) {
+        if (flat == null) {
+            throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID);
+        }
             flat.setIsActive(true);
             flatRepository.save(flat);
-        }
     }
 
     @CachePut("flats")
-    public void deactivateFlat(Long id) {
+    public void deactivateFlat(Long id, String email) {
+
         Flat flat = flatRepository.findById(id).orElse(null);
-        if (flat != null) {
-            flat.setIsActive(false);
-            flatRepository.save(flat);
+
+        if (flat == null) {
+            throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID);
         }
+        if(!flat.getOwner().equals(userRepository.findUserByEmail(email))){
+            throw new NotOwnerException(IS_NOT_OWNER);
+        }
+        flat.setIsActive(false);
+        flatRepository.save(flat);
     }
 
     public List<Flat> findByOwnerId(Long id){
