@@ -1,7 +1,6 @@
 package com.softserve.maklertaboo;
 
 import com.softserve.maklertaboo.dto.passport.PassportDto;
-import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.Passport;
 import com.softserve.maklertaboo.mapping.PassportMapper;
 import com.softserve.maklertaboo.mapping.UserMapper;

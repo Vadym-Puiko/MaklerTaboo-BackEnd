@@ -1,9 +1,6 @@
 package com.softserve.maklertaboo.exception.handler;
 
-import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
-import com.softserve.maklertaboo.exception.exceptions.RequestNotFoundException;
-import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExists;
-import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
+import com.softserve.maklertaboo.exception.exceptions.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -71,6 +68,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error(exception.getMessage(), exception);
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
+    @ExceptionHandler(DuplicateRenterRequest.class)
+    public ResponseEntity<Object> handleRequestNotFoundException(DuplicateRenterRequest exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
     @Override
