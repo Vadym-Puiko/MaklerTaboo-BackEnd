@@ -4,6 +4,7 @@ import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -27,7 +28,6 @@ public class FavoriteFlat {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FavoriteFlat that = (FavoriteFlat) o;
-        return isActive == that.isActive &&
-                flat.equals(that.flat);
+        return flat.getId().equals(that.flat.getId());
     }
 }

@@ -12,4 +12,6 @@ public interface FavoriteFlatRepository extends JpaRepository<FavoriteFlat, Long
 
     FavoriteFlat findFavoriteFlatByUser(User user);
 
+    List<FavoriteFlat> findAllByAndFlat_IdAndUser_Email(Long id, String email);
+
 }
