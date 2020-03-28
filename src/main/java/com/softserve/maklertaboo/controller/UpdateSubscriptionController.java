@@ -35,4 +35,10 @@ public class UpdateSubscriptionController {
         String email = jwtTokenProvider.getEmailFromJWT(token);
         mailingService.subscribe(parameters,email);
     }
+
+    @DeleteMapping
+    public void unsubscribe(@RequestHeader("Authorization") String token){
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        mailingService.unsubscribe(email);
+    }
 }

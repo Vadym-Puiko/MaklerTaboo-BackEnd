@@ -18,6 +18,7 @@ public class FlatMapper implements MapperToDto<Flat, FlatDto>, MapperToEntity<Fl
 
     public FlatDto convertToDto(Flat flat) {
         FlatDto flatDto = new FlatDto();
+        flatDto.setUsername(flat.getOwner().getUsername());
 
         if(flat.getCreationDate()!=null) {
             flatDto.setCreationDate(dateFormat.format(flat.getCreationDate()));

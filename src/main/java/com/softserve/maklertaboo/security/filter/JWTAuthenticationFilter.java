@@ -1,5 +1,7 @@
 package com.softserve.maklertaboo.security.filter;
 
+import com.softserve.maklertaboo.constant.ErrorMessage;
+import com.softserve.maklertaboo.exception.exceptions.CustomExpiredJwtException;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import com.softserve.maklertaboo.security.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -53,9 +55,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (ExpiredJwtException e) {
-            log.info("Token has expired: ");
-        } catch (Exception e) {
-            log.info("Access denied with token: " + e.getMessage());
+            final String expiredMsg = e.getMessage();
+            logger.warn(expiredMsg);
+
+            final String msg = (expiredMsg != null) ? expiredMsg : "Unauthorized";
+            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
+
+//        } catch (Exception e) {
+//            log.error("Access denied with token: " + e.getMessage());
+
         }
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }

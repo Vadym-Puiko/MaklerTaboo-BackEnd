@@ -14,4 +14,5 @@ public class ChatMessageDTO {
     private Long senderId;
     private String senderUsername;
     private Long chatId;
+    private Data dateSeen;
 }

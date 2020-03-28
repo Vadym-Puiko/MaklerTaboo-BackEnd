@@ -28,20 +28,11 @@ public class ChatService {
     }
 
 
-    public Chat createChat(Chat chat) {
-        return chatRepository.save(chat);
-    }
-
-    public Chat createChatbyId(Chat chat) {
-        return chatRepository.save(chat);
-    }
-
     public Chat getChatById(Long chatId) {
         return chatRepository.findById(chatId).orElseThrow(IllegalArgumentException::new);
     }
 
     public List<Chat> getChatByUserId(Long Id) {
-        ;
         return Stream.concat(chatRepository.findAllBySender_Id(Id).stream(),
                 chatRepository.findAllByReceiver_Id(Id).stream())
                 .collect(Collectors.toList());
@@ -61,6 +52,10 @@ public class ChatService {
 
     public Long getCountOfMessages(Long chatId) {
         return messageRepository.countByChatId(chatId);
+    }
+
+    public Long getCountOfUnreadMessages(Long chatId) {
+        return messageRepository.countByChatIdAndDataSeenIsNull(chatId);
     }
 
     public Long getChatId(String recieverName, Long senderId) {
