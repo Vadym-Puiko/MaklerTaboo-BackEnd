@@ -22,6 +22,10 @@ import java.util.stream.Collectors;
 @Service
 public class FavoriteFlatService {
 
+    private Flat flat;
+    private User user;
+    private FavoriteFlat favoriteFlat;
+
     private final FavoriteFlatRepository favoriteFlatRepository;
     private final FlatRepository flatRepository;
     private final UserRepository userRepository;
@@ -35,23 +39,9 @@ public class FavoriteFlatService {
         this.userRepository = userRepository;
     }
 
-
-
     public void saveFavoriteFlat(Long id, String email) {
-        FavoriteFlat favoriteFlat = new FavoriteFlat();
-        Flat flat = flatRepository.findById(id).orElse(null);
-        if (flat != null) {
-            favoriteFlat.setFlat(flat);
-        } else {
-            throw new FlatNotFoundException(ErrorMessage.FLAT_NOT_FOUND);
-        }
-
-        User user = userRepository.findUserByEmail(email);
-        if (user != null) {
-            favoriteFlat.setUser(user);
-        } else {
-            throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
-        }
+        setFlatToFavoriteFlatEntity(id);
+        setUserToFavoriteFlatEntity(email);
 
         favoriteFlat.setActive(true);
 
@@ -71,7 +61,8 @@ public class FavoriteFlatService {
         }
         List<FavoriteFlat> favoriteFlats = user.getFavoriteFlats();
         if (favoriteFlats == null || favoriteFlats.size() == 0) {
-            throw new FavoriteListIsEmptyException(ErrorMessage.EMPTY_FAVORITE_LIST);
+            throw new FavoriteListIsEmptyException(
+                    ErrorMessage.EMPTY_FAVORITE_LIST);
         }
         return favoriteFlats
                 .stream()
@@ -80,20 +71,8 @@ public class FavoriteFlatService {
     }
 
     public void deactivateFlat(Long id, String email) {
-        FavoriteFlat favoriteFlat = new FavoriteFlat();
-        Flat flat = flatRepository.findById(id).orElse(null);
-        if (flat != null) {
-            favoriteFlat.setFlat(flat);
-        } else {
-            throw new FlatNotFoundException(ErrorMessage.FLAT_NOT_FOUND);
-        }
-
-        User user = userRepository.findUserByEmail(email);
-        if (user != null) {
-            favoriteFlat.setUser(user);
-        } else {
-            throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
-        }
+        setFlatToFavoriteFlatEntity(id);
+        setUserToFavoriteFlatEntity(email);
 
         if (user.getFavoriteFlats().contains(favoriteFlat)) {
             user.getFavoriteFlats().remove(favoriteFlat);
@@ -103,4 +82,24 @@ public class FavoriteFlatService {
                     ErrorMessage.FLAT_ALREADY_IN_THE_FAVORITE_LIST);
         }
     }
+
+    private void setFlatToFavoriteFlatEntity(Long id) {
+        this.favoriteFlat = new FavoriteFlat();
+        this.flat = flatRepository.findById(id).orElse(null);
+        if (this.flat != null) {
+            this.favoriteFlat.setFlat(this.flat);
+        } else {
+            throw new FlatNotFoundException(ErrorMessage.FLAT_NOT_FOUND);
+        }
+    }
+
+    private void setUserToFavoriteFlatEntity(String email) {
+        this.user = userRepository.findUserByEmail(email);
+        if (this.user != null) {
+            this.favoriteFlat.setUser(this.user);
+        } else {
+            throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
+        }
+    }
+
 }
