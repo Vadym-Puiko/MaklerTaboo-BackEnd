@@ -14,7 +14,6 @@ import com.softserve.maklertaboo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class PassportService {
 
@@ -81,7 +80,7 @@ public class PassportService {
     public void getLandlordAdminApproval(UserDto userDto) {
         if (UserRole.valueOf(userDto.getUserRole()) != UserRole.ROLE_LANDLORD) {
             requestForVerificationService.createLandlordRequest(userRepository.findById(userDto.getId()).get());
-            throw  new DuplicateLandlordRequest(ErrorMessage.DUPLICATE_LANDLORD_REQUEST);
+            throw new DuplicateLandlordRequest(ErrorMessage.DUPLICATE_LANDLORD_REQUEST);
         }
     }
 }
