@@ -5,7 +5,6 @@ import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.security.entity.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultJwtParser;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,15 +35,15 @@ public class JWTTokenProvider implements Serializable {
     private String secret;
 
     public String generateAccessToken(Authentication authentication) {
-        return this.generateAccessToken(((UserDetailsImpl) authentication.getPrincipal()));
+        return this.generateAccessToken(((UserDetailsImpl) authentication.getPrincipal()).getUsername());
     }
 
-    private String generateAccessToken(UserDetailsImpl userDetails) {
-        Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
+    public String generateAccessToken(String email) {
+//        Claims claims = Jwts.claims().setSubject(email);
         Date expiryDate = new Date(new Date().getTime() + Long.valueOf(accessExpirationTime));
-        log.info("Access Token for " + userDetails.getUsername() + " created.");
+        log.info("Access Token for " + email + " created.");
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS256, secret)
@@ -52,16 +51,16 @@ public class JWTTokenProvider implements Serializable {
     }
 
     public String generateRefreshToken(Authentication authentication) {
-        return this.generateRefreshToken(((UserDetailsImpl) authentication.getPrincipal()));
+        return this.generateRefreshToken(((UserDetailsImpl) authentication.getPrincipal()).getUsername());
     }
 
-    private String generateRefreshToken(UserDetailsImpl userDetails) {
-        User user = userRepository.findUserByEmail(userDetails.getUsername());
-        Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
+    public String generateRefreshToken(String email) {
+        User user = userRepository.findUserByEmail(email);
+//        Claims claims = Jwts.claims().setSubject(email);
         Date expiryDate = new Date(new Date().getTime() + Long.valueOf(refreshExpirationTime));
-        log.info("Refresh Token for " + userDetails.getUsername() + " created.");
+        log.info("Refresh Token for " + email + " created.");
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS256, user.getRefreshKey())
@@ -80,7 +79,8 @@ public class JWTTokenProvider implements Serializable {
     public boolean isTokenValid(String token, String secretKey) {
         try{
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return !(claims.getBody().getExpiration().before(new Date()));
+//            return !(claims.getBody().getExpiration().before(new Date()));
+            return true;
         }catch(IllegalArgumentException e){
             log.error("Given token is not valid: " + e.getMessage());
         }
