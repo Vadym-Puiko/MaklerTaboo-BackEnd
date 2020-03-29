@@ -7,7 +7,7 @@ import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
 import com.softserve.maklertaboo.exception.exceptions.BadRefreshTokenException;
-import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExists;
+import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExistsException;
 import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
@@ -56,7 +56,7 @@ public class UserService {
         User userByEmail = userRepository.findUserByEmail(userDto.getEmail());
         User userByPhone = userRepository.findUserByPhoneNumber(userDto.getPhoneNumber());
         if ((userByName != null) || (userByEmail != null) || (userByPhone != null)) {
-            throw new UserAlreadyExists(ErrorMessage.USER_ALREADY_EXISTS);
+            throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS);
         } else {
             User user = userMapper.convertToEntity(userDto);
             userRepository.save(user);
