@@ -79,8 +79,6 @@ public class ComplaintMapper implements MapperToDto<Complaint, ComplaintDto>, Ma
             userComment=userCommentRepository.findById(dto.getUserComment().getId()).orElseThrow();
             complaint.setUserComment(userComment);
         }
-        User user=userRepository.findById(dto.getUser().getId()).orElseThrow();
-        complaint.setUser(user);
         complaint.setText(dto.getText());
         return complaint;
     }

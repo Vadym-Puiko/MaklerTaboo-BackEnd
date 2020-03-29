@@ -33,12 +33,13 @@ public class ComplaintService {
         this.complaintMapper=complaintMapper;
         this.complainRepository=complainRepository;
     }
+
     public void saveComplaint(ComplaintDto complaintDto){
         Complaint complaint=complaintMapper.convertToEntity(complaintDto);
-//        String accessToken = httpServletRequest.getHeader("Authorization");
-//        String email = jwtTokenProvider.getEmailFromJWT(accessToken);
-//        User user = userRepository.findUserByEmail(email);
-//        complaint.setUser(user);
+        String accessToken = httpServletRequest.getHeader("Authorization");
+        String email = jwtTokenProvider.getEmailFromJWT(accessToken);
+        User user = userRepository.findUserByEmail(email);
+        complaint.setUser(user);
         complainRepository.save(complaint);
     }
 
