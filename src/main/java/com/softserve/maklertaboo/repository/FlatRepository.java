@@ -15,7 +15,7 @@ public interface FlatRepository extends JpaRepository<Flat, Long> {
     Optional<Flat> findById(Long id);
     Page<Flat> findAllByIsActiveIsTrue(Pageable pageable);
 
-    List<Flat> findByOwner(User author);
+    List<Flat> findByOwnerAndIsActiveIsTrue(User author);
 
     Long countAllByIsActive(boolean status);
 

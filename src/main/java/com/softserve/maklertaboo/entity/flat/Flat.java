@@ -46,6 +46,8 @@ public class Flat {
 
     @Field
     private String district;
+
+    @Field
     private Boolean isActive;
 
     @IndexedEmbedded
