@@ -89,6 +89,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
+    @ExceptionHandler(DuplicateLandlordRequest.class)
+    public ResponseEntity<Object> handleRequestNotFoundException(DuplicateLandlordRequest exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
 
     @ExceptionHandler(BadRefreshTokenException.class)
     public ResponseEntity<Object> handleBadRefreshTokenException(BadRefreshTokenException exception, WebRequest request) {

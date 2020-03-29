@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
 import static org.junit.Assert.assertEquals;
 
 @Transactional
@@ -29,8 +30,8 @@ public class PassportServiceTest {
     @Autowired
     UserMapper userMapper;
 
-   @Test
-    public void getPassport() {
+   @Test()
+   public void getPassport() {
        Passport passport = passportRepository.findById((long) 2).get();
        PassportDto passportDto = passportMapper.convertToDto(passport);
        assertEquals(passportDto.getIdentificationNumber(),passportService.getPassport((long) 1).getIdentificationNumber());
