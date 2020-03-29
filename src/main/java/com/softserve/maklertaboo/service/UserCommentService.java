@@ -50,6 +50,10 @@ public class UserCommentService {
 
     public void saveCommentAboutComment(UserCommentDto userCommentDto){
         UserComment userComment=userCommentMapper.convertToEntity(userCommentDto);
+        String accessToken = httpServletRequest.getHeader("Authorization");
+        String email = jwtTokenProvider.getEmailFromJWT(accessToken);
+        User user = userRepository.findUserByEmail(email);
+        userComment.setUserAuthor(user);
         userCommentRepository.save(userComment);
     }
 

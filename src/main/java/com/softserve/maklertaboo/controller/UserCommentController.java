@@ -29,17 +29,17 @@ public class UserCommentController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteUserComment(@RequestParam  Long id) {
+    public void deleteUserComment(@PathVariable  Long id) {
         userCommentService.deleteUserComment(id);
     }
 
     @GetMapping("/getall/{id}")
-    public List<UserCommentDto> getAllUserCommentsAboutUser(@RequestParam  Long id){
+    public List<UserCommentDto> getAllUserCommentsAboutUser(@PathVariable  Long id){
         return  userCommentService.getAllUserCommentsForUser(id);
     }
 
     @GetMapping("/getallaboutcomment/{id}")
-    public List<UserCommentDto> getAllCommentsAboutComment(@RequestParam  Long id){
+    public List<UserCommentDto> getAllCommentsAboutComment(@PathVariable  Long id){
         return  userCommentService.getAllCommentsForComment(id);
     }
 }
