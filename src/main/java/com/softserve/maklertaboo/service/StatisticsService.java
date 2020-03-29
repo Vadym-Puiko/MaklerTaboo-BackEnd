@@ -2,6 +2,7 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
 import com.softserve.maklertaboo.entity.enums.UserRole;
+import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.comment.FlatCommentRepository;
 import com.softserve.maklertaboo.repository.comment.UserCommentRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -172,5 +174,11 @@ public class StatisticsService {
     public Long getCountofPostedComments(Date start, Date end) {
         return flatCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end)) +
                 userCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end));
+    }
+
+    public List<User> getTopLandlords(int limit) {
+        return userRepository.findAllByRole(UserRole.ROLE_LANDLORD).stream()
+                .sorted(Comparator.comparingLong(flatRepository::countAllByOwner))
+                .limit(limit).collect(Collectors.toList());
     }
 }

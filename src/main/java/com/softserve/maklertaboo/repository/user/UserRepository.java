@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -38,5 +39,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User u set u.refreshKey= ?1 where u.id = ?2")
     void updateRefreshKey(String secret, Long id);
 
+    List<User> findAllByRole(UserRole role);
 
 }

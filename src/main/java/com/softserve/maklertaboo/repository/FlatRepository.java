@@ -19,6 +19,6 @@ public interface FlatRepository extends JpaRepository<Flat, Long> {
 
     Long countAllByIsActive(boolean status);
 
-    long countAllByCreationDateBetween(Date start, Date end);
+    long countAllByOwner(User user);
 
 }

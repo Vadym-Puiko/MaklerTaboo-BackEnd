@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.controller;
 
+import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.service.StatisticsService;
@@ -125,6 +126,11 @@ public class AdminController {
     public Long getCountOfCommentsBetween(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
                                           @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date end) {
         return statisticsService.getCountofPostedComments(start, end);
+    }
+
+    @GetMapping("/get-top-landlords")
+    public List<User> getToplandlords(){
+        return statisticsService.getTopLandlords();
     }
 
 }
