@@ -145,6 +145,6 @@ public class FlatService {
 
     public List<Flat> findByOwnerId(Long id){
         User user = userRepository.findById(id).get();
-        return flatRepository.findByOwner(user);
+        return flatRepository.findByOwnerAndIsActiveIsTrue(user);
     }
 }
