@@ -67,5 +67,17 @@ public class ChatWebSocketController {
         simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", deleteMessageInfoDTO.getChatId()), deletedMessageDTO);
     }
 
+
+   /* @MessageMapping("/send/message")
+    public void updateMessage(@Valid @Payload ChatMessageInfoDTO chatMessageInfoDTO) {
+
+        log.info("ChatWebsocketController send message");
+        log.info(chatMessageInfoDTO.getChatId() + "    " + chatMessageInfoDTO.getContent());
+        Message message = new Message();
+        Message sendBackMessage = messageService.updateMessage();
+        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", chatMessageInfoDTO.getChatId()), modelMapper.map(sendBackMessage, ChatMessageDTO.class));
+
+    }*/
+
 }
 

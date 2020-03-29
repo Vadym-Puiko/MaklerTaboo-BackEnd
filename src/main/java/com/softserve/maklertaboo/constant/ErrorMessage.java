@@ -12,5 +12,8 @@ public class ErrorMessage {
     public static final String USER_ALREADY_EXISTS = "User already exists with given credentials";
     public static final String FLAT_ALREADY_IN_THE_FAVORITE_LIST = "Flat already exists in the favorite list";
     public static final String EMPTY_FAVORITE_LIST = "Your favorite list is empty";
+    public static final String FLAT_NOT_FOUND_BY_ID = "Flat with following id not found: ";
+    public static final String IS_NOT_OWNER = "User is not owner of current flat";
+
 
 }

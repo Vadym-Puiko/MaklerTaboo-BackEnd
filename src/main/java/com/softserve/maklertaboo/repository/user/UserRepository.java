@@ -11,11 +11,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
     User findUserByUsername(String username);
+
+    Page<User> findAllByUsernameLike(Pageable pageable, String username);
+
+    Page<User> findAllByEmailLike(Pageable pageable, String email);
+
+    Page<User> findAllByPhoneNumberLike(Pageable pageable, String phone);
 
     User findUserByEmail(String email);
 

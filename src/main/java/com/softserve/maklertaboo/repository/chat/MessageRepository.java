@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
     Page<Message> findAllByChatId(Long chatId, Pageable pageable);
+    Long countByChatIdAndDataSeenIsNull(Long chatId);
     Long countByChatId(Long chatId);
     List<Message> findBySender_Id(Long id);
 }

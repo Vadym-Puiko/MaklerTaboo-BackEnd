@@ -126,6 +126,13 @@ public class UserController {
         return userService.findByEmail(email);
     }
 
+    @GetMapping("/currentUserId")
+    public Long getCurrentUserById(@RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        return userService.findByEmail(email).getId();
+    }
+
+
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
@@ -148,6 +155,24 @@ public class UserController {
     @GetMapping("/username/{username}")
     public UserDto getUserByUsername(@PathVariable String username) {
         return userService.findByUsername(username);
+    }
+
+    @GetMapping("/username/{username}/{page}/{size}")
+    public Page<UserDto> findUserByUsername(@PathVariable Integer page, @PathVariable Integer size, @PathVariable String username) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.searchUserByUsername(pageable, username);
+    }
+
+    @GetMapping("/email/{email}/{page}/{size}")
+    public Page<UserDto> findUserByEmail(@PathVariable Integer page, @PathVariable Integer size, @PathVariable String email) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.searchUserByEmail(pageable, email);
+    }
+
+    @GetMapping("/phone/{phone}/{page}/{size}")
+    public Page<UserDto> findUserByPhoneNumber(@PathVariable Integer page, @PathVariable Integer size, @PathVariable String phone) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.searchUserByPhone(pageable, phone);
     }
 
     @ApiResponses(value = {
@@ -173,6 +198,11 @@ public class UserController {
     public void updateUser(@RequestBody @Valid UserUpdateDto userUpdateDto, @RequestHeader("Authorization") String token) {
         String email = jwtTokenProvider.getEmailFromJWT(token);
         userService.updateUser(email, userUpdateDto);
+    }
+
+    @PutMapping("/update/admin/panel")
+    public void updateUser(@RequestBody @Valid UserDto userDto) {
+        userService.updateUserIntoAdminPanel(userDto);
     }
 
     @PutMapping("/profile/updatePhoto")

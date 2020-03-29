@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -21,9 +22,9 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
-    public void updateMessage(Long id, String content) {
+    public void updateMessage(Long id, Date date) {
         Message message = messageRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        message.setContent(content);
+        message.setDataSeen(date);
         messageRepository.save(message);
     }
 
