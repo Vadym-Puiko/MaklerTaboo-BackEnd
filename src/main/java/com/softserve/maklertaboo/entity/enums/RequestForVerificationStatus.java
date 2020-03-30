@@ -4,7 +4,9 @@ public enum RequestForVerificationStatus {
     NEW,
     VIEWED,
     APPROVED,
-    DECLINED;
+    DECLINED,
+    ALL,
+    DEACTIVATED;
 
     public String getStatus() {
         return this.name();

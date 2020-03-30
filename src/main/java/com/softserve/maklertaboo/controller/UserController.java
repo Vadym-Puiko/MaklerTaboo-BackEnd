@@ -201,8 +201,8 @@ public class UserController {
     }
 
     @PutMapping("/update/admin/panel")
-    public void updateUser(@RequestBody @Valid UserDto userDto) {
-        userService.updateUserIntoAdminPanel(userDto);
+    public void updateUser(@RequestBody @Valid UserUpdateDto UserUpdateDto) {
+        userService.updateUserIntoAdminPanel(UserUpdateDto);
     }
 
     @PutMapping("/profile/updatePhoto")

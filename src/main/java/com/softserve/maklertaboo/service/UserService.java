@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.softserve.maklertaboo.constant.ErrorMessage.REFRESH_TOKEN_NOT_VALID;
@@ -85,8 +86,7 @@ public class UserService {
 
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email);
-        UserDto userDto = userMapper.convertToDto(user);
-        return userDto;
+        return userMapper.convertToDto(user);
     }
 
     public UserDto findByUsername(String username) {
@@ -106,11 +106,6 @@ public class UserService {
         return userRepository.findAllByPhoneNumberLike(pageable,"%" + phone + "%").map(userMapper::convertToDto);
     }
 
-    public UserDto findUserByPhoneNumber(String phoneNumber) {
-        User user = userRepository.findUserByPhoneNumber(phoneNumber);
-        return userMapper.convertToDto(user);
-    }
-
     public void updateUser(String email, UserUpdateDto userUpdateDto) {
         User user = userRepository.findUserByEmail(email);
         user.setUsername(userUpdateDto.getUsername());
@@ -119,10 +114,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updateUserIntoAdminPanel(UserDto userDto) {
-        User user = userRepository.findUserByEmail(userDto.getEmail());
-        user.setUsername(userDto.getUsername());
-        user.setPhoneNumber(userDto.getPhoneNumber());
+    public void updateUserIntoAdminPanel(UserUpdateDto userUpdateDto) {
+        User user = userRepository.findUserByEmail(userUpdateDto.getEmail());
+        user.setUsername(userUpdateDto.getUsername());
+        user.setPhoneNumber(userUpdateDto.getPhoneNumber());
         userRepository.save(user);
     }
 
