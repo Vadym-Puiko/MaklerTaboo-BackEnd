@@ -42,7 +42,7 @@ public class StatisticsService {
         this.flatCommentRepository = flatCommentRepository;
     }
 
-    public Long getCountOfActiveFlats() {
+    public Long getNumberOfActiveFlats() {
         return flatRepository.countAllByIsActive(true);
     }
 
@@ -50,7 +50,7 @@ public class StatisticsService {
         return flatRepository.countAllByIsActive(false);
     }
 
-    public Long getCountOfActiveUsers() {
+    public Long getNumberOfActiveUsers() {
         return userRepository.count();
     }
 
@@ -178,7 +178,12 @@ public class StatisticsService {
 
     public List<User> getTopLandlords(int limit) {
         return userRepository.findAllByRole(UserRole.ROLE_LANDLORD).stream()
-                .sorted(Comparator.comparingLong(flatRepository::countAllByOwner))
+                .sorted(Comparator.comparingLong(flatRepository::countAllByOwner).reversed())
                 .limit(limit).collect(Collectors.toList());
+    }
+
+    public Long getFlatsCountOfUser(Long id) {
+        User user = userRepository.findById(id).get();
+        return flatRepository.countAllByOwner(user);
     }
 }
