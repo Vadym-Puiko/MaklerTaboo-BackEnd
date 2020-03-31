@@ -22,4 +22,6 @@ public class Subscription {
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private FlatSearchParameters flatSearchParameters;
 
+    private boolean active;
+
 }

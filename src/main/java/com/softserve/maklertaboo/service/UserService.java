@@ -1,6 +1,5 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.dto.user.JwtTokensDto;
 import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.dto.user.UserUpdateDto;
@@ -8,11 +7,12 @@ import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
 import com.softserve.maklertaboo.exception.exceptions.BadRefreshTokenException;
-import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExists;
+import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExistsException;
 import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
+import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -20,14 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.softserve.maklertaboo.constant.ErrorMessage.REFRESH_TOKEN_NOT_VALID;
+
 
 @Service
 public class UserService {
@@ -56,7 +56,7 @@ public class UserService {
         User userByEmail = userRepository.findUserByEmail(userDto.getEmail());
         User userByPhone = userRepository.findUserByPhoneNumber(userDto.getPhoneNumber());
         if ((userByName != null) || (userByEmail != null) || (userByPhone != null)) {
-            throw new UserAlreadyExists(ErrorMessage.USER_ALREADY_EXISTS);
+            throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS);
         } else {
             User user = userMapper.convertToEntity(userDto);
             userRepository.save(user);
@@ -94,6 +94,18 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
+    public Page<UserDto> searchUserByUsername(Pageable pageable, String username) {
+        return userRepository.findAllByUsernameLike(pageable, "%" + username + "%").map(userMapper::convertToDto);
+    }
+
+    public Page<UserDto> searchUserByEmail(Pageable pageable, String email) {
+        return userRepository.findAllByEmailLike(pageable,"%" + email + "%").map(userMapper::convertToDto);
+    }
+
+    public Page<UserDto> searchUserByPhone(Pageable pageable, String phone) {
+        return userRepository.findAllByPhoneNumberLike(pageable,"%" + phone + "%").map(userMapper::convertToDto);
+    }
+
     public UserDto findUserByPhoneNumber(String phoneNumber) {
         User user = userRepository.findUserByPhoneNumber(phoneNumber);
         return userMapper.convertToDto(user);
@@ -104,6 +116,13 @@ public class UserService {
         user.setUsername(userUpdateDto.getUsername());
         user.setPhoneNumber(userUpdateDto.getPhoneNumber());
         user.setPhotoUrl(userUpdateDto.getPhotoUrl());
+        userRepository.save(user);
+    }
+
+    public void updateUserIntoAdminPanel(UserDto userDto) {
+        User user = userRepository.findUserByEmail(userDto.getEmail());
+        user.setUsername(userDto.getUsername());
+        user.setPhoneNumber(userDto.getPhoneNumber());
         userRepository.save(user);
     }
 
@@ -149,25 +168,23 @@ public class UserService {
         return true;
     }
 
-    @Transactional
     public JwtTokensDto updateAccessTokens(String refreshToken) {
         String email;
         try {
             email = jwtTokenProvider.getEmailFromJWT(refreshToken);
         } catch (ExpiredJwtException e) {
-            throw new BadRefreshTokenException("Refresh token is not valid");
+            throw new BadRefreshTokenException(REFRESH_TOKEN_NOT_VALID);
         }
         User user = userRepository.findUserByEmail(email);
         if (user == null) {
-            throw new BadEmailOrPasswordException("Email is not valid");
+            throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
         }
-        userRepository.updateRefreshKey(UUID.randomUUID().toString(), user.getId());
         if (jwtTokenProvider.isTokenValid(refreshToken, user.getRefreshKey())) {
             return new JwtTokensDto(
-                    jwtTokenProvider.generateAccessToken(SecurityContextHolder.getContext().getAuthentication()),
-                    jwtTokenProvider.generateRefreshToken(SecurityContextHolder.getContext().getAuthentication())
+                    jwtTokenProvider.generateAccessToken(user.getEmail()),
+                    jwtTokenProvider.generateRefreshToken(user.getEmail())
             );
         }
-        throw new BadRefreshTokenException("Refresh token is not valid");
+        throw new BadRefreshTokenException(REFRESH_TOKEN_NOT_VALID);
     }
 }

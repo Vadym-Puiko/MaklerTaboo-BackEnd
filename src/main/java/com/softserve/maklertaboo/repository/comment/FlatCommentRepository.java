@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface FlatCommentRepository extends JpaRepository<FlatComment, Long> {
-    List<FlatComment> findByFlatAndIsActiveIsTrue(Flat flat);
+    List<FlatComment> findByFlatAndIsActiveIsTrueAndCommentAboutCommentIsNull(Flat flat);
     List<FlatComment> findAllByCommentAboutCommentAndIsActiveIsTrue(Long id);
 
     long countAllByPublicationDateBetween(LocalDateTime start, LocalDateTime end);

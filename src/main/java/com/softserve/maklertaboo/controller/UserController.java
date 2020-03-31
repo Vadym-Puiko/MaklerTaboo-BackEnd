@@ -1,7 +1,7 @@
 package com.softserve.maklertaboo.controller;
 
 import com.softserve.maklertaboo.constant.HttpStatuses;
-import com.softserve.maklertaboo.dto.user.JwtTokensDto;
+import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.dto.user.UserUpdateDto;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
@@ -64,12 +64,12 @@ public class UserController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        response.addHeader("accessToken", jwtTokenProvider.generateAccessToken(authentication));
-        response.addHeader("refreshToken", jwtTokenProvider.generateRefreshToken(authentication));
+        response.addHeader("accesstoken", jwtTokenProvider.generateAccessToken(authentication));
+        response.addHeader("refreshtoken", jwtTokenProvider.generateRefreshToken(authentication));
         return ResponseEntity.ok(jwtSuccessLogIn);
     }
 
-    @ApiOperation("Updating access token by refresh token")
+    @ApiOperation("Updating access token by refreshKey token")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "Refresh token is not valid")
@@ -78,8 +78,8 @@ public class UserController {
     public ResponseEntity updateAccessToken(@RequestParam @NotBlank String refreshToken,
                                             HttpServletResponse response) {
         JwtTokensDto newTokens = userService.updateAccessTokens(refreshToken);
-        response.addHeader("accessToken", newTokens.getAccessToken());
-        response.addHeader("refreshToken", newTokens.getRefreshToken());
+        response.addHeader("accesstoken", newTokens.getAccesstoken());
+        response.addHeader("refreshtoken", newTokens.getRefreshtoken());
         return ResponseEntity.ok().build();
     }
 
@@ -126,6 +126,13 @@ public class UserController {
         return userService.findByEmail(email);
     }
 
+    @GetMapping("/currentUserId")
+    public Long getCurrentUserById(@RequestHeader("Authorization") String token) {
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        return userService.findByEmail(email).getId();
+    }
+
+
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
@@ -148,6 +155,24 @@ public class UserController {
     @GetMapping("/username/{username}")
     public UserDto getUserByUsername(@PathVariable String username) {
         return userService.findByUsername(username);
+    }
+
+    @GetMapping("/username/{username}/{page}/{size}")
+    public Page<UserDto> findUserByUsername(@PathVariable Integer page, @PathVariable Integer size, @PathVariable String username) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.searchUserByUsername(pageable, username);
+    }
+
+    @GetMapping("/email/{email}/{page}/{size}")
+    public Page<UserDto> findUserByEmail(@PathVariable Integer page, @PathVariable Integer size, @PathVariable String email) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.searchUserByEmail(pageable, email);
+    }
+
+    @GetMapping("/phone/{phone}/{page}/{size}")
+    public Page<UserDto> findUserByPhoneNumber(@PathVariable Integer page, @PathVariable Integer size, @PathVariable String phone) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.searchUserByPhone(pageable, phone);
     }
 
     @ApiResponses(value = {
@@ -173,6 +198,11 @@ public class UserController {
     public void updateUser(@RequestBody @Valid UserUpdateDto userUpdateDto, @RequestHeader("Authorization") String token) {
         String email = jwtTokenProvider.getEmailFromJWT(token);
         userService.updateUser(email, userUpdateDto);
+    }
+
+    @PutMapping("/update/admin/panel")
+    public void updateUser(@RequestBody @Valid UserDto userDto) {
+        userService.updateUserIntoAdminPanel(userDto);
     }
 
     @PutMapping("/profile/updatePhoto")
