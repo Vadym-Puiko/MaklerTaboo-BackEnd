@@ -46,13 +46,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
-    @ExceptionHandler(UserAlreadyExists.class)
-    public final ResponseEntity<Object> handleBadEmailOrPasswordException(UserAlreadyExists exception, WebRequest request) {
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public final ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException exception, WebRequest request) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(FlatAlreadyInTheFavoriteListException.class)
+    public final ResponseEntity<Object> handleUserAlreadyExistsException(FlatAlreadyInTheFavoriteListException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(FavoriteListIsEmptyException.class)
+    public final ResponseEntity<Object> handleFavoriteListIsEmptyException(FavoriteListIsEmptyException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
     @ExceptionHandler(UserNotFoundException.class)

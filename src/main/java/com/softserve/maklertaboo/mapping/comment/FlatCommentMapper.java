@@ -5,6 +5,7 @@ import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.mapping.MapperToDto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
+import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.FlatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,11 +16,13 @@ import org.springframework.stereotype.Component;
 public class FlatCommentMapper implements MapperToDto<FlatComment, FlatCommentDto>, MapperToEntity<FlatCommentDto, FlatComment> {
 
     private final FlatRepository flatRepository;
+    private final UserMapper userMapper;
 
 
     @Autowired
-    public FlatCommentMapper(FlatRepository flatRepository) {
+    public FlatCommentMapper(FlatRepository flatRepository, UserMapper userMapper) {
         this.flatRepository = flatRepository;
+        this.userMapper=userMapper;
     }
 
 
@@ -32,9 +35,13 @@ public class FlatCommentMapper implements MapperToDto<FlatComment, FlatCommentDt
         flatCommentDto.setText(entity.getText());
         flatCommentDto.setPublicationDate(entity.getPublicationDate());
         flatCommentDto.setFlatId(entity.getFlat().getId());
+        flatCommentDto.setUserAuthor(userMapper.convertToDto(entity.getUserAuthor()));
+
 
         return flatCommentDto;
     }
+
+
 
     @Override
     public FlatComment convertToEntity(FlatCommentDto dto) {

@@ -75,7 +75,7 @@ public class FlatCommentService {
 
     public List<FlatCommentDto> getAllFlatCommentsForFlat(Long id){
         Flat flat=flatRepository.getOne(id);
-        List<FlatComment> list=flatCommentRepository.findByFlatAndIsActiveIsTrue(flat);
+        List<FlatComment> list=flatCommentRepository.findByFlatAndIsActiveIsTrueAndCommentAboutCommentIsNull(flat);
         return list.stream().map(flatCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
