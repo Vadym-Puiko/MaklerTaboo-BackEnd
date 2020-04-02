@@ -34,17 +34,17 @@ public class FavoriteFlatService {
     public FavoriteFlatService(FavoriteFlatRepository favoriteFlatRepository,
                                FlatRepository flatRepository,
                                UserRepository userRepository) {
+
         this.favoriteFlatRepository = favoriteFlatRepository;
         this.flatRepository = flatRepository;
         this.userRepository = userRepository;
     }
 
     public void saveFavoriteFlat(Long id, String email) {
+
         setFlatToFavoriteFlatEntity(id);
         setUserToFavoriteFlatEntity(email);
-
         favoriteFlat.setActive(true);
-
         if (!(user.getFavoriteFlats().contains(favoriteFlat))) {
             user.getFavoriteFlats().add(favoriteFlat);
             userRepository.save(user);
@@ -55,6 +55,7 @@ public class FavoriteFlatService {
     }
 
     public List<FavoriteFlat> getAllFavoriteFlatsOfUser(String email) {
+
         User user = userRepository.findUserByEmail(email);
         if (user == null) {
             throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
@@ -71,6 +72,7 @@ public class FavoriteFlatService {
     }
 
     public void deactivateFlat(Long id, String email) {
+
         setFlatToFavoriteFlatEntity(id);
         setUserToFavoriteFlatEntity(email);
 
@@ -84,6 +86,7 @@ public class FavoriteFlatService {
     }
 
     private void setFlatToFavoriteFlatEntity(Long id) {
+
         this.favoriteFlat = new FavoriteFlat();
         this.flat = flatRepository.findById(id).orElse(null);
         if (this.flat != null) {
@@ -94,6 +97,7 @@ public class FavoriteFlatService {
     }
 
     private void setUserToFavoriteFlatEntity(String email) {
+
         this.user = userRepository.findUserByEmail(email);
         if (this.user != null) {
             this.favoriteFlat.setUser(this.user);
