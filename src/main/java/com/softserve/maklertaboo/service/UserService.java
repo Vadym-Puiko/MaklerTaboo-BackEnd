@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,18 +80,25 @@ public class UserService {
     }
 
     public UserDto findUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
         return userMapper.convertToDto(user);
     }
 
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
+        }
         UserDto userDto = userMapper.convertToDto(user);
         return userDto;
     }
 
     public UserDto findByUsername(String username) {
         User user = userRepository.findUserByUsername(username);
+        if (user == null) {
+            throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
+        }
         return userMapper.convertToDto(user);
     }
 
@@ -99,11 +107,11 @@ public class UserService {
     }
 
     public Page<UserDto> searchUserByEmail(Pageable pageable, String email) {
-        return userRepository.findAllByEmailLike(pageable,"%" + email + "%").map(userMapper::convertToDto);
+        return userRepository.findAllByEmailLike(pageable, "%" + email + "%").map(userMapper::convertToDto);
     }
 
     public Page<UserDto> searchUserByPhone(Pageable pageable, String phone) {
-        return userRepository.findAllByPhoneNumberLike(pageable,"%" + phone + "%").map(userMapper::convertToDto);
+        return userRepository.findAllByPhoneNumberLike(pageable, "%" + phone + "%").map(userMapper::convertToDto);
     }
 
     public UserDto findUserByPhoneNumber(String phoneNumber) {

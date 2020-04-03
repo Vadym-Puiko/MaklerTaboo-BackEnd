@@ -89,6 +89,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
+    @ExceptionHandler(FavoriteFlatNotFoundException.class)
+    public final ResponseEntity<Object> handleFavoriteFlatNotFoundException(
+            FavoriteFlatNotFoundException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(
+                HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Object> handleUserNotFoundException(
             UserNotFoundException exception, WebRequest request) {
@@ -124,6 +136,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(
                 HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
+
     @ExceptionHandler(DuplicateRenterRequest.class)
     public ResponseEntity<Object> handleRequestNotFoundException(DuplicateRenterRequest exception, WebRequest request) {
 
@@ -132,6 +145,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
+
     @ExceptionHandler(DuplicateLandlordRequest.class)
     public ResponseEntity<Object> handleRequestNotFoundException(DuplicateLandlordRequest exception, WebRequest request) {
 
