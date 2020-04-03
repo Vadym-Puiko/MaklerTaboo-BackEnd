@@ -39,7 +39,6 @@ public class JWTTokenProvider implements Serializable {
     }
 
     public String generateAccessToken(String email) {
-//        Claims claims = Jwts.claims().setSubject(email);
         Date expiryDate = new Date(new Date().getTime() + Long.valueOf(accessExpirationTime));
         log.info("Access Token for " + email + " created.");
         return Jwts.builder()
@@ -56,7 +55,6 @@ public class JWTTokenProvider implements Serializable {
 
     public String generateRefreshToken(String email) {
         User user = userRepository.findUserByEmail(email);
-//        Claims claims = Jwts.claims().setSubject(email);
         Date expiryDate = new Date(new Date().getTime() + Long.valueOf(refreshExpirationTime));
         log.info("Refresh Token for " + email + " created.");
         return Jwts.builder()
@@ -78,8 +76,7 @@ public class JWTTokenProvider implements Serializable {
 
     public boolean isTokenValid(String token, String secretKey) {
         try{
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-//            return !(claims.getBody().getExpiration().before(new Date()));
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
         }catch(IllegalArgumentException e){
             log.error("Given token is not valid: " + e.getMessage());
