@@ -14,6 +14,7 @@ public class ErrorMessage {
     public static final String EMPTY_FAVORITE_LIST = "Your favorite list is empty";
     public static final String FLAT_NOT_FOUND_BY_ID = "Flat with following id not found: ";
     public static final String IS_NOT_OWNER = "User is not owner of current flat";
+    public static final String JSON_PARSING_EXCEPTION = "Cannot parse json";
 
 
 }
