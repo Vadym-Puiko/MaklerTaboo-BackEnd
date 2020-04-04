@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-
 public interface FavoriteFlatRepository extends
         JpaRepository<FavoriteFlat, Long> {
 

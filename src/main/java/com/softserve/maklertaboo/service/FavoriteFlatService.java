@@ -5,7 +5,6 @@ import com.softserve.maklertaboo.entity.flat.FavoriteFlat;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.FavoriteFlatNotFoundException;
-import com.softserve.maklertaboo.exception.exceptions.FavoriteListIsEmptyException;
 import com.softserve.maklertaboo.exception.exceptions.FlatAlreadyInTheFavoriteListException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.FavoriteFlatRepository;
@@ -60,14 +59,7 @@ public class FavoriteFlatService {
 
         User user = userMapper.convertToEntity(userService.findByEmail(email));
 
-        List<FavoriteFlat> favoriteFlats
-                = favoriteFlatRepository.getFavoriteFlatByUser_Id(user.getId());
-
-        if (favoriteFlats == null || favoriteFlats.size() < 1) {
-            throw new FavoriteListIsEmptyException(
-                    ErrorMessage.EMPTY_FAVORITE_LIST);
-        }
-        return favoriteFlats;
+        return favoriteFlatRepository.getFavoriteFlatByUser_Id(user.getId());
     }
 
     public void deactivateFlat(Long id, String email) {
