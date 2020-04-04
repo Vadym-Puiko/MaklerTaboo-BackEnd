@@ -80,7 +80,8 @@ public class FlatLocationService {
     }
 
     public List<FlatLocation> getFlatLocations(){
-        return flatLocationRepository.findAllByFlat_IsActiveIsTrue();
+        List<FlatLocation> flatLocations =  flatLocationRepository.findAll();
+        return flatLocations;
     }
 
 }

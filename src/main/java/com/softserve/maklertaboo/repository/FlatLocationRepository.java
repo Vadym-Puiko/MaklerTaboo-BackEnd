@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface FlatLocationRepository extends JpaRepository<FlatLocation, Long> {
-    List<FlatLocation> findAllByFlat_IsActiveIsTrue();
+    List<FlatLocation> findAll();
 }
