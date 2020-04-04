@@ -34,13 +34,16 @@ public class Flat {
     @Field
     private String title;
 
-    @Field @NumericField
+    @Field
+    @NumericField
     private Integer monthPrice;
 
-    @Field @NumericField
+    @Field
+    @NumericField
     private Integer numberOfRooms;
 
-    @Field @NumericField
+    @Field
+    @NumericField
     private Integer floor;
 
     @Field
@@ -68,6 +71,9 @@ public class Flat {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Order> orderList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "flat")
+    private List<FavoriteFlat> favoriteFlats;
 
     @OneToMany(cascade = CascadeType.ALL)
     @IndexedEmbedded

@@ -90,9 +90,9 @@ public class FlatService {
     }
 
     @Cacheable("flats")
-    public Flat getById(Integer id) {
-        Flat flat = flatRepository.findById(Long.parseLong(id + "")).orElse(null);
-        if(flat==null){
+    public Flat getById(Long id) {
+        Flat flat = flatRepository.findById(id).orElse(null);
+        if (flat == null) {
             throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id);
         }
         return flat;
@@ -133,8 +133,8 @@ public class FlatService {
         if (flat == null) {
             throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id);
         }
-            flat.setIsActive(true);
-            flatRepository.save(flat);
+        flat.setIsActive(true);
+        flatRepository.save(flat);
     }
 
     @CachePut("flats")
@@ -145,14 +145,14 @@ public class FlatService {
         if (flat == null) {
             throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id);
         }
-        if(!flat.getOwner().equals(userRepository.findUserByEmail(email))){
+        if (!flat.getOwner().equals(userRepository.findUserByEmail(email))) {
             throw new NotOwnerException(IS_NOT_OWNER);
         }
         flat.setIsActive(false);
         flatRepository.save(flat);
     }
 
-    public List<Flat> findByOwnerId(Long id){
+    public List<Flat> findByOwnerId(Long id) {
         User user = userRepository.findById(id).get();
         return flatRepository.findByOwnerAndIsActiveIsTrue(user);
     }
