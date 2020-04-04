@@ -8,5 +8,4 @@ public class FlatLocationDto {
     private Long flatId;
     private String latitude;
     private String longitude;
-
 }
