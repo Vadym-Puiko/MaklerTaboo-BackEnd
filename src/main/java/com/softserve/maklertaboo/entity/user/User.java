@@ -47,7 +47,7 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Flat> flats;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<FavoriteFlat> favoriteFlats;
 
     @OneToMany(cascade = CascadeType.ALL)
