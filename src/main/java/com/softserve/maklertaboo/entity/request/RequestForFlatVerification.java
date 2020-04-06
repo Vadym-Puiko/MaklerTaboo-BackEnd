@@ -16,8 +16,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 public class RequestForFlatVerification extends RequestForVerification {
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @NonNull
+    @ManyToOne
     private Flat flat;
 
 }

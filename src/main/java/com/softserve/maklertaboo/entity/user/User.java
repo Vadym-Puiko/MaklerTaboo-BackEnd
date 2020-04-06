@@ -1,11 +1,14 @@
 package com.softserve.maklertaboo.entity.user;
 
+import com.softserve.maklertaboo.entity.enums.UserStatus;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.Order;
 import com.softserve.maklertaboo.entity.Passport;
 import com.softserve.maklertaboo.entity.comment.Comment;
 import com.softserve.maklertaboo.entity.comment.UserComment;
 import com.softserve.maklertaboo.entity.enums.UserRole;
+import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
+import com.softserve.maklertaboo.entity.request.RequestForVerification;
 import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
@@ -35,21 +38,28 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(columnDefinition = "varchar(255) default 'ACTIVE'")
+    @Enumerated(value = EnumType.STRING)
+    private UserStatus status;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private Passport passport;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Order> orders;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private List<Flat> flats;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAuthor")
     private List<Comment> comments;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<UserComment> userComments;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
+    private List<RequestForUserVerification> requestUser;
 
     @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()")
     private Date registrationDate;
@@ -59,6 +69,7 @@ public class User {
     @PrePersist
     public void prePersist() {
         setRole(UserRole.ROLE_USER);
+        setStatus(UserStatus.ACTIVE);
         if (registrationDate == null) {
             registrationDate = new Date();
         }

@@ -19,10 +19,13 @@ import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -75,6 +78,7 @@ public class UserService {
     public List<UserDto> findAllUser() {
         return userRepository.findAll()
                 .stream()
+                .filter(user -> user.getRole() != (UserRole.ROLE_ADMIN))
                 .map(userMapper::convertToDto)
                 .collect(Collectors.toList());
     }
