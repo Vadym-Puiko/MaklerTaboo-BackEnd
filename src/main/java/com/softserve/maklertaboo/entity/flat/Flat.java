@@ -25,7 +25,6 @@ public class Flat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
@@ -52,6 +51,9 @@ public class Flat {
 
     @Field
     private Boolean isActive;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private FlatLocation flatLocation;
 
     @IndexedEmbedded
     @OneToOne(cascade = CascadeType.ALL)

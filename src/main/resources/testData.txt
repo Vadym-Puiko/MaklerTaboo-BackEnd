@@ -148,7 +148,7 @@ flat5:
       "tags": [
        "Pets", "Smoking", "Smoking", "Hot Water", "Flat", "Furniture"
       ],
-      "title": " a central location in the Les Corts district",
+      "title": " A central location in the Les Corts district",
       "username": "FlatFixer"
     }
 
