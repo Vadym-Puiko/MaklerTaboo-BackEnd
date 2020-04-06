@@ -28,24 +28,27 @@ public class FlatLocationService {
         this.flatLocationRepository = flatLocationRepository;
     }
 
-    public FlatLocation generateLocation(Address address){
+    public FlatLocation generateLocation(Address address) {
         AddressRequest addressRequest = convertToAddressRequest(address);
-
         String jsonResult = restService.getPostWithCustomHeaders(addressRequest);
         return getFlatLocation(jsonResult);
     }
 
-    private FlatLocation getFlatLocation(String jsonResult){
+    private FlatLocation getFlatLocation(String jsonResult) {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode root;
         try {
             root = objectMapper.readTree(jsonResult);
         } catch (JsonProcessingException e) {
-           log.error(JSON_PARSING_EXCEPTION, e);
-           throw new InvalidJsonParsingStringException(JSON_PARSING_EXCEPTION);
+            log.error(JSON_PARSING_EXCEPTION, e);
+            throw new InvalidJsonParsingStringException(JSON_PARSING_EXCEPTION);
         }
         FlatLocation flatLocation = new FlatLocation();
+        insertLocations(flatLocation, root);
+        return flatLocation;
+    }
 
+    private void insertLocations(FlatLocation flatLocation, JsonNode root) {
         flatLocation.setLatitude(root
                 .get("resourceSets")
                 .get(0)
@@ -55,7 +58,6 @@ public class FlatLocationService {
                 .get("coordinates")
                 .get(0)
                 .asText());
-
         flatLocation.setLongitude(root
                 .get("resourceSets")
                 .get(0)
@@ -65,8 +67,6 @@ public class FlatLocationService {
                 .get("coordinates")
                 .get(1)
                 .asText());
-
-        return flatLocation;
     }
 
     private AddressRequest convertToAddressRequest(Address address) {
@@ -79,9 +79,8 @@ public class FlatLocationService {
         return addressRequest;
     }
 
-    public List<FlatLocation> getFlatLocations(){
-        List<FlatLocation> flatLocations =  flatLocationRepository.findAll();
+    public List<FlatLocation> getFlatLocations() {
+        List<FlatLocation> flatLocations = flatLocationRepository.findAll();
         return flatLocations;
     }
-
 }

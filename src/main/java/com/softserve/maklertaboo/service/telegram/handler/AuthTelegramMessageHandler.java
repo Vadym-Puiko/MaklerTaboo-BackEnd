@@ -14,9 +14,9 @@ import static com.softserve.maklertaboo.service.telegram.TelegramMessage.*;
 @Data
 public class AuthTelegramMessageHandler implements TelegramMessageHandler {
 
+    private final TelegramUserDataRepository telegramUserDataRepository;
     @Autowired
     private TelegramBot bot;
-    private final TelegramUserDataRepository telegramUserDataRepository;
 
     @Autowired
     public AuthTelegramMessageHandler(TelegramUserDataRepository telegramUserDataRepository) {

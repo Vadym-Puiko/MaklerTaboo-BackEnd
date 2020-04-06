@@ -30,10 +30,10 @@ public class TelegramService {
         this.userRepository = userRepository;
     }
 
-    public String getCode(String email){
+    public String getCode(String email) {
         User user = userRepository.findUserByEmail(email);
         TelegramUserData userData = user.getTelegramUserData();
-        if(user.getTelegramUserData() == null){
+        if (user.getTelegramUserData() == null) {
             bindTelegram(user);
             return telegramUserDataRepository.findByUser(user).getVerificationCode();
         }
@@ -46,11 +46,11 @@ public class TelegramService {
         }
         TelegramUserData telegramUserData = new TelegramUserData();
         telegramUserData.setUser(user);
-        telegramUserData.setVerificationCode(generateCode(LEFT_LIMIT,RIGHT_LIMIT,CODE_LENGTH));
+        telegramUserData.setVerificationCode(generateCode(LEFT_LIMIT, RIGHT_LIMIT, CODE_LENGTH));
         telegramUserDataRepository.save(telegramUserData);
     }
 
-    public String generateCode(int leftLimit , int rightLimit, int length) {
+    public String generateCode(int leftLimit, int rightLimit, int length) {
         Random random = new Random();
         return random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
@@ -66,13 +66,13 @@ public class TelegramService {
     public Boolean checkIfBinded(String email) {
         User user = userRepository.findUserByEmail(email);
         TelegramUserData userData = user.getTelegramUserData();
-        return (userData==null || userData.getChatId()==null);
+        return (userData == null || userData.getChatId() == null);
     }
 
-    public void unbind(String email){
+    public void unbind(String email) {
         User user = userRepository.findUserByEmail(email);
         TelegramUserData telegramUserData = telegramUserDataRepository.findByUser(user);
-        if(telegramUserData!=null){
+        if (telegramUserData != null) {
             telegramUserDataRepository.delete(telegramUserData);
         }
     }

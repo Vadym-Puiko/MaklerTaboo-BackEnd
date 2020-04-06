@@ -12,6 +12,7 @@ import com.softserve.maklertaboo.exception.exceptions.NotOwnerException;
 import com.softserve.maklertaboo.mapping.flat.FlatMapper;
 import com.softserve.maklertaboo.mapping.flat.FlatSearchMapper;
 import com.softserve.maklertaboo.mapping.flat.NewFlatMapper;
+import com.softserve.maklertaboo.model.BASE64DecodedMultipartFile;
 import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.search.FlatFullTextSearch;
 import com.softserve.maklertaboo.repository.search.FlatSearchRepository;
