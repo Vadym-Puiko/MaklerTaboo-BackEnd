@@ -98,13 +98,9 @@ public class FlatService {
         return flat;
     }
 
-    @CachePut("flats")
-    public void saveFlat(NewFlatDto newFlatDto) {
-        Flat flat = newFlatMapper.convertToEntity(newFlatDto);
+    private void savePhotos(NewFlatDto newFlatDto, Flat flat) {
         List<FlatPhoto> photos = new ArrayList<>();
-
         for (String base64 : newFlatDto.getBase64Photos()) {
-
             FlatPhoto flatPhoto = new FlatPhoto();
             flatPhoto.setFlat(flat);
             flatPhoto.setUrl(
@@ -114,15 +110,18 @@ public class FlatService {
             photos.add(flatPhoto);
         }
         flat.setFlatPhotoList(photos);
+    }
+
+    @CachePut("flats")
+    public void saveFlat(NewFlatDto newFlatDto) {
+        Flat flat = newFlatMapper.convertToEntity(newFlatDto);
+        savePhotos(newFlatDto, flat);
         flat.setTags(tagService.getTags(newFlatDto.getTags()));
-        flat.setOwner(
-                userRepository.findUserByEmail(newFlatDto.getEmail())
-        );
+        flat.setOwner(userRepository.findUserByEmail(newFlatDto.getEmail()));
         flat.setCreationDate(new Date());
         FlatLocation flatLocation = flatLocationService.generateLocation(flat.getAddress());
         flatLocation.setFlat(flat);
         flat.setFlatLocation(flatLocation);
-
         flatRepository.save(flat);
         requestForVerificationService.createFlatRequest(flat);
     }
@@ -139,12 +138,7 @@ public class FlatService {
 
     @CachePut("flats")
     public void deactivateFlat(Long id, String email) {
-
-        Flat flat = flatRepository.findById(id).orElse(null);
-
-        if (flat == null) {
-            throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id);
-        }
+        Flat flat = flatRepository.findById(id).orElseThrow(() -> new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id));
         if (!flat.getOwner().equals(userRepository.findUserByEmail(email))) {
             throw new NotOwnerException(IS_NOT_OWNER);
         }

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.telegram.telegrambots.ApiContextInitializer;
 
 @Slf4j
 @SpringBootApplication
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableCaching
 public class Application {
     public static void main(String[] args) {
+        ApiContextInitializer.init();
         SpringApplication.run(Application.class, args);
         log.info("start a program");
     }

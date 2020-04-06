@@ -12,7 +12,7 @@ import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 @Configuration
 public class QuartzSubmitJobs {
     private static final String CRON_EVERY_ONE_MINUTE = "0 0/1 * ? * * *";
-    private static final String CRON_EVERY_HALF_AN_HOUR = "0 0/30 * ? * * *";
+    private static final String CRON_EVERY_HALF_AN_HOUR = "0 0/1 * ? * * *";
 
     @Bean(name = "FlatsMailingJob")
     public JobDetailFactoryBean jobFlatsMailingJob() {

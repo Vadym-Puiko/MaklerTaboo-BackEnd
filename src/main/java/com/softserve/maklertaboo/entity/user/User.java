@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.entity.user;
 
+import com.softserve.maklertaboo.entity.TelegramUserData;
 import com.softserve.maklertaboo.entity.flat.FavoriteFlat;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.Order;
@@ -60,6 +61,10 @@ public class User {
     private Date registrationDate;
 
     private String refreshKey;
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "user")
+    @JoinColumn(name = "telegram_id", referencedColumnName = "id")
+    private TelegramUserData telegramUserData;
 
     @PrePersist
     public void prePersist() {

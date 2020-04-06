@@ -18,5 +18,7 @@ public class ErrorMessage {
     public static final String FLAT_NOT_FOUND_BY_ID = "Flat with following id not found: ";
     public static final String IS_NOT_OWNER = "User is not owner of current flat";
     public static final String JSON_PARSING_EXCEPTION = "Cannot parse json";
+    public static final String TELEGRAM_BINDED_MESSAGE = "Telegram is already binded to this account";
+    public static final String EMAIL_SENDING_ERROR = "Email sending error";
 
 }
