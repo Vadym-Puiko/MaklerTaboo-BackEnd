@@ -1,6 +1,7 @@
 package com.softserve.maklertaboo.entity.user;
-
 import com.softserve.maklertaboo.entity.enums.UserStatus;
+import com.softserve.maklertaboo.entity.TelegramUserData;
+import com.softserve.maklertaboo.entity.flat.FavoriteFlat;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.Order;
 import com.softserve.maklertaboo.entity.Passport;
@@ -10,6 +11,7 @@ import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.entity.request.RequestForVerification;
 import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +54,9 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private List<Flat> flats;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<FavoriteFlat> favoriteFlats;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAuthor")
     private List<Comment> comments;
 
@@ -65,6 +70,10 @@ public class User {
     private Date registrationDate;
 
     private String refreshKey;
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "user")
+    @JoinColumn(name = "telegram_id", referencedColumnName = "id")
+    private TelegramUserData telegramUserData;
 
     @PrePersist
     public void prePersist() {

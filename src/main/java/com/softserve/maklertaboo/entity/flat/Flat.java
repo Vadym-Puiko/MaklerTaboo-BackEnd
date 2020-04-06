@@ -26,7 +26,6 @@ public class Flat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
@@ -36,18 +35,26 @@ public class Flat {
     @Field
     private String title;
 
-    @Field @NumericField
+    @Field
+    @NumericField
     private Integer monthPrice;
 
-    @Field @NumericField
+    @Field
+    @NumericField
     private Integer numberOfRooms;
 
-    @Field @NumericField
+    @Field
+    @NumericField
     private Integer floor;
 
     @Field
     private String district;
+
+    @Field
     private Boolean isActive;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private FlatLocation flatLocation;
 
     @IndexedEmbedded
     @OneToOne(cascade = CascadeType.ALL)
@@ -65,6 +72,9 @@ public class Flat {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Order> orderList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "flat")
+    private List<FavoriteFlat> favoriteFlats;
 
     @OneToMany(cascade = CascadeType.ALL)
     @IndexedEmbedded

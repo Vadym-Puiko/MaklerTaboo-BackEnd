@@ -1,9 +1,7 @@
 package com.softserve.maklertaboo.entity.comment;
 
-import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -27,12 +25,6 @@ public abstract class Comment {
     @Column(columnDefinition = "tinyint(1) default 1")
     private Boolean isActive;
 
-//    @Column(columnDefinition = "bigint default 0")
-//    private Long commentLike;
-
-    @Column(columnDefinition = "tinyint(1) default 0")
-    private Boolean isCommentBad;
-
     @ManyToOne(cascade = CascadeType.DETACH)
     private User userAuthor;
 
@@ -42,10 +34,7 @@ public abstract class Comment {
             isActive = true;
         }
         if (publicationDate == null) {
-            publicationDate= LocalDateTime.now();
-        }
-        if (isCommentBad==null){
-            isCommentBad=false;
+            publicationDate = LocalDateTime.now();
         }
     }
 }

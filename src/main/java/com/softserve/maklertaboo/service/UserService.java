@@ -7,7 +7,7 @@ import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
 import com.softserve.maklertaboo.exception.exceptions.BadRefreshTokenException;
-import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExists;
+import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExistsException;
 import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
@@ -19,15 +19,12 @@ import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.softserve.maklertaboo.constant.ErrorMessage.REFRESH_TOKEN_NOT_VALID;
@@ -60,7 +57,7 @@ public class UserService {
         User userByEmail = userRepository.findUserByEmail(userDto.getEmail());
         User userByPhone = userRepository.findUserByPhoneNumber(userDto.getPhoneNumber());
         if ((userByName != null) || (userByEmail != null) || (userByPhone != null)) {
-            throw new UserAlreadyExists(ErrorMessage.USER_ALREADY_EXISTS);
+            throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS);
         } else {
             User user = userMapper.convertToEntity(userDto);
             userRepository.save(user);
@@ -84,17 +81,24 @@ public class UserService {
     }
 
     public UserDto findUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
         return userMapper.convertToDto(user);
     }
 
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
+        }
         return userMapper.convertToDto(user);
     }
 
     public UserDto findByUsername(String username) {
         User user = userRepository.findUserByUsername(username);
+        if (user == null) {
+            throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
+        }
         return userMapper.convertToDto(user);
     }
 
@@ -103,11 +107,11 @@ public class UserService {
     }
 
     public Page<UserDto> searchUserByEmail(Pageable pageable, String email) {
-        return userRepository.findAllByEmailLike(pageable,"%" + email + "%").map(userMapper::convertToDto);
+        return userRepository.findAllByEmailLike(pageable, "%" + email + "%").map(userMapper::convertToDto);
     }
 
     public Page<UserDto> searchUserByPhone(Pageable pageable, String phone) {
-        return userRepository.findAllByPhoneNumberLike(pageable,"%" + phone + "%").map(userMapper::convertToDto);
+        return userRepository.findAllByPhoneNumberLike(pageable, "%" + phone + "%").map(userMapper::convertToDto);
     }
 
     public void updateUser(String email, UserUpdateDto userUpdateDto) {

@@ -26,32 +26,6 @@ public class QuartzConfig {
         this.dataSource = dataSource;
     }
 
-    @Bean
-    public SpringBeanJobFactory springBeanJobFactory() {
-        AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
-        jobFactory.setApplicationContext(applicationContext);
-        return jobFactory;
-    }
-
-    @Bean
-    public SchedulerFactoryBean scheduler(Trigger... triggers) {
-        SchedulerFactoryBean schedulerFactory = new SchedulerFactoryBean();
-
-        Properties properties = new Properties();
-
-        schedulerFactory.setOverwriteExistingJobs(true);
-        schedulerFactory.setAutoStartup(true);
-        schedulerFactory.setQuartzProperties(properties);
-        schedulerFactory.setDataSource(dataSource);
-        schedulerFactory.setJobFactory(springBeanJobFactory());
-        schedulerFactory.setWaitForJobsToCompleteOnShutdown(true);
-
-        if (triggers.length>0) {
-            schedulerFactory.setTriggers(triggers);
-        }
-        return schedulerFactory;
-    }
-
     static SimpleTriggerFactoryBean createTrigger(JobDetail jobDetail, long pollFrequencyMs, String triggerName) {
         log.debug("createTrigger(jobDetail={}, pollFrequencyMs={}, triggerName={})", jobDetail.toString(), pollFrequencyMs, triggerName);
 
@@ -93,5 +67,31 @@ public class QuartzConfig {
         factoryBean.setDurability(true);
 
         return factoryBean;
+    }
+
+    @Bean
+    public SpringBeanJobFactory springBeanJobFactory() {
+        AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
+        jobFactory.setApplicationContext(applicationContext);
+        return jobFactory;
+    }
+
+    @Bean
+    public SchedulerFactoryBean scheduler(Trigger... triggers) {
+        SchedulerFactoryBean schedulerFactory = new SchedulerFactoryBean();
+
+        Properties properties = new Properties();
+
+        schedulerFactory.setOverwriteExistingJobs(true);
+        schedulerFactory.setAutoStartup(true);
+        schedulerFactory.setQuartzProperties(properties);
+        schedulerFactory.setDataSource(dataSource);
+        schedulerFactory.setJobFactory(springBeanJobFactory());
+        schedulerFactory.setWaitForJobsToCompleteOnShutdown(true);
+
+        if (triggers.length > 0) {
+            schedulerFactory.setTriggers(triggers);
+        }
+        return schedulerFactory;
     }
 }

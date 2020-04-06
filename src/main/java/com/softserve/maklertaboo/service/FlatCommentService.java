@@ -43,7 +43,6 @@ public class FlatCommentService {
         this.httpServletRequest=httpServletRequest;
     }
 
-
     public void saveFlatComment(FlatCommentDto flatCommentDto){
         FlatComment flatComment=flatCommentMapper.convertToEntity(flatCommentDto);
         String accessToken = httpServletRequest.getHeader("Authorization");
@@ -75,7 +74,7 @@ public class FlatCommentService {
 
     public List<FlatCommentDto> getAllFlatCommentsForFlat(Long id){
         Flat flat=flatRepository.getOne(id);
-        List<FlatComment> list=flatCommentRepository.findByFlatAndIsActiveIsTrue(flat);
+        List<FlatComment> list=flatCommentRepository.findByFlatAndIsActiveIsTrueAndCommentAboutCommentIsNull(flat);
         return list.stream().map(flatCommentMapper::convertToDto).collect(Collectors.toList());
     }
 

@@ -67,7 +67,6 @@ public class FlatFullTextSearch {
                 params.getFloorLow(),
                 params.getFloorHigh(), true, true);
 
-
         BooleanQuery luceneBooleanQuery = new BooleanQuery();
         luceneBooleanQuery.add(monthPriceQuery, BooleanClause.Occur.MUST);
         luceneBooleanQuery.add(numberOfRoomsQuery, BooleanClause.Occur.SHOULD);
@@ -112,6 +111,7 @@ public class FlatFullTextSearch {
                             .createQuery()
                     );
         }
+
         if(booleanJunction.isEmpty()){
             return null;
         }
