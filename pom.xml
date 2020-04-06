@@ -163,14 +163,8 @@
 			<artifactId>aws-java-sdk</artifactId>
 			<version>1.11.723</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>3.8.1</version>
-		</dependency>
 
 	</dependencies>
-
 
 	<build>
 		<plugins>
@@ -180,14 +174,12 @@
 			</plugin>
 
 			<plugin>
-				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>${maven-war-plugin.version}</version>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
 				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-					<warName>${project.artifactId}</warName>
-					<attachClasses>true</attachClasses>
+					<target>11</target>
+					<source>11</source>
 				</configuration>
 			</plugin>
 		</plugins>
