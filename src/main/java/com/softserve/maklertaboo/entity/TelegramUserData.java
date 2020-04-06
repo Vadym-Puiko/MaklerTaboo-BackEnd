@@ -15,7 +15,7 @@ public class TelegramUserData {
     private Long chatId;
     private String verificationCode;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "passport")
+    @OneToOne(cascade = CascadeType.DETACH)
     private User user;
 
 }
