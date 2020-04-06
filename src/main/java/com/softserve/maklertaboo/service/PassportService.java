@@ -1,10 +1,13 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.passport.PassportDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.Passport;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.DuplicateLandlordRequest;
+import com.softserve.maklertaboo.exception.exceptions.DuplicateRenterRequest;
 import com.softserve.maklertaboo.mapping.PassportMapper;
 import com.softserve.maklertaboo.repository.passport.PassportRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
@@ -18,7 +21,6 @@ public class PassportService {
     private final PassportMapper passportMapper;
     private final UserRepository userRepository;
     private final RequestForVerificationService requestForVerificationService;
-
     @Autowired
     public PassportService(PassportRepository passportRepository, PassportMapper passportMapper, UserRepository userRepository, RequestForVerificationService requestForVerificationService) {
         this.passportRepository = passportRepository;
@@ -67,15 +69,18 @@ public class PassportService {
 
         getRenterAdminApproval(userDto);
     }
+
     public void getRenterAdminApproval(UserDto userDto) {
         if (UserRole.valueOf(userDto.getUserRole()) != UserRole.ROLE_RENTER) {
             requestForVerificationService.createRenterRequest(userRepository.findById(userDto.getId()).get());
-
+            throw new DuplicateRenterRequest(ErrorMessage.DUPLICATE_RENTER_REQUEST);
         }
     }
+
     public void getLandlordAdminApproval(UserDto userDto) {
         if (UserRole.valueOf(userDto.getUserRole()) != UserRole.ROLE_LANDLORD) {
             requestForVerificationService.createLandlordRequest(userRepository.findById(userDto.getId()).get());
+            throw new DuplicateLandlordRequest(ErrorMessage.DUPLICATE_LANDLORD_REQUEST);
         }
     }
 }

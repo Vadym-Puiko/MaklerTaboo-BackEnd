@@ -28,80 +28,117 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private ErrorAttributes errorAttributes;
 
     @ExceptionHandler(RuntimeException.class)
-    public final ResponseEntity<Object> handleRuntimeException(RuntimeException exception, WebRequest request) {
+    public final ResponseEntity<Object> handleRuntimeException(
+            RuntimeException exception, WebRequest request) {
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
         exceptionResponse.setMessage("Runtime exception");
         log.error(exception.getMessage(), exception);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+        return ResponseEntity.status(
+                HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
     @ExceptionHandler(BadEmailOrPasswordException.class)
-    public final ResponseEntity<Object> handleBadEmailOrPasswordException(BadEmailOrPasswordException exception, WebRequest request) {
+    public final ResponseEntity<Object> handleBadEmailOrPasswordException(
+            BadEmailOrPasswordException exception, WebRequest request) {
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+        return ResponseEntity.status(
+                HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public final ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException exception, WebRequest request) {
+    public final ResponseEntity<Object> handleUserAlreadyExistsException(
+            UserAlreadyExistsException exception, WebRequest request) {
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+        return ResponseEntity.status(
+                HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
     @ExceptionHandler(FlatAlreadyInTheFavoriteListException.class)
-    public final ResponseEntity<Object> handleUserAlreadyExistsException(FlatAlreadyInTheFavoriteListException exception, WebRequest request) {
+    public final ResponseEntity<Object> handleUserAlreadyExistsException(
+            FlatAlreadyInTheFavoriteListException exception,
+            WebRequest request) {
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+        return ResponseEntity.status(
+                HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
     @ExceptionHandler(FavoriteListIsEmptyException.class)
-    public final ResponseEntity<Object> handleFavoriteListIsEmptyException(FavoriteListIsEmptyException exception, WebRequest request) {
+    public final ResponseEntity<Object> handleFavoriteListIsEmptyException(
+            FavoriteListIsEmptyException exception, WebRequest request) {
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+        return ResponseEntity.status(
+                HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(FavoriteFlatNotFoundException.class)
+    public final ResponseEntity<Object> handleFavoriteFlatNotFoundException(
+            FavoriteFlatNotFoundException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(
+                HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException exception, WebRequest request) {
+    public ResponseEntity<Object> handleUserNotFoundException(
+            UserNotFoundException exception, WebRequest request) {
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+        return ResponseEntity.status(
+                HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
     @ExceptionHandler(FlatNotFoundException.class)
-    public ResponseEntity<Object> handleFlatNotFoundException(FlatNotFoundException exception, WebRequest request) {
+    public ResponseEntity<Object> handleFlatNotFoundException(
+            FlatNotFoundException exception, WebRequest request) {
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+        return ResponseEntity.status(
+                HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
     @ExceptionHandler(RequestNotFoundException.class)
-    public ResponseEntity<Object> handleRequestNotFoundException(RequestNotFoundException exception, WebRequest request) {
+    public ResponseEntity<Object> handleRequestNotFoundException(
+            RequestNotFoundException exception, WebRequest request) {
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+        return ResponseEntity.status(
+                HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
-    @ExceptionHandler(BadRefreshTokenException.class)
-    public ResponseEntity<Object> handleBadRefreshTokenException(BadRefreshTokenException exception, WebRequest request) {
+    @ExceptionHandler(DuplicateRenterRequest.class)
+    public ResponseEntity<Object> handleRequestNotFoundException(DuplicateRenterRequest exception, WebRequest request) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
@@ -109,18 +146,47 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public final ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception, WebRequest request) {
+    @ExceptionHandler(DuplicateLandlordRequest.class)
+    public ResponseEntity<Object> handleRequestNotFoundException(DuplicateLandlordRequest exception, WebRequest request) {
+
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(BadRefreshTokenException.class)
+    public ResponseEntity<Object> handleBadRefreshTokenException(
+            BadRefreshTokenException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(
+                HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public final ResponseEntity<Object> handleAuthenticationException(
+            AuthenticationException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+        return ResponseEntity.status(
+                HttpStatus.UNAUTHORIZED).body(exceptionResponse);
     }
 
     @ExceptionHandler(CustomExpiredJwtException.class)
-    public final ResponseEntity<Object> handleCustomExpiredJwtException(CustomExpiredJwtException exception, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+    public final ResponseEntity<Object> handleCustomExpiredJwtException(
+            CustomExpiredJwtException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
         log.error(exception.getMessage(), exception);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
+        return ResponseEntity.status(
+                HttpStatus.UNAUTHORIZED).body(exceptionResponse);
     }
 
     @Override
@@ -146,7 +212,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private Map<String, Object> getErrorAttributes(WebRequest webRequest) {
-        return new HashMap<>(errorAttributes.getErrorAttributes(webRequest, true));
+        return new HashMap<>(
+                errorAttributes.getErrorAttributes(webRequest, true));
     }
 
 }
