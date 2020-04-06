@@ -1,7 +1,5 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.dto.request.RequestForFlatDto;
-import com.softserve.maklertaboo.dto.request.RequestForUserDto;
 import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
@@ -11,8 +9,6 @@ import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.entity.request.RequestForVerification;
 import com.softserve.maklertaboo.entity.user.User;
-import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
-import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.exception.exceptions.RequestNotFoundException;
 import com.softserve.maklertaboo.repository.request.RequestBaseRepository;
 import com.softserve.maklertaboo.repository.request.RequestForFlatVerificationRepository;
@@ -26,9 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

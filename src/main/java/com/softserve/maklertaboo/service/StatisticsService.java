@@ -183,7 +183,7 @@ public class StatisticsService {
     }
 
     public Long getFlatsCountOfUser(Long id) {
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(id).orElseThrow(IllegalAccessError::new);
         return flatRepository.countAllByOwner(user);
     }
 }
