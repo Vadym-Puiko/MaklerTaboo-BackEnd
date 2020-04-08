@@ -42,54 +42,36 @@ public class StatisticsService {
         this.flatCommentRepository = flatCommentRepository;
     }
 
-    public Long getNumberOfActiveFlats() {
+    public Long countActiveFlats() {
         return flatRepository.countAllByIsActive(true);
     }
 
-    public Long getCountOfUnactiveFlats() {
+    public Long countUnactiveFlats() {
         return flatRepository.countAllByIsActive(false);
     }
 
-    public Long getNumberOfActiveUsers() {
+    public Long countActiveUsers() {
         return userRepository.count();
     }
 
-    public Long getCountOfActiveRenters() {
+    public Long countActiveRenters() {
         return userRepository.countAllByRole(UserRole.ROLE_RENTER);
     }
 
-    public Long getCountOfActiveLandlords() {
+    public Long countActiveLandlords() {
         return userRepository.countAllByRole(UserRole.ROLE_LANDLORD);
     }
 
-    public Long getCountOfActiveModerators() {
+    public Long countActiveModerators() {
         return userRepository.countAllByRole(UserRole.ROLE_MODERATOR);
     }
 
-    public Long getCountOfActiveUsersComments() {
+    public Long countActiveUsersComments() {
         return userCommentRepository.countAllByIsActiveTrue();
     }
 
-    public Long getCountOfActiveFlatsComments() {
+    public Long countActiveFlatsComments() {
         return flatCommentRepository.countAllByIsActiveTrue();
-    }
-
-
-    public List<Long> getCountOfRegisteredUsersForLastDays(int numberOfDays) {
-        LocalDate date = LocalDate.now().minusDays(numberOfDays);
-        return IntStream.rangeClosed(1, numberOfDays)
-                .mapToObj(date::plusDays)
-                .map(this::getCountOfRegisteredUsersByDay)
-                .collect(Collectors.toList());
-    }
-
-
-    public List<Long> getCountOfPostedFlatsForLastDays(int numberOfDays) {
-        LocalDate date = LocalDate.now().minusDays(numberOfDays);
-        return IntStream.rangeClosed(1, numberOfDays)
-                .mapToObj(date::plusDays)
-                .map(this::getCountOfPostedFlatsByDay)
-                .collect(Collectors.toList());
     }
 
 
@@ -142,12 +124,12 @@ public class StatisticsService {
         return flatCommentRepository.countAllByPublicationDateBetween(endOfDay.minusDays(1), endOfDay);
     }
 
-    private Long getCountOfRegisteredUsersByDay(LocalDate day) {
+    public Long countRegisteredUsersByDay(LocalDate day) {
         LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
         return userRepository.countAllByRegistrationDateBetween(asDate(endOfDay.minusDays(1)), asDate(endOfDay));
     }
 
-    private Long getCountOfPostedFlatsByDay(LocalDate day) {
+    public Long countPostedFlatsByDay(LocalDate day) {
         LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
         return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(asDate(endOfDay.minusDays(1)), asDate(endOfDay));
     }
@@ -167,22 +149,22 @@ public class StatisticsService {
         return userCommentRepository.countAllByPublicationDateBetween(endOfDay.minusDays(1), endOfDay);
     }
 
-    public Long getCountOfFlatsBetween(Date start, Date end) {
-        return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(start, end);
+    public Long countPostedFlatsBetweenDates(LocalDate start, LocalDate end) {
+        return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(asDate(start), asDate(end));
     }
 
-    public Long getCountofPostedComments(Date start, Date end) {
+    public Long countPostedCommentsBetweenDates(LocalDate start, LocalDate end) {
         return flatCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end)) +
                 userCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end));
     }
 
-    public List<User> getTopLandlords(int limit) {
+    public List<User> getLandlordsSortedByFlatCountLimit(int limit) {
         return userRepository.findAllByRole(UserRole.ROLE_LANDLORD).stream()
                 .sorted(Comparator.comparingLong(flatRepository::countAllByOwner).reversed())
                 .limit(limit).collect(Collectors.toList());
     }
 
-    public Long getFlatsCountOfUser(Long id) {
+    public Long countFlatsByOwner(Long id) {
         User user = userRepository.findById(id).orElseThrow(IllegalAccessError::new);
         return flatRepository.countAllByOwner(user);
     }

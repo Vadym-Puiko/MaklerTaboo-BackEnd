@@ -115,6 +115,7 @@ public class FlatService {
         );
         flat.setCreationDate(new Date());
         flatRepository.save(flat);
+
         requestForVerificationService.createFlatRequest(flat);
     }
 

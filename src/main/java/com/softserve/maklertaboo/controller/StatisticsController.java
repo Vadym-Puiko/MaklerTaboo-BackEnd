@@ -7,11 +7,10 @@ import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,8 +18,8 @@ import static com.softserve.maklertaboo.utils.DateUtils.asDate;
 
 @CrossOrigin
 @RestController
-@PreAuthorize("hasRole ('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
-@RequestMapping("/admin")
+//@PreAuthorize("hasRole ('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
+@RequestMapping("/admin/statistics")
 public class StatisticsController {
 
     RequestForFlatMapper requestForFlatMapper;
@@ -39,50 +38,51 @@ public class StatisticsController {
         this.userMapper = userMapper;
     }
 
-    @GetMapping("statistics/active-flats")
-    public Long getNumberOfActiveFlats() {
-        return statisticsService.getNumberOfActiveFlats();
+    @GetMapping("count-active-flats")
+    public Long countActiveFlats() {
+        return statisticsService.countActiveFlats();
     }
 
-    @GetMapping("statistics/active-users")
-    public Long getNumberOfActiveUsers() {
-        return statisticsService.getNumberOfActiveUsers();
+    @GetMapping("count-active-users")
+    public Long countActiveUsers() {
+        return statisticsService.countActiveUsers();
     }
 
-    @GetMapping("statistics/active-landlords")
-    public Long getNumberOfActiveLandlords() {
-        return statisticsService.getCountOfActiveLandlords();
+    @GetMapping("count-active-landlords")
+    public Long countActiveLandlords() {
+        return statisticsService.countActiveLandlords();
     }
 
 
-    @GetMapping("statistics/count-comments")
-    public List<Long> getNumberOfActiveComments() {
-        return Arrays.asList(statisticsService.getCountOfActiveFlatsComments(),
-                statisticsService.getCountOfActiveUsersComments());
+    @GetMapping("statistics/count-active-comments")
+    public List<Long> countActiveComments() {
+        return Arrays.asList(statisticsService.countActiveFlatsComments(),
+                statisticsService.countActiveUsersComments());
     }
-
 
     @GetMapping("statistics/users-landlords")
     public List<Long> getCountOfUsersByRole() {
-        return Arrays.asList(statisticsService.getCountOfActiveRenters(),
-                statisticsService.getCountOfActiveLandlords(),
-                statisticsService.getCountOfActiveModerators());
+        return Arrays.asList(statisticsService.countActiveRenters(),
+                statisticsService.countActiveLandlords(),
+                statisticsService.countActiveModerators());
     }
 
     @GetMapping("statistics/active-unactive-flats")
     public List<Long> getCountOfActiveUnactiveFlats() {
-        return Arrays.asList(statisticsService.getNumberOfActiveFlats(),
-                statisticsService.getCountOfUnactiveFlats());
+        return Arrays.asList(statisticsService.countActiveFlats(),
+                statisticsService.countUnactiveFlats());
     }
 
-    @GetMapping("statistics/user-registration-dynamics/{days}")
-    public List<Long> getCountOfRegisteredUsersForLastDays(@PathVariable("days") int days) {
-        return statisticsService.getCountOfRegisteredUsersForLastDays(days);
+    @GetMapping("count-registered-users")
+    public Long countRegisteredUsersByDay(@RequestParam("day")
+                                          @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate day) {
+        return statisticsService.countRegisteredUsersByDay(day);
     }
 
-    @GetMapping("statistics/flat-creation-dynamics/{days}")
-    public List<Long> getCountOfCreatedFlatsForLastDays(@PathVariable("days") int days) {
-        return statisticsService.getCountOfPostedFlatsForLastDays(days);
+    @GetMapping("count-posted-flats")
+    public Long countPostedFlatsByDay(@RequestParam("day")
+                                      @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate day) {
+        return statisticsService.countPostedFlatsByDay(day);
     }
 
     @GetMapping("statistics/users-dynamics/{fromMonth}/{toMonth}")
@@ -114,27 +114,27 @@ public class StatisticsController {
         return statisticsService.getCountOfPostedFlatsCommentsFlatsLastDays(days);
     }
 
-    @GetMapping(value = "statistics/count-posted-flats", params = {"start", "end"})
-    public Long getCountOfFlatsBetween(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
-                                       @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date end) {
-        return statisticsService.getCountOfFlatsBetween(start, end);
+    @GetMapping(value = "count-posted-flats", params = {"start", "end"})
+    public Long countPostedFlatsBetweenDates(@RequestParam("start") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate start,
+                                             @RequestParam("end") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate end) {
+        return statisticsService.countPostedFlatsBetweenDates(start, end);
     }
 
-    @GetMapping(value = "statistics/count-posted-comments", params = {"start", "end"})
-    public Long getCountOfCommentsBetween(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
-                                          @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date end) {
-        return statisticsService.getCountofPostedComments(start, end);
+    @GetMapping(value = "count-posted-comments", params = {"start", "end"})
+    public Long countPostedCommentsBetweenDates(@RequestParam("start") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate start,
+                                                @RequestParam("end") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate end) {
+        return statisticsService.countPostedCommentsBetweenDates(start, end);
     }
 
     @GetMapping(value = "statistics/get-top-landlords", params = {"number"})
-    public List<UserDto> getToplandlords(@RequestParam(defaultValue = "8") Integer number) {
-        return statisticsService.getTopLandlords(number).stream()
+    public List<UserDto> getLandlordsSortedByFlatCountLimit(@RequestParam(defaultValue = "8") Integer limit) {
+        return statisticsService.getLandlordsSortedByFlatCountLimit(limit).stream()
                 .map(userMapper::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping(value = "statistics/get-flat-count-of-user", params = {"id"})
     public Long getFlatsCountOfUser(@RequestParam Long id) {
-        return statisticsService.getFlatsCountOfUser(id);
+        return statisticsService.countFlatsByOwner(id);
     }
 }

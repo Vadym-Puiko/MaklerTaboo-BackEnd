@@ -32,8 +32,6 @@ public class RequestForVerificationService {
     private final FlatService flatService;
     private final UserService userService;
 
-
-
     @Autowired
     public RequestForVerificationService(RequestForFlatVerificationRepository requestForFlatVerificationRepository,
                                          RequestForUserVerificationRepository requestForUserVerificationRepository,

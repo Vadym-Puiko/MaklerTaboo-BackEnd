@@ -16,8 +16,6 @@ public interface RequestForFlatVerificationRepository extends RequestBaseReposit
             " WHERE  f.status='APPROVED' AND f.verificationDate between ?1 AND ?2")
     long countAllVerificationDateBetweenAndStatusIsApproved(Date start, Date end);
 
-    long countAllByStatus(RequestForVerificationStatus status);
-
     Page<RequestForFlatVerification> findAllByStatus(Pageable pageable, RequestForVerificationStatus status);
 
 }
