@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class RequestForFlatVerification extends RequestForVerification {
+public class RequestForFlatBooking extends RequestForVerification {
 
     @ManyToOne
     private Flat flat;

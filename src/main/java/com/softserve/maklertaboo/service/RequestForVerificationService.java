@@ -1,8 +1,7 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.dto.request.RequestForFlatDto;
-import com.softserve.maklertaboo.dto.request.RequestForUserDto;
 import com.softserve.maklertaboo.constant.ErrorMessage;
+import com.softserve.maklertaboo.dto.request.RequestForUserDto;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
 import com.softserve.maklertaboo.entity.enums.UserRole;
@@ -11,10 +10,11 @@ import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.entity.request.RequestForVerification;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.RequestNotFoundException;
 import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
-import com.softserve.maklertaboo.exception.exceptions.RequestNotFoundException;
 import com.softserve.maklertaboo.repository.request.RequestBaseRepository;
+import com.softserve.maklertaboo.repository.request.RequestForFlatBookingRepository;
 import com.softserve.maklertaboo.repository.request.RequestForFlatVerificationRepository;
 import com.softserve.maklertaboo.repository.request.RequestForUserVerificationRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -35,20 +35,24 @@ import java.util.stream.Collectors;
 public class RequestForVerificationService {
     private final RequestForFlatVerificationRepository requestFlatRepository;
     private final RequestForUserVerificationRepository requestUserRepository;
+    private final RequestForFlatBookingRepository requestForFlatBookingRepository;
     private final FlatService flatService;
     private final UserService userService;
     private final RequestForUserMapper requestForUserMapper;
     private final RequestForFlatMapper requestForFlatMapper;
 
-
     @Autowired
     public RequestForVerificationService(RequestForFlatVerificationRepository requestForFlatVerificationRepository,
                                          RequestForUserVerificationRepository requestForUserVerificationRepository,
-                                         FlatService flatService, UserService userService,
-                                         RequestForUserMapper requestForUserMapper, RequestForFlatMapper requestForFlatMapper) {
+                                         RequestForFlatBookingRepository requestForFlatBookingRepository,
+                                         FlatService flatService,
+                                         UserService userService,
+                                         RequestForUserMapper requestForUserMapper,
+                                         RequestForFlatMapper requestForFlatMapper) {
 
         this.requestFlatRepository = requestForFlatVerificationRepository;
         this.requestUserRepository = requestForUserVerificationRepository;
+        this.requestForFlatBookingRepository = requestForFlatBookingRepository;
         this.flatService = flatService;
         this.userService = userService;
         this.requestForUserMapper = requestForUserMapper;
@@ -59,11 +63,6 @@ public class RequestForVerificationService {
         RequestForUserVerification requestForUserVerification = requestForUserMapper.convertToEntity(requestForUserDto);
         requestForUserVerification.setType(type);
         requestUserRepository.save(requestForUserVerification);
-    }
-
-    public void createRequestForFlatVerification(RequestForFlatDto requestForFlatDto) {
-        RequestForFlatVerification requestForFlatVerification = requestForFlatMapper.convertToEntity(requestForFlatDto);
-        requestFlatRepository.save(requestForFlatVerification);
     }
 
     public List<RequestForFlatVerification> getAllRequestsForFlatVerification() {
@@ -156,7 +155,7 @@ public class RequestForVerificationService {
     }
 
     public Page<RequestForFlatVerification> getAllAndBannedFlats(Integer page, Integer size,
-                                                        RequestForVerificationStatus status) {
+                                                                 RequestForVerificationStatus status) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("creationDate")));
         if (status == RequestForVerificationStatus.DEACTIVATED) {
             return requestFlatRepository.findAllByStatus(pageable, status);

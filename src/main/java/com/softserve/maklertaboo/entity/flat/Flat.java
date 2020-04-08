@@ -8,8 +8,10 @@ import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
-import org.hibernate.search.annotations.*;
-import org.hibernate.search.bridge.builtin.IntegerBridge;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.NumericField;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -53,6 +55,9 @@ public class Flat {
     @Field
     private Boolean isActive;
 
+    @Field
+    private Boolean isBooked;
+
     @OneToOne(cascade = CascadeType.ALL)
     private FlatLocation flatLocation;
 
@@ -95,4 +100,5 @@ public class Flat {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

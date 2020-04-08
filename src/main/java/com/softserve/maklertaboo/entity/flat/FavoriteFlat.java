@@ -13,10 +13,10 @@ public class FavoriteFlat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     private Flat flat;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     private User user;
 
 }
