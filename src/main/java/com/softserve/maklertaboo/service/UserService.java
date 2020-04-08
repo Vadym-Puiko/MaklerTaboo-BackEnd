@@ -19,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,7 @@ public class UserService {
     private final JWTTokenProvider jwtTokenProvider;
     private final AmazonStorageService amazonStorageService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
     private String endpointUrl;
 
     @Autowired
@@ -46,12 +50,14 @@ public class UserService {
                        JWTTokenProvider jwtTokenProvider,
                        AmazonStorageService amazonStorageService,
                        PasswordEncoder passwordEncoder,
+                       AuthenticationManager authenticationManager,
                        @Value("${ENDPOINT_URL}") String endpointUrl) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.amazonStorageService = amazonStorageService;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
         this.endpointUrl = endpointUrl;
     }
 
@@ -67,12 +73,29 @@ public class UserService {
         }
     }
 
+    public Authentication getAuthentication(LoginDto loginDto){
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDto.getEmail(),
+                        loginDto.getPassword()
+                )
+        );
+    }
+
     public JWTSuccessLogInDto validateLogin(LoginDto loginDto) {
         User user = userRepository.findUserByEmail(loginDto.getEmail());
         if (user == null) {
             throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
         }
+        comparePasswordLogin(loginDto, passwordEncoder);
         return new JWTSuccessLogInDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
+    }
+
+    public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
+        if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
+            throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
+        }
+        return true;
     }
 
     public List<UserDto> findAllUser() {
@@ -165,13 +188,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
-        if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
-            throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
-        }
-        return true;
-    }
-
     public JwtTokensDto updateAccessTokens(String refreshToken) {
         String email;
         try {
@@ -193,11 +209,8 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserPassword(ChangePasswordDto changePasswordDto, String email) {
-        UserDetailsImpl userDetails = (UserDetailsImpl)
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findUserByEmail(userDetails.getUsername());
-//        User user = userRepository.findUserByEmail(email);
+    public void changeUserPassword(ChangePasswordDto changePasswordDto) {
+        User user = jwtTokenProvider.getCurrentUser();
         if (user == null) {
             throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
         }
@@ -209,5 +222,9 @@ public class UserService {
         }
         userRepository.updatePassword(passwordEncoder.encode(changePasswordDto.getNewPassword()),
                 user.getId());
+    }
+
+    public UserDto getCurrentUser(){
+        return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
     }
 }

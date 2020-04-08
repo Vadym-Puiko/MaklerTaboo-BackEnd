@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -72,6 +73,12 @@ public class JWTTokenProvider implements Serializable {
         Jwt<?, ?> jwt = parser.parse(unsignedToken);
         log.info("Email " + ((Claims) jwt.getBody()).getSubject() + " from token: " + token);
         return ((Claims) jwt.getBody()).getSubject();
+    }
+
+    public User getCurrentUser(){
+        UserDetailsImpl userDetails = (UserDetailsImpl)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findUserByEmail(userDetails.getUsername());
     }
 
     public boolean isTokenValid(String token, String secretKey) {

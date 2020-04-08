@@ -58,14 +58,8 @@ public class UserController {
     @PostMapping("/signIn")
     public ResponseEntity<JWTSuccessLogInDto> signIn(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
         JWTSuccessLogInDto jwtSuccessLogInDto = userService.validateLogin(loginDto);
-        userService.comparePasswordLogin(loginDto, passwordEncoder);
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDto.getEmail(),
-                        loginDto.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Authentication authentication = userService.getAuthentication(loginDto);
+        SecurityContextHolder.getContext().setAuthentication(userService.getAuthentication(loginDto));
         response.addHeader("accesstoken", jwtTokenProvider.generateAccessToken(authentication));
         response.addHeader("refreshtoken", jwtTokenProvider.generateRefreshToken(authentication));
         return ResponseEntity.ok(jwtSuccessLogInDto);
@@ -89,9 +83,8 @@ public class UserController {
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
     @PostMapping("/changePassword")
-    public ResponseEntity changePassword(@RequestBody @Valid ChangePasswordDto passwordDto, @AuthenticationPrincipal Principal principal) {
-        String email = principal.getName();
-        userService.updateUserPassword(passwordDto, email);
+    public ResponseEntity changePassword(@RequestBody @Valid ChangePasswordDto passwordDto) {
+        userService.changeUserPassword(passwordDto);
         return ResponseEntity.ok().build();
     }
 
@@ -103,7 +96,7 @@ public class UserController {
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
     })
     @GetMapping("/all")
-    public List<UserDto> getAllUser(HttpRequest request) {
+    public List<UserDto> getAllUser() {
         return userService.findAllUser();
     }
 
@@ -133,9 +126,8 @@ public class UserController {
     }
 
     @GetMapping("/currentUser")
-    public UserDto getCurrentUser(@RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        return userService.findByEmail(email);
+    public UserDto getCurrentUser() {
+        return userService.getCurrentUser();
     }
 
     @GetMapping("/currentUserId")
