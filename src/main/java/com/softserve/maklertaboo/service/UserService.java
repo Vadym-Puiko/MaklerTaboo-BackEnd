@@ -5,28 +5,29 @@ import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.dto.user.UserUpdateDto;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
-import com.softserve.maklertaboo.exception.exceptions.BadEmailOrPasswordException;
-import com.softserve.maklertaboo.exception.exceptions.BadRefreshTokenException;
-import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExistsException;
-import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
+import com.softserve.maklertaboo.exception.exceptions.*;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
-import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
+import com.softserve.maklertaboo.security.dto.JWTSuccessLogInDto;
 import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.security.dto.LoginDto;
+import com.softserve.maklertaboo.security.dto.ChangePasswordDto;
+import com.softserve.maklertaboo.security.entity.UserDetailsImpl;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.softserve.maklertaboo.constant.ErrorMessage.REFRESH_TOKEN_NOT_VALID;
+import static com.softserve.maklertaboo.constant.ErrorMessage.*;
 
 
 @Service
@@ -36,6 +37,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
     private final AmazonStorageService amazonStorageService;
+    private final PasswordEncoder passwordEncoder;
     private String endpointUrl;
 
     @Autowired
@@ -43,11 +45,13 @@ public class UserService {
                        UserRepository userRepository,
                        JWTTokenProvider jwtTokenProvider,
                        AmazonStorageService amazonStorageService,
+                       PasswordEncoder passwordEncoder,
                        @Value("${ENDPOINT_URL}") String endpointUrl) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.amazonStorageService = amazonStorageService;
+        this.passwordEncoder = passwordEncoder;
         this.endpointUrl = endpointUrl;
     }
 
@@ -63,12 +67,12 @@ public class UserService {
         }
     }
 
-    public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
+    public JWTSuccessLogInDto validateLogin(LoginDto loginDto) {
         User user = userRepository.findUserByEmail(loginDto.getEmail());
         if (user == null) {
             throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
         }
-        return new JWTSuccessLogIn(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
+        return new JWTSuccessLogInDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
 
     public List<UserDto> findAllUser() {
@@ -186,5 +190,24 @@ public class UserService {
             );
         }
         throw new BadRefreshTokenException(REFRESH_TOKEN_NOT_VALID);
+    }
+
+    @Transactional
+    public void updateUserPassword(ChangePasswordDto changePasswordDto, String email) {
+        UserDetailsImpl userDetails = (UserDetailsImpl)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findUserByEmail(userDetails.getUsername());
+//        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
+        }
+        if (!passwordEncoder.matches(changePasswordDto.getPassword(), user.getPassword())) {
+            throw new PasswordsDoNotMatchesException(CURRENT_PASSWORD_DOES_NOT_MATCH);
+        }
+        if (!changePasswordDto.getNewPassword().equals(changePasswordDto.getConfirmNewPassword())) {
+            throw new PasswordsDoNotMatchesException(PASSWORDS_DO_NOT_MATCHES);
+        }
+        userRepository.updatePassword(passwordEncoder.encode(changePasswordDto.getNewPassword()),
+                user.getId());
     }
 }

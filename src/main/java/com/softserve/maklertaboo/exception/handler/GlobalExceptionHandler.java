@@ -55,6 +55,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
+    @ExceptionHandler(PasswordsDoNotMatchesException.class)
+    public final ResponseEntity<Object> handlePasswordDoNotMatchesException(PasswordsDoNotMatchesException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
     @ExceptionHandler(FlatAlreadyInTheFavoriteListException.class)
     public final ResponseEntity<Object> handleUserAlreadyExistsException(FlatAlreadyInTheFavoriteListException exception, WebRequest request) {
 

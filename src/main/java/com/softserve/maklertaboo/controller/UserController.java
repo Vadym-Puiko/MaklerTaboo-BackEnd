@@ -4,11 +4,11 @@ import com.softserve.maklertaboo.constant.HttpStatuses;
 import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.dto.user.UserUpdateDto;
-import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
+import com.softserve.maklertaboo.security.dto.JWTSuccessLogInDto;
 import com.softserve.maklertaboo.security.dto.LoginDto;
+import com.softserve.maklertaboo.security.dto.ChangePasswordDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import com.softserve.maklertaboo.service.UserService;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.security.Principal;
 import java.util.List;
 
 
@@ -54,8 +56,8 @@ public class UserController {
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
     @PostMapping("/signIn")
-    public ResponseEntity<JWTSuccessLogIn> signIn(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
-        JWTSuccessLogIn jwtSuccessLogIn = userService.validateLogin(loginDto);
+    public ResponseEntity<JWTSuccessLogInDto> signIn(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
+        JWTSuccessLogInDto jwtSuccessLogInDto = userService.validateLogin(loginDto);
         userService.comparePasswordLogin(loginDto, passwordEncoder);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -66,13 +68,12 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         response.addHeader("accesstoken", jwtTokenProvider.generateAccessToken(authentication));
         response.addHeader("refreshtoken", jwtTokenProvider.generateRefreshToken(authentication));
-        return ResponseEntity.ok(jwtSuccessLogIn);
+        return ResponseEntity.ok(jwtSuccessLogInDto);
     }
 
-    @ApiOperation("Updating access token by refreshKey token")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "Refresh token is not valid")
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
     @GetMapping("/refreshTokens")
     public ResponseEntity updateAccessToken(@RequestParam @NotBlank String refreshToken,
@@ -80,6 +81,17 @@ public class UserController {
         JwtTokensDto newTokens = userService.updateAccessTokens(refreshToken);
         response.addHeader("accesstoken", newTokens.getAccesstoken());
         response.addHeader("refreshtoken", newTokens.getRefreshtoken());
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+    })
+    @PostMapping("/changePassword")
+    public ResponseEntity changePassword(@RequestBody @Valid ChangePasswordDto passwordDto, @AuthenticationPrincipal Principal principal) {
+        String email = principal.getName();
+        userService.updateUserPassword(passwordDto, email);
         return ResponseEntity.ok().build();
     }
 

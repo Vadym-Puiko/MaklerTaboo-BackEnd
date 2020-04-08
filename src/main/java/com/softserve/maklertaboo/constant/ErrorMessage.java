@@ -7,7 +7,6 @@ public class ErrorMessage {
     public static final String FLAT_NOT_FOUND = "Flat not found";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String USER_NOT_FOUND_BY_ID = "User with following id not found: ";
-    public static final String INCORRECT_DATA = "Bad email or password";
     public static final String REFRESH_TOKEN_NOT_VALID = "Refresh token is not valid";
     public static final String USER_ALREADY_EXISTS = "User already exists with given credentials";
     public static final String DUPLICATE_RENTER_REQUEST = "Renter request successfully sent pending approval";
@@ -16,5 +15,8 @@ public class ErrorMessage {
     public static final String EMPTY_FAVORITE_LIST = "Your favorite list is empty";
     public static final String FLAT_NOT_FOUND_BY_ID = "Flat with following id not found: ";
     public static final String IS_NOT_OWNER = "User is not owner of current flat";
+    public static final String PASSWORDS_DO_NOT_MATCHES = "Password do not matches";
+    public static final String CURRENT_PASSWORD_DOES_NOT_MATCH = "Current password is wrong";
+
 
 }
