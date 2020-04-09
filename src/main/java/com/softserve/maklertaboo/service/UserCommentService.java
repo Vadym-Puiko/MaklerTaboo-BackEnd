@@ -1,15 +1,16 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.comment.UserCommentDto;
 import com.softserve.maklertaboo.entity.comment.UserComment;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.comment.UserCommentMapper;
 import com.softserve.maklertaboo.repository.comment.UserCommentRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,7 +42,8 @@ public class UserCommentService {
         UserComment userComment=userCommentMapper.convertToEntity(userCommentDto);
         String accessToken = httpServletRequest.getHeader("Authorization");
         String email = jwtTokenProvider.getEmailFromJWT(accessToken);
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         userComment.setUserAuthor(user);
         userCommentRepository.save(userComment);
     }
@@ -50,7 +52,8 @@ public class UserCommentService {
         UserComment userComment=userCommentMapper.convertToEntity(userCommentDto);
         String accessToken = httpServletRequest.getHeader("Authorization");
         String email = jwtTokenProvider.getEmailFromJWT(accessToken);
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         userComment.setUserAuthor(user);
         userCommentRepository.save(userComment);
     }
@@ -59,7 +62,8 @@ public class UserCommentService {
         UserComment userComment= userCommentRepository.getOne(id);
         String accessToken = httpServletRequest.getHeader("Authorization");
         String email = jwtTokenProvider.getEmailFromJWT(accessToken);
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (userComment.getUserAuthor().equals(user)){
             userComment.setIsActive(false);
             userComment.setDeletedDate(LocalDateTime.now());
