@@ -28,9 +28,7 @@ public class Message {
 
     private LocalDateTime dataSeen;
 
-  /*  public void setChat(Optional<Chat> chatById) {
-    }
-*/
+
     public void setChat(Chat chat) {
         this.chat = chat;
     }

@@ -68,22 +68,13 @@ public class ChatWebSocketController {
     @MessageMapping("/updateDate/message")
     public void updateMessage(@Payload UpdateMessageDTO updateMessageDTO) {
         log.info("ChatWebsocketController send message");
-//        Optional<Message> sendBackMessage = messageService.updateMessage(updateMessageDTO.getMessageId());
-//        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", updateMessageDTO.getChatId()),  modelMapper.map(sendBackMessage, ChatMessageDTO.class));
-          UpdatedMessageDTO updatedMessageDTO = new UpdatedMessageDTO();
-          updatedMessageDTO.setStatus("updated");
-          updatedMessageDTO.setMessageId(updateMessageDTO.getMessageId());
-          messageService.updateMessage(updateMessageDTO.getMessageId());
-          simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", updateMessageDTO.getChatId()), updatedMessageDTO);
-
-//    }
+        UpdatedMessageDTO updatedMessageDTO = new UpdatedMessageDTO();
+        updatedMessageDTO.setStatus("updated");
+        updatedMessageDTO.setMessageId(updateMessageDTO.getMessageId());
+        messageService.updateMessage(updateMessageDTO.getMessageId());
+        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", updateMessageDTO.getChatId()), updatedMessageDTO);
     }
 
-   /* @MessageMapping(value = "/chats/countUnread/message")
-    public void countOfUnreadMessages(@Payload Long chatId) {
-        chatService.getCountOfUnreadMessages(chatId);
-        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", chatId), chatId);
-    }*/
     @MessageMapping("/countUnread/message")
     public void countOfUnreadMessages(@Payload CounterOfUnreadMessagesDTO counterOfUnreadMessagesDTO) {
         CounterOfUnreadMessagesInfoDTO counterOfUnreadMessagesInfoDTO = new CounterOfUnreadMessagesInfoDTO();
@@ -91,17 +82,7 @@ public class ChatWebSocketController {
         counterOfUnreadMessagesInfoDTO.setCountOfUnreadMessage(chatService.getCountOfUnreadMessages(counterOfUnreadMessagesDTO.getChatId()));
         counterOfUnreadMessagesInfoDTO.setChatId(counterOfUnreadMessagesDTO.getChatId());
         simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", counterOfUnreadMessagesDTO.getChatId()), counterOfUnreadMessagesInfoDTO);
-/*
-        return chatService.getCountOfUnreadMessages(counterOfUnreadMessagesDTO.getChatId());
-*/
     }
 
-   /* @PutMapping("/updateDate/message")
-    public void updateMessage(@Payload UpdateMessageDTO updateMessageDTO) {
-        log.info("ChatWebsocketController send message");
-        List<Long> id = updateMessageDTO.getMessagesId();
-        id.stream().forEach(message -> messageService.updateMessage(message));
-        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", updateMessageDTO.getChatId()),  updateMessageDTO);
-    }*/
 }
 
