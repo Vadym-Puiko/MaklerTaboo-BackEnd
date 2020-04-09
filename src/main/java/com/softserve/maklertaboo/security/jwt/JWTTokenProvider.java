@@ -77,7 +77,7 @@ public class JWTTokenProvider implements Serializable {
 
     public User getCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal().getClass() == String.class) return null;
+        if (!authentication.isAuthenticated()) return new User();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return userRepository.findUserByEmail(userDetails.getUsername());
     }
