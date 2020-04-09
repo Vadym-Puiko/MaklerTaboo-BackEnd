@@ -64,6 +64,24 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsUserByEmail(String email);
 
     /**
+     * The method that check if user with this username already exist
+     *
+     * @param username user username.
+     * @return boolean value
+     * @author Vadym Puiko
+     */
+    boolean existsUserByUsername(String username);
+
+    /**
+     * The method that check if user with this phone already exist
+     *
+     * @param phone user phone.
+     * @return boolean value
+     * @author Vadym Puiko
+     */
+    boolean existsUserByPhoneNumber(String phone);
+
+    /**
      * Find {@link User} by page.
      *
      * @param pageable pageable configuration.
