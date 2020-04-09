@@ -1,6 +1,8 @@
 package com.softserve.maklertaboo.security.jwt;
 
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.security.entity.UserDetailsImpl;
 import io.jsonwebtoken.*;
@@ -55,7 +57,8 @@ public class JWTTokenProvider implements Serializable {
     }
 
     public String generateRefreshToken(String email) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         Date expiryDate = new Date(new Date().getTime() + Long.valueOf(refreshExpirationTime));
         log.info("Refresh Token for " + email + " created.");
         return Jwts.builder()
@@ -79,7 +82,8 @@ public class JWTTokenProvider implements Serializable {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!authentication.isAuthenticated()) return new User();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        return userRepository.findUserByEmail(userDetails.getUsername());
+        return userRepository.findUserByEmail(userDetails.getUsername()).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
     }
 
     public boolean isTokenValid(String token, String secretKey) {

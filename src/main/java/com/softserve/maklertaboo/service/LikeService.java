@@ -1,10 +1,12 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.comment.LikeDto;
 import com.softserve.maklertaboo.entity.comment.CommentLike;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.comment.UserComment;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.comment.LikeMapper;
 import com.softserve.maklertaboo.repository.comment.FlatCommentRepository;
 import com.softserve.maklertaboo.repository.comment.LikeRepository;

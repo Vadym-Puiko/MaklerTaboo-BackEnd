@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParametersDto;
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
 import com.softserve.maklertaboo.entity.flat.Flat;
@@ -9,6 +10,7 @@ import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.FlatNotFoundException;
 import com.softserve.maklertaboo.exception.exceptions.NotOwnerException;
+import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.flat.FlatMapper;
 import com.softserve.maklertaboo.mapping.flat.FlatSearchMapper;
 import com.softserve.maklertaboo.mapping.flat.NewFlatMapper;
@@ -27,7 +29,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -125,7 +126,8 @@ public class FlatService {
         Flat flat = newFlatMapper.convertToEntity(newFlatDto);
         savePhotos(newFlatDto, flat);
         flat.setTags(tagService.getTags(newFlatDto.getTags()));
-        flat.setOwner(userRepository.findUserByEmail(newFlatDto.getEmail()));
+        flat.setOwner(userRepository.findUserByEmail(newFlatDto.getEmail()).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND)));
         flat.setCreationDate(new Date());
         FlatLocation flatLocation = flatLocationService.generateLocation(flat.getAddress());
         flatLocation.setFlat(flat);

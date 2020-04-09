@@ -1,9 +1,10 @@
 package com.softserve.maklertaboo.service;
 
-
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.comment.ComplaintDto;
 import com.softserve.maklertaboo.entity.comment.Complaint;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.comment.ComplaintMapper;
 import com.softserve.maklertaboo.repository.comment.ComplainRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
