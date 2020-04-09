@@ -99,6 +99,7 @@ public class UserController {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
             @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
     })
@@ -201,8 +202,8 @@ public class UserController {
     }
 
     @PutMapping("/update/admin/panel")
-    public void updateUser(@RequestBody @Valid UserDto userDto) {
-        userService.updateUserIntoAdminPanel(userDto);
+    public void updateUser(@RequestBody @Valid UserUpdateDto UserUpdateDto) {
+        userService.updateUserIntoAdminPanel(UserUpdateDto);
     }
 
     @PutMapping("/profile/updatePhoto")

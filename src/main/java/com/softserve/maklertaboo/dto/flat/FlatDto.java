@@ -14,10 +14,13 @@ public class FlatDto {
 
     private String description;
     private String title;
+
     private String photoUrl;
     private String username;
 
+    private String userPicture;
     private String creationDate;
+
     private Address address;
     private List<String> tags;
 

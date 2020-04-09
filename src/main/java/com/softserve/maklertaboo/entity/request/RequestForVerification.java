@@ -24,8 +24,7 @@ public abstract class RequestForVerification {
 
     private Date verificationDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @NotNull
+    @ManyToOne
     private User author;
 
     @PrePersist
