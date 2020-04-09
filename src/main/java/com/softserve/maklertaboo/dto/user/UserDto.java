@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
@@ -21,6 +22,7 @@ public class UserDto {
     @Length(min = 6, max = 30)
     private String password;
     @NotBlank
+    @Pattern(regexp = "^\\+?3?8?(0\\d{9})$")
     private String phoneNumber;
     private String photoUrl;
     private String userRole;

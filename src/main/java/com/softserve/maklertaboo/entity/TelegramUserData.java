@@ -1,4 +1,4 @@
-package com.softserve.maklertaboo.entity.flat;
+package com.softserve.maklertaboo.entity;
 
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
@@ -7,16 +7,15 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class FavoriteFlat {
-
+public class TelegramUserData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Flat flat;
+    private Long chatId;
+    private String verificationCode;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.DETACH)
     private User user;
 
 }

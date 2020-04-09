@@ -44,7 +44,7 @@ public class FlatController {
     }
 
     @GetMapping("{postId}")
-    public FlatDetailDto getActive(@PathVariable Integer postId) {
+    public FlatDetailDto getActive(@PathVariable Long postId) {
         return flatDetailMapper.convertToDto(flatService.getById(postId));
     }
 

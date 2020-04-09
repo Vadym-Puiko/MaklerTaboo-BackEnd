@@ -19,10 +19,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findUserByUsername(String username);
 
+    @Query("from User user where not user.role='ROLE_ADMIN' and user.username like :username")
     Page<User> findAllByUsernameLike(Pageable pageable, String username);
 
+    @Query("from User user where not user.role='ROLE_ADMIN' and user.email like :email")
     Page<User> findAllByEmailLike(Pageable pageable, String email);
 
+    @Query("from User user where not user.role='ROLE_ADMIN' and user.phoneNumber like :phone")
     Page<User> findAllByPhoneNumberLike(Pageable pageable, String phone);
 
     User findUserByEmail(String email);
@@ -31,6 +34,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsUserByEmail(String email);
 
+    @Query("from User user where not user.role='ROLE_ADMIN'")
     Page<User> findAll(Pageable pageable);
 
     long count();

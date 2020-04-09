@@ -43,7 +43,6 @@ public class FlatCommentService {
         this.httpServletRequest=httpServletRequest;
     }
 
-
     public void saveFlatComment(FlatCommentDto flatCommentDto){
         FlatComment flatComment=flatCommentMapper.convertToEntity(flatCommentDto);
         String accessToken = httpServletRequest.getHeader("Authorization");

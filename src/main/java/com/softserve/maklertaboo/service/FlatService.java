@@ -3,6 +3,7 @@ package com.softserve.maklertaboo.service;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParametersDto;
 import com.softserve.maklertaboo.dto.flat.NewFlatDto;
 import com.softserve.maklertaboo.entity.flat.Flat;
+import com.softserve.maklertaboo.entity.flat.FlatLocation;
 import com.softserve.maklertaboo.entity.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import com.softserve.maklertaboo.entity.user.User;
@@ -11,10 +12,12 @@ import com.softserve.maklertaboo.exception.exceptions.NotOwnerException;
 import com.softserve.maklertaboo.mapping.flat.FlatMapper;
 import com.softserve.maklertaboo.mapping.flat.FlatSearchMapper;
 import com.softserve.maklertaboo.mapping.flat.NewFlatMapper;
+import com.softserve.maklertaboo.model.BASE64DecodedMultipartFile;
 import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.search.FlatFullTextSearch;
 import com.softserve.maklertaboo.repository.search.FlatSearchRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.service.map.FlatLocationService;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +48,7 @@ public class FlatService {
     private final FlatMapper flatMapper;
     private final AmazonStorageService amazonStorageService;
     private final RequestForVerificationService requestForVerificationService;
+    private final FlatLocationService flatLocationService;
     private final JWTTokenProvider jwtTokenProvider;
 
     @Autowired
@@ -57,6 +61,7 @@ public class FlatService {
                        UserRepository userRepository,
                        FlatMapper flatMapper,
                        AmazonStorageService amazonStorageService,
+                       FlatLocationService flatLocationService,
                        @Lazy RequestForVerificationService requestForVerificationService,
                        JWTTokenProvider jwtTokenProvider) {
         this.flatRepository = flatRepository;
@@ -69,6 +74,7 @@ public class FlatService {
         this.flatMapper = flatMapper;
         this.amazonStorageService = amazonStorageService;
         this.requestForVerificationService = requestForVerificationService;
+        this.flatLocationService = flatLocationService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -89,18 +95,15 @@ public class FlatService {
     }
 
     @Cacheable("flats")
-    public Flat getById(Integer id) {
-        Flat flat = flatRepository.findById(Long.parseLong(id + "")).orElse(null);
-        if(flat==null){
+    public Flat getById(Long id) {
+        Flat flat = flatRepository.findById(id).orElse(null);
+        if (flat == null) {
             throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id);
         }
         return flat;
     }
 
-    @CachePut("flats")
-    public void saveFlat(NewFlatDto newFlatDto) {
-        newFlatDto.setEmail(jwtTokenProvider.getCurrentUser().getEmail());
-        Flat flat = newFlatMapper.convertToEntity(newFlatDto);
+    private void savePhotos(NewFlatDto newFlatDto, Flat flat) {
         List<FlatPhoto> photos = new ArrayList<>();
 
         for (String base64 : newFlatDto.getBase64Photos()) {
@@ -114,11 +117,19 @@ public class FlatService {
             photos.add(flatPhoto);
         }
         flat.setFlatPhotoList(photos);
+    }
+
+    @CachePut("flats")
+    public void saveFlat(NewFlatDto newFlatDto) {
+        newFlatDto.setEmail(jwtTokenProvider.getCurrentUser().getEmail());
+        Flat flat = newFlatMapper.convertToEntity(newFlatDto);
+        savePhotos(newFlatDto, flat);
         flat.setTags(tagService.getTags(newFlatDto.getTags()));
-        flat.setOwner(
-                userRepository.findUserByEmail(newFlatDto.getEmail())
-        );
+        flat.setOwner(userRepository.findUserByEmail(newFlatDto.getEmail()));
         flat.setCreationDate(new Date());
+        FlatLocation flatLocation = flatLocationService.generateLocation(flat.getAddress());
+        flatLocation.setFlat(flat);
+        flat.setFlatLocation(flatLocation);
         flatRepository.save(flat);
         requestForVerificationService.createFlatRequest(flat);
     }
@@ -129,26 +140,21 @@ public class FlatService {
         if (flat == null) {
             throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id);
         }
-            flat.setIsActive(true);
-            flatRepository.save(flat);
+        flat.setIsActive(true);
+        flatRepository.save(flat);
     }
 
     @CachePut("flats")
     public void deactivateFlat(Long id) {
-
-        Flat flat = flatRepository.findById(id).orElse(null);
-
-        if (flat == null) {
-            throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id);
-        }
-        if(!flat.getOwner().equals(jwtTokenProvider.getCurrentUser())){
+        Flat flat = flatRepository.findById(id).orElseThrow(() -> new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id));
+        if (!flat.getOwner().equals(jwtTokenProvider.getCurrentUser())) {
             throw new NotOwnerException(IS_NOT_OWNER);
         }
         flat.setIsActive(false);
         flatRepository.save(flat);
     }
 
-    public List<Flat> findByOwnerId(Long id){
+    public List<Flat> findByOwnerId(Long id) {
         User user = userRepository.findById(id).get();
         return flatRepository.findByOwnerAndIsActiveIsTrue(user);
     }

@@ -30,6 +30,7 @@ public class UserMapper implements MapperToDto<User, UserDto>, MapperToEntity<Us
     @Override
     public User convertToEntity(UserDto userDto) {
         User user = new User();
+        user.setId(userDto.getId());
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
