@@ -1,12 +1,12 @@
 package com.softserve.maklertaboo.controller;
 
 import com.softserve.maklertaboo.constant.HttpStatuses;
-import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.dto.user.UserUpdateDto;
-import com.softserve.maklertaboo.security.dto.JWTSuccessLogInDto;
-import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.dto.ChangePasswordDto;
+import com.softserve.maklertaboo.security.dto.JWTSuccessLogInDto;
+import com.softserve.maklertaboo.security.dto.JwtTokensDto;
+import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import com.softserve.maklertaboo.service.UserService;
 import io.swagger.annotations.ApiResponse;
@@ -15,20 +15,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.security.Principal;
 import java.util.List;
 
 
@@ -38,9 +33,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
     private final JWTTokenProvider jwtTokenProvider;
-    private final PasswordEncoder passwordEncoder;
 
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = HttpStatuses.CREATED),
@@ -204,15 +197,13 @@ public class UserController {
     }
 
     @PutMapping("/update/admin/panel")
-    public void updateUser(@RequestBody @Valid UserUpdateDto UserUpdateDto) {
+    public void updateUserAdmin(@RequestBody @Valid UserUpdateDto UserUpdateDto) {
         userService.updateUserIntoAdminPanel(UserUpdateDto);
     }
 
     @PutMapping("/profile/updatePhoto")
-    public void updateUserPhoto(@RequestPart(value = "file") MultipartFile file,
-                                @RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        userService.updatePhoto(file, email);
+    public void updateUserPhoto(@RequestPart(value = "file") MultipartFile file) {
+        userService.updatePhoto(file);
     }
 
     @ApiResponses(value = {

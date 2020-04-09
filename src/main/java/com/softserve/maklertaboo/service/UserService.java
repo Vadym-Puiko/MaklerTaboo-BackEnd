@@ -156,8 +156,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updatePhoto(MultipartFile multipartFile, String email) {
-        User user = userRepository.findUserByEmail(email);
+    public void updatePhoto(MultipartFile multipartFile) {
+        User user = jwtTokenProvider.getCurrentUser();
         if (user.getPhotoUrl() != null) {
             amazonStorageService.deleteFile(user.getPhotoUrl());
         }
