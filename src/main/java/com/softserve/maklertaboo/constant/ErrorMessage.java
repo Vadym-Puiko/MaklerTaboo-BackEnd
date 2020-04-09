@@ -23,5 +23,8 @@ public class ErrorMessage {
     public static final String EMAIL_SENDING_ERROR = "Email sending error";
     public static final String UPDATE_USER_ERROR = "User tried updating some fields but such user not exist";
     public static final String DELETE_USER_ERROR = "User tried deleting some user but such object not exist";
+    public static final String PASSWORDS_DO_NOT_MATCHES = "Password do not matches";
+    public static final String CURRENT_PASSWORD_DOES_NOT_MATCH = "Current password is wrong";
+
 
 }

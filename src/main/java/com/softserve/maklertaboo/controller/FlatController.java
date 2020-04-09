@@ -70,16 +70,13 @@ public class FlatController {
 
     @PostMapping("/create")
     @PreAuthorize(value = "hasRole('ROLE_LANDLORD')")
-    public void addNewFlat(@Valid @RequestBody NewFlatDto newFlatDto, @RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        newFlatDto.setEmail(email);
+    public void addNewFlat(@Valid @RequestBody NewFlatDto newFlatDto) {
         flatService.saveFlat(newFlatDto);
     }
 
     @DeleteMapping("{id}")
-    public void remove(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        flatService.deactivateFlat(id, email);
+    public void remove(@PathVariable Long id) {
+        flatService.deactivateFlat(id);
     }
 
 }

@@ -8,6 +8,7 @@ import com.softserve.maklertaboo.exception.exceptions.FavoriteFlatNotFoundExcept
 import com.softserve.maklertaboo.exception.exceptions.FlatAlreadyInTheFavoriteListException;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.FavoriteFlatRepository;
+import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,24 +23,27 @@ public class FavoriteFlatService {
     private final UserService userService;
     private final FlatService flatService;
     private final UserMapper userMapper;
+    private final JWTTokenProvider jwtTokenProvider;
 
     @Autowired
     public FavoriteFlatService(FavoriteFlatRepository favoriteFlatRepository,
                                UserService userService,
                                FlatService flatService,
-                               UserMapper userMapper) {
+                               UserMapper userMapper,
+                               JWTTokenProvider jwtTokenProvider) {
 
         this.favoriteFlatRepository = favoriteFlatRepository;
         this.userService = userService;
         this.flatService = flatService;
         this.userMapper = userMapper;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public void saveFavoriteFlat(Long id, String email) {
+    public void saveFavoriteFlat(Long id) {
 
         Flat flat = flatService.getById(id);
 
-        User user = userMapper.convertToEntity(userService.findByEmail(email));
+        User user = jwtTokenProvider.getCurrentUser();
 
         FavoriteFlat favoriteFlat = favoriteFlatRepository
                 .findFavoriteFlatByFlat_IdAndUser_Id(flat.getId(), user.getId());
@@ -55,18 +59,18 @@ public class FavoriteFlatService {
         }
     }
 
-    public List<FavoriteFlat> getAllFavoriteFlatsOfUser(String email) {
+    public List<FavoriteFlat> getAllFavoriteFlatsOfUser() {
 
-        User user = userMapper.convertToEntity(userService.findByEmail(email));
+        User user = jwtTokenProvider.getCurrentUser();
 
         return favoriteFlatRepository.getFavoriteFlatByUser_Id(user.getId());
     }
 
-    public void deactivateFlat(Long id, String email) {
+    public void deactivateFlat(Long id) {
 
         Flat flat = flatService.getById(id);
 
-        User user = userMapper.convertToEntity(userService.findByEmail(email));
+        User user = jwtTokenProvider.getCurrentUser();
 
         FavoriteFlat favoriteFlat = favoriteFlatRepository
                 .findFavoriteFlatByFlat_IdAndUser_Id(flat.getId(), user.getId());

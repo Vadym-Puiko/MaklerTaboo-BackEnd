@@ -1,14 +1,14 @@
 package com.softserve.maklertaboo.service.telegram;
 
-import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.entity.TelegramUserData;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.TelegramAlreadyBindedException;
-import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.repository.user.TelegramUserDataRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Random;
 
 import static com.softserve.maklertaboo.constant.ErrorMessage.TELEGRAM_BINDED_MESSAGE;
@@ -23,17 +23,19 @@ public class TelegramService {
     private final TelegramBot telegramBot;
     private final TelegramUserDataRepository telegramUserDataRepository;
     private final UserRepository userRepository;
+    private final JWTTokenProvider jwtTokenProvider;
 
     @Autowired
-    public TelegramService(TelegramUserDataRepository telegramUserDataRepository, TelegramBot telegramBot, UserRepository userRepository) {
+    public TelegramService(TelegramUserDataRepository telegramUserDataRepository, TelegramBot telegramBot,
+                           UserRepository userRepository, JWTTokenProvider jwtTokenProvider) {
         this.telegramUserDataRepository = telegramUserDataRepository;
         this.telegramBot = telegramBot;
         this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public String getCode(String email) {
-        User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+    public String getCode() {
+        User user = jwtTokenProvider.getCurrentUser();
         TelegramUserData userData = user.getTelegramUserData();
         if (user.getTelegramUserData() == null) {
             bindTelegram(user);
@@ -65,16 +67,14 @@ public class TelegramService {
         telegramBot.sendTextMessage(chatId, message);
     }
 
-    public Boolean checkIfBinded(String email) {
-        User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+    public Boolean checkIfBinded() {
+        User user = jwtTokenProvider.getCurrentUser();
         TelegramUserData userData = user.getTelegramUserData();
         return (userData == null || userData.getChatId() == null);
     }
 
-    public void unbind(String email) {
-        User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+    public void unbind() {
+        User user = jwtTokenProvider.getCurrentUser();
         TelegramUserData telegramUserData = telegramUserDataRepository.findByUser(user);
         if (telegramUserData != null) {
             telegramUserDataRepository.delete(telegramUserData);

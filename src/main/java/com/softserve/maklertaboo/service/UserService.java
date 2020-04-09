@@ -8,22 +8,29 @@ import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.*;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
-import com.softserve.maklertaboo.security.dto.JWTSuccessLogIn;
+import com.softserve.maklertaboo.security.dto.JWTSuccessLogInDto;
 import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.security.dto.LoginDto;
+import com.softserve.maklertaboo.security.dto.ChangePasswordDto;
+import com.softserve.maklertaboo.security.entity.UserDetailsImpl;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.softserve.maklertaboo.constant.ErrorMessage.DELETE_USER_ERROR;
-import static com.softserve.maklertaboo.constant.ErrorMessage.REFRESH_TOKEN_NOT_VALID;
+import static com.softserve.maklertaboo.constant.ErrorMessage.*;
 
 
 @Service
@@ -33,6 +40,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
     private final AmazonStorageService amazonStorageService;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     /**
      * Constructor with parameters
@@ -43,11 +52,15 @@ public class UserService {
     public UserService(UserMapper userMapper,
                        UserRepository userRepository,
                        JWTTokenProvider jwtTokenProvider,
-                       AmazonStorageService amazonStorageService) {
+                       AmazonStorageService amazonStorageService,
+                       PasswordEncoder passwordEncoder,
+                       AuthenticationManager authenticationManager) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.amazonStorageService = amazonStorageService;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     /**
@@ -68,16 +81,44 @@ public class UserService {
         }
     }
 
+    public Authentication getAuthentication(LoginDto loginDto){
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDto.getEmail(),
+                        loginDto.getPassword()
+                )
+        );
+    }
+
+    /**
+     * Method that validation of login for a given user.
+     *
+     * @param loginDto - of current user
+     * @return {@link JWTSuccessLogInDto}
+     * @author Mike Ostapiuk
+     */
+    public JWTSuccessLogInDto validateLogin(LoginDto loginDto) {
+        User user = userRepository.findUserByEmail(loginDto.getEmail()).orElseThrow(
+                () -> new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD + loginDto.getEmail()));
+        comparePasswordLogin(loginDto, passwordEncoder);
+        return new JWTSuccessLogInDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
+    }
+
+    public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
+        if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
+            throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
+        }
+        return true;
+    }
+
     /**
      * Method that allow you to update data of {@link User}.
      *
      * @param userUpdateDto a value of {@link UserUpdateDto}
-     * @param email a value of {@link String}
      * @author Vadym Puiko
      */
-    public void updateUser(String email, UserUpdateDto userUpdateDto) {
-        User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotUpdatedException(ErrorMessage.UPDATE_USER_ERROR + email));
+    public void updateUser(UserUpdateDto userUpdateDto) {
+        User user = jwtTokenProvider.getCurrentUser();
         user.setUsername(userUpdateDto.getUsername());
         user.setPhoneNumber(userUpdateDto.getPhoneNumber());
         user.setPhotoUrl(userUpdateDto.getPhotoUrl());
@@ -116,12 +157,10 @@ public class UserService {
      * Method that allow you to change profile picture
      *
      * @param multipartFile photo for saving.
-     * @param email of current user
      * @author Vadym Puiko
      */
-    public void updatePhoto(MultipartFile multipartFile, String email) {
-        User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND + email));
+    public void updatePhoto(MultipartFile multipartFile) {
+        User user = jwtTokenProvider.getCurrentUser();
         if (user.getPhotoUrl() != null) {
             amazonStorageService.deleteFile(user.getPhotoUrl());
         }
@@ -147,12 +186,10 @@ public class UserService {
     /**
      * Method that allow you to delete profile picture
      *
-     * @param email of current user
      * @author Vadym Puiko
      */
-    public void deletePhoto(String email) {
-        User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND + email));
+    public void deletePhoto() {
+        User user = jwtTokenProvider.getCurrentUser();
         amazonStorageService.deleteFile(user.getPhotoUrl());
         user.setPhotoUrl(null);
         userRepository.save(user);
@@ -270,34 +307,6 @@ public class UserService {
     }
 
     /**
-     * Method that validation of login for a given user.
-     *
-     * @param loginDto - of current user
-     * @return {@link JWTSuccessLogIn}
-     * @author Mike Ostapiuk
-     */
-    public JWTSuccessLogIn validateLogin(LoginDto loginDto) {
-        User user = userRepository.findUserByEmail(loginDto.getEmail()).orElseThrow(
-                () -> new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD));
-        return new JWTSuccessLogIn(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
-    }
-
-    /**
-     * Method that compare and check exist password, and login for a given user.
-     *
-     * @param loginDto - of current user
-     * @param passwordEncoder - service interface for encoding passwords.
-     * @return boolean check result
-     * @author Mike Ostapiuk
-     */
-    public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
-        if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
-            throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
-        }
-        return true;
-    }
-
-    /**
      * Method that updates refresh token for a given user.
      *
      * @param refreshToken - new refresh token key
@@ -312,7 +321,7 @@ public class UserService {
             throw new BadRefreshTokenException(REFRESH_TOKEN_NOT_VALID);
         }
         User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD));
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (jwtTokenProvider.isTokenValid(refreshToken, user.getRefreshKey())) {
             return new JwtTokensDto(
                     jwtTokenProvider.generateAccessToken(user.getEmail()),
@@ -320,5 +329,25 @@ public class UserService {
             );
         }
         throw new BadRefreshTokenException(REFRESH_TOKEN_NOT_VALID);
+    }
+
+    @Transactional
+    public void changeUserPassword(ChangePasswordDto changePasswordDto) {
+        User user = jwtTokenProvider.getCurrentUser();
+        if (user == null) {
+            throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
+        }
+        if (!passwordEncoder.matches(changePasswordDto.getPassword(), user.getPassword())) {
+            throw new PasswordsDoNotMatchesException(CURRENT_PASSWORD_DOES_NOT_MATCH);
+        }
+        if (!changePasswordDto.getNewPassword().equals(changePasswordDto.getConfirmNewPassword())) {
+            throw new PasswordsDoNotMatchesException(PASSWORDS_DO_NOT_MATCHES);
+        }
+        userRepository.updatePassword(passwordEncoder.encode(changePasswordDto.getNewPassword()),
+                user.getId());
+    }
+
+    public UserDto getCurrentUserDto(){
+        return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
     }
 }

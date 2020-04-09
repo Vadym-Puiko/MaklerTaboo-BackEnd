@@ -60,10 +60,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
             final String msg = (expiredMsg != null) ? expiredMsg : "Unauthorized";
             httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
-
-//        } catch (Exception e) {
-//            log.error("Access denied with token: " + e.getMessage());
-
         }
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }
