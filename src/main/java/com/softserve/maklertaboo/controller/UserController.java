@@ -13,7 +13,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +30,6 @@ import javax.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/users")
-@Validated
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -56,6 +52,29 @@ public class UserController {
     @PostMapping("/create")
     public void createUser(@Valid @RequestBody UserDto userDto) {
         userService.saveUser(userDto);
+    }
+
+    /**
+     * The method set email and password of user for full authentication
+     *
+     * @param loginDto {@link LoginDto}
+     * @param response {@link HttpServletResponse}
+     * @return {@link ResponseEntity}
+     * @author Mike Ostapiuk
+     */
+    @ApiOperation("SignIn for full authentication of user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+    })
+    @PostMapping("/signIn")
+    public ResponseEntity<JWTSuccessLogInDto> signIn(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
+        JWTSuccessLogInDto jwtSuccessLogInDto = userService.validateLogin(loginDto);
+        Authentication authentication = userService.getAuthentication(loginDto);
+        SecurityContextHolder.getContext().setAuthentication(userService.getAuthentication(loginDto));
+        response.addHeader("accesstoken", jwtTokenProvider.generateAccessToken(authentication));
+        response.addHeader("refreshtoken", jwtTokenProvider.generateRefreshToken(authentication));
+        return ResponseEntity.ok(jwtSuccessLogInDto);
     }
 
     /**
@@ -288,29 +307,6 @@ public class UserController {
     @GetMapping("/currentUserId")
     public ResponseEntity<Long> getCurrentUserById() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getCurrentUserDto().getId());
-    }
-
-    /**
-     * The method set email and password of user for full authentication
-     *
-     * @param loginDto {@link LoginDto}
-     * @param response {@link HttpServletResponse}
-     * @return {@link ResponseEntity}
-     * @author Mike Ostapiuk
-     */
-    @ApiOperation("SignIn for full authentication of user")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = HttpStatuses.OK),
-            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
-    })
-    @PostMapping("/signIn")
-    public ResponseEntity<JWTSuccessLogInDto> signIn(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
-        JWTSuccessLogInDto jwtSuccessLogInDto = userService.validateLogin(loginDto);
-        Authentication authentication = userService.getAuthentication(loginDto);
-        SecurityContextHolder.getContext().setAuthentication(userService.getAuthentication(loginDto));
-        response.addHeader("accesstoken", jwtTokenProvider.generateAccessToken(authentication));
-        response.addHeader("refreshtoken", jwtTokenProvider.generateRefreshToken(authentication));
-        return ResponseEntity.ok(jwtSuccessLogInDto);
     }
 
     /**
