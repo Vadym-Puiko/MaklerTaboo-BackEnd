@@ -50,8 +50,9 @@ public class UserController {
             @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
     })
     @PostMapping("/create")
-    public void createUser(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<Object> createUser(@Valid @RequestBody UserDto userDto) {
         userService.saveUser(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
