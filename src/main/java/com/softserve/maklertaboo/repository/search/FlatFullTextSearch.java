@@ -112,14 +112,6 @@ public class FlatFullTextSearch {
                     );
         }
 
-        booleanJunction
-                .must(queryBuilder
-                        .keyword()
-                        .onField("isActive")
-                        .matching("true")
-                        .createQuery()
-                );
-
         if(booleanJunction.isEmpty()){
             return null;
         }

@@ -32,7 +32,6 @@ public class AmazonStorageService {
     /**
      * Constructor with parameters
      *
-     * @author Vadym Puiko
      */
     @Autowired
     public AmazonStorageService(
@@ -49,7 +48,6 @@ public class AmazonStorageService {
     /**
      * Method that set credentials to amazon client
      *
-     * @author Vadym Puiko
      */
     @PostConstruct
     private void initializeAmazon() {
@@ -64,7 +62,6 @@ public class AmazonStorageService {
      *
      * @param multipartFile
      * @return String
-     * @author Vadym Puiko
      */
     public String uploadFile(MultipartFile multipartFile) {
         String fileUrl = "";
@@ -94,7 +91,6 @@ public class AmazonStorageService {
      * Method delete file
      *
      * @param fileUrl
-     * @author Vadym Puiko
      */
     public void deleteFile(String fileUrl) {
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
@@ -106,7 +102,6 @@ public class AmazonStorageService {
      * Method that upload file to s3 bucket
      *
      * @param fileName,inputStream,metadata
-     * @author Vadym Puiko
      */
     private void uploadFileTos3bucket(String fileName, InputStream inputStream, ObjectMetadata metadata) {
         s3client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, metadata));
@@ -116,7 +111,6 @@ public class AmazonStorageService {
      * Method that generate file name
      *
      * @return String
-     * @author Vadym Puiko
      */
     private String generateFileName() {
         return UUID.randomUUID().toString();
@@ -127,7 +121,6 @@ public class AmazonStorageService {
      *
      * @param multipartFile
      * @return InputStream
-     * @author Vadym Puiko
      */
     private InputStream convertMultiPartToInputStream(MultipartFile multipartFile) {
         InputStream inputStream = null;

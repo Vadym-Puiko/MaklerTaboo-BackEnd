@@ -1,7 +1,6 @@
 package com.softserve.maklertaboo.service.job;
 
 import com.softserve.maklertaboo.service.CachingService;
-import com.softserve.maklertaboo.service.MailingService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;

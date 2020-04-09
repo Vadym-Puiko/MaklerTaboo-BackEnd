@@ -1,4 +1,4 @@
-package com.softserve.maklertaboo.service;
+package com.softserve.maklertaboo.model;
 
 import org.springframework.web.multipart.MultipartFile;
 

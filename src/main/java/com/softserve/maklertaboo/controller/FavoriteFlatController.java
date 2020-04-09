@@ -28,16 +28,19 @@ public class FavoriteFlatController {
     }
 
     @PostMapping("/addToTheList")
-    public void addToTheFavoriteList(@RequestBody Long id,
-                                     @RequestHeader("Authorization") String token) {
+    public void addToTheFavoriteList(
+            @RequestBody Long id,
+            @RequestHeader("Authorization") String token) {
+
         String email = jwtTokenProvider.getEmailFromJWT(token);
         favoriteFlatService.saveFavoriteFlat(id, email);
     }
 
     @GetMapping("/getFlats")
-    public List<FlatDto> getAllFavoriteFlatsOfUser(@RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
+    public List<FlatDto> getAllFavoriteFlatsOfUser(
+            @RequestHeader("Authorization") String token) {
 
+        String email = jwtTokenProvider.getEmailFromJWT(token);
         return favoriteFlatService.getAllFavoriteFlatsOfUser(email)
                 .stream()
                 .map(favoriteFlatMapper::convertToDto)
@@ -45,8 +48,10 @@ public class FavoriteFlatController {
     }
 
     @PostMapping("/deleteFromList")
-    public void deleteFromFavoriteList(@RequestBody Long id,
-                                       @RequestHeader("Authorization") String token) {
+    public void deleteFromFavoriteList(
+            @RequestBody Long id,
+            @RequestHeader("Authorization") String token) {
+
         String email = jwtTokenProvider.getEmailFromJWT(token);
         favoriteFlatService.deactivateFlat(id, email);
     }
