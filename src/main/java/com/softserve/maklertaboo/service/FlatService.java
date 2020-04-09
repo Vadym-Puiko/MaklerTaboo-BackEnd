@@ -15,6 +15,7 @@ import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.search.FlatFullTextSearch;
 import com.softserve.maklertaboo.repository.search.FlatSearchRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
@@ -44,6 +45,7 @@ public class FlatService {
     private final FlatMapper flatMapper;
     private final AmazonStorageService amazonStorageService;
     private final RequestForVerificationService requestForVerificationService;
+    private final JWTTokenProvider jwtTokenProvider;
 
     @Autowired
     public FlatService(FlatRepository flatRepository,
@@ -55,7 +57,8 @@ public class FlatService {
                        UserRepository userRepository,
                        FlatMapper flatMapper,
                        AmazonStorageService amazonStorageService,
-                       @Lazy RequestForVerificationService requestForVerificationService) {
+                       @Lazy RequestForVerificationService requestForVerificationService,
+                       JWTTokenProvider jwtTokenProvider) {
         this.flatRepository = flatRepository;
         this.flatSearchRepository = flatSearchRepository;
         this.newFlatMapper = newFlatMapper;
@@ -66,6 +69,7 @@ public class FlatService {
         this.flatMapper = flatMapper;
         this.amazonStorageService = amazonStorageService;
         this.requestForVerificationService = requestForVerificationService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Cacheable("flats")
@@ -95,6 +99,7 @@ public class FlatService {
 
     @CachePut("flats")
     public void saveFlat(NewFlatDto newFlatDto) {
+        newFlatDto.setEmail(jwtTokenProvider.getCurrentUser().getEmail());
         Flat flat = newFlatMapper.convertToEntity(newFlatDto);
         List<FlatPhoto> photos = new ArrayList<>();
 
@@ -129,14 +134,14 @@ public class FlatService {
     }
 
     @CachePut("flats")
-    public void deactivateFlat(Long id, String email) {
+    public void deactivateFlat(Long id) {
 
         Flat flat = flatRepository.findById(id).orElse(null);
 
         if (flat == null) {
             throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id);
         }
-        if(!flat.getOwner().equals(userRepository.findUserByEmail(email))){
+        if(!flat.getOwner().equals(jwtTokenProvider.getCurrentUser())){
             throw new NotOwnerException(IS_NOT_OWNER);
         }
         flat.setIsActive(false);

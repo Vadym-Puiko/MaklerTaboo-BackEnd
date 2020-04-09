@@ -127,13 +127,12 @@ public class UserController {
 
     @GetMapping("/currentUser")
     public UserDto getCurrentUser() {
-        return userService.getCurrentUser();
+        return userService.getCurrentUserDto();
     }
 
     @GetMapping("/currentUserId")
-    public Long getCurrentUserById(@RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        return userService.findByEmail(email).getId();
+    public Long getCurrentUserById() {
+        return userService.getCurrentUserDto().getId();
     }
 
 
@@ -199,9 +198,8 @@ public class UserController {
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
     })
     @PutMapping("/update/all")
-    public void updateUser(@RequestBody @Valid UserUpdateDto userUpdateDto, @RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        userService.updateUser(email, userUpdateDto);
+    public void updateUser(@RequestBody @Valid UserUpdateDto userUpdateDto) {
+        userService.updateUser(userUpdateDto);
     }
 
     @PutMapping("/update/admin/panel")
@@ -228,9 +226,8 @@ public class UserController {
     }
 
     @DeleteMapping("/profile/deletePhoto")
-    public void deletePhoto(@RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        userService.deletePhoto(email);
+    public void deletePhoto() {
+        userService.deletePhoto();
     }
 
 }

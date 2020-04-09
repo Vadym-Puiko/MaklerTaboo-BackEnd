@@ -138,8 +138,8 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
-    public void updateUser(String email, UserUpdateDto userUpdateDto) {
-        User user = userRepository.findUserByEmail(email);
+    public void updateUser(UserUpdateDto userUpdateDto) {
+        User user = jwtTokenProvider.getCurrentUser();
         user.setUsername(userUpdateDto.getUsername());
         user.setPhoneNumber(userUpdateDto.getPhoneNumber());
         user.setPhotoUrl(userUpdateDto.getPhotoUrl());
@@ -163,8 +163,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deletePhoto(String email) {
-        User user = userRepository.findUserByEmail(email);
+    public void deletePhoto() {
+        User user = jwtTokenProvider.getCurrentUser();
         amazonStorageService.deleteFile(user.getPhotoUrl());
         user.setPhotoUrl(null);
         userRepository.save(user);
@@ -224,7 +224,7 @@ public class UserService {
                 user.getId());
     }
 
-    public UserDto getCurrentUser(){
+    public UserDto getCurrentUserDto(){
         return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
     }
 }
