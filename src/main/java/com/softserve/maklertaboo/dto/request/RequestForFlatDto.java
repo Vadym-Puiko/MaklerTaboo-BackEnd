@@ -3,7 +3,6 @@ package com.softserve.maklertaboo.dto.request;
 import com.softserve.maklertaboo.dto.flat.FlatDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
-import com.softserve.maklertaboo.entity.flat.Flat;
 import lombok.Data;
 
 import java.util.Date;
