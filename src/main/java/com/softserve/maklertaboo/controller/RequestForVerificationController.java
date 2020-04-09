@@ -68,9 +68,9 @@ public class RequestForVerificationController {
                 .map(requestForUserMapper::convertToDto);
     }
 
-    @PutMapping("/flats/{id}/ban")
-    public void banRequestForFlat(@PathVariable Long id) {
-        requestForVerificationService.bannedFlatRequest(id);
+    @PutMapping("/flats/{id}/deactivate")
+    public void deactivateRequestForFlat(@PathVariable Long id) {
+        requestForVerificationService.deactivateFlatRequest(id);
     }
 
     @PutMapping("/flats/{id}/approve")
