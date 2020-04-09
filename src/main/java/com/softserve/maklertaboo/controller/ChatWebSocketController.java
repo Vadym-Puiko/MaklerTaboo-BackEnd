@@ -1,9 +1,6 @@
 package com.softserve.maklertaboo.controller;
 
-import com.softserve.maklertaboo.dto.chat.ChatMessageDTO;
-import com.softserve.maklertaboo.dto.chat.ChatMessageInfoDTO;
-import com.softserve.maklertaboo.dto.chat.DeleteMessageInfoDTO;
-import com.softserve.maklertaboo.dto.chat.DeletedMessageDTO;
+import com.softserve.maklertaboo.dto.chat.*;
 import com.softserve.maklertaboo.entity.chat.Message;
 import com.softserve.maklertaboo.service.ChatService;
 import com.softserve.maklertaboo.service.MessageService;
@@ -68,16 +65,43 @@ public class ChatWebSocketController {
     }
 
 
-   /* @MessageMapping("/send/message")
-    public void updateMessage(@Valid @Payload ChatMessageInfoDTO chatMessageInfoDTO) {
-
+    @MessageMapping("/updateDate/message")
+    public void updateMessage(@Payload UpdateMessageDTO updateMessageDTO) {
         log.info("ChatWebsocketController send message");
-        log.info(chatMessageInfoDTO.getChatId() + "    " + chatMessageInfoDTO.getContent());
-        Message message = new Message();
-        Message sendBackMessage = messageService.updateMessage();
-        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", chatMessageInfoDTO.getChatId()), modelMapper.map(sendBackMessage, ChatMessageDTO.class));
+//        Optional<Message> sendBackMessage = messageService.updateMessage(updateMessageDTO.getMessageId());
+//        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", updateMessageDTO.getChatId()),  modelMapper.map(sendBackMessage, ChatMessageDTO.class));
+          UpdatedMessageDTO updatedMessageDTO = new UpdatedMessageDTO();
+          updatedMessageDTO.setStatus("updated");
+          updatedMessageDTO.setMessageId(updateMessageDTO.getMessageId());
+          messageService.updateMessage(updateMessageDTO.getMessageId());
+          simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", updateMessageDTO.getChatId()), updatedMessageDTO);
 
+//    }
+    }
+
+   /* @MessageMapping(value = "/chats/countUnread/message")
+    public void countOfUnreadMessages(@Payload Long chatId) {
+        chatService.getCountOfUnreadMessages(chatId);
+        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", chatId), chatId);
     }*/
+    @MessageMapping("/countUnread/message")
+    public void countOfUnreadMessages(@Payload CounterOfUnreadMessagesDTO counterOfUnreadMessagesDTO) {
+        CounterOfUnreadMessagesInfoDTO counterOfUnreadMessagesInfoDTO = new CounterOfUnreadMessagesInfoDTO();
+        counterOfUnreadMessagesInfoDTO.setStatus("unread");
+        counterOfUnreadMessagesInfoDTO.setCountOfUnreadMessage(chatService.getCountOfUnreadMessages(counterOfUnreadMessagesDTO.getChatId()));
+        counterOfUnreadMessagesInfoDTO.setChatId(counterOfUnreadMessagesDTO.getChatId());
+        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", counterOfUnreadMessagesDTO.getChatId()), counterOfUnreadMessagesInfoDTO);
+/*
+        return chatService.getCountOfUnreadMessages(counterOfUnreadMessagesDTO.getChatId());
+*/
+    }
 
+   /* @PutMapping("/updateDate/message")
+    public void updateMessage(@Payload UpdateMessageDTO updateMessageDTO) {
+        log.info("ChatWebsocketController send message");
+        List<Long> id = updateMessageDTO.getMessagesId();
+        id.stream().forEach(message -> messageService.updateMessage(message));
+        simpMessagingTemplate.convertAndSend(format("/topic/messages/%s", updateMessageDTO.getChatId()),  updateMessageDTO);
+    }*/
 }
 

@@ -38,9 +38,10 @@ public class ChatController {
     }
 
 
+
     @GetMapping("/chats/{id}")
         public List<ChatDTO> getCurrentChatsByUserId(@Valid @PathVariable Long id) {
-        log.info("MessagesController get chats by userId");
+        log.info("СhatController get chats by userId");
         return chatService.getChatByUserId(id)
                 .stream()
                 .map(source -> modelMapper.map(source, ChatDTO.class))

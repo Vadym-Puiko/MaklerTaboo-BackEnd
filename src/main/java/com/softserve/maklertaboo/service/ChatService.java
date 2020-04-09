@@ -58,6 +58,10 @@ public class ChatService {
         return messageRepository.countByChatIdAndDataSeenIsNull(chatId);
     }
 
+    public void setCountOfUnreadMessages(Long chatId) {
+        messageRepository.countByChatIdAndDataSeenIsNull(chatId);
+    }
+
     public Long getChatId(String recieverName, Long senderId) {
 
         User reciever = userRepository.findUserByUsername(recieverName);
@@ -79,7 +83,6 @@ public class ChatService {
                 break;
             }
         }
-
         if (result != null) {
             return result;
         }
@@ -87,7 +90,6 @@ public class ChatService {
         chat.setReceiver(reciever);
         chat.setSender(sender);
         return chatRepository.save(chat).getId();
-
     }
 }
 
