@@ -6,15 +6,14 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +31,7 @@ public class AmazonStorageService {
     /**
      * Constructor with parameters
      *
+     * @author Vadym Puiko
      */
     @Autowired
     public AmazonStorageService(
@@ -46,8 +46,9 @@ public class AmazonStorageService {
     }
 
     /**
-     * Method that set credentials to amazon client
+     * The method that set credentials to amazon client.
      *
+     * @author Vadym Puiko
      */
     @PostConstruct
     private void initializeAmazon() {
@@ -55,14 +56,17 @@ public class AmazonStorageService {
         s3client = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withRegion(Regions.EU_CENTRAL_1).build();
+        log.info("Initialize Amazon was successfully");
     }
 
     /**
-     * Method that upload file
+     * The general method that upload file
      *
-     * @param multipartFile
-     * @return String
+     * @param multipartFile multipartFile
+     * @return {@link String}
+     * @author Vadym Puiko
      */
+    @Transactional
     public String uploadFile(MultipartFile multipartFile) {
         String fileUrl = "";
         if (multipartFile != null) {
@@ -75,7 +79,7 @@ public class AmazonStorageService {
                 metadata.setContentLength(multipartFile.getSize());
                 uploadFileTos3bucket(fileName, inputStream, metadata);
                 inputStream.close();
-                log.info("Successfully upload");
+                log.info("File was uploaded successfully");
             } catch (Exception e) {
                 e.printStackTrace();
                 log.info("Caught an AmazonClientException: ");
@@ -83,44 +87,54 @@ public class AmazonStorageService {
             }
             return fileUrl;
         } else {
-            return "File is not exists";
+            log.info("File is not exists");
+            return "";
         }
     }
 
     /**
-     * Method delete file
+     * The method that delete file from s3 bucket
      *
-     * @param fileUrl
+     * @param fileUrl for deleting.
+     * @author Vadym Puiko
      */
+    @Transactional
     public void deleteFile(String fileUrl) {
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         s3client.deleteObject(bucketName, fileName);
-        log.info("Successfully deleted");
+        log.info("File was deleted successfully");
     }
 
     /**
-     * Method that upload file to s3 bucket
+     * The method that upload file to s3 bucket
      *
-     * @param fileName,inputStream,metadata
+     * @param fileName string
+     * @param inputStream inputStream
+     * @param metadata objectMetadata
+     * @author Vadym Puiko
      */
     private void uploadFileTos3bucket(String fileName, InputStream inputStream, ObjectMetadata metadata) {
         s3client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, metadata));
+        log.info("File was uploaded successfully to S3 Bucket");
     }
 
     /**
-     * Method that generate file name
+     * The method that generate file name
      *
-     * @return String
+     * @return {@link String}
+     * @author Vadym Puiko
      */
     private String generateFileName() {
+        log.info("File name was generated successfully");
         return UUID.randomUUID().toString();
     }
 
     /**
-     * Method that convert MultipartFile to InputStream
+     * The method that convert MultipartFile to InputStream.
      *
-     * @param multipartFile
-     * @return InputStream
+     * @param multipartFile MultipartFile
+     * @return {@link InputStream}
+     * @author Vadym Puiko
      */
     private InputStream convertMultiPartToInputStream(MultipartFile multipartFile) {
         InputStream inputStream = null;
@@ -129,6 +143,7 @@ public class AmazonStorageService {
         } catch (IOException e) {
             log.info("Error Message: " + e.getMessage());
         }
+        log.info("MultiPartFile to InputStream was converted successfully");
         return inputStream;
     }
 }

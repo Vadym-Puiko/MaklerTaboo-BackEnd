@@ -1,10 +1,12 @@
 package com.softserve.maklertaboo.service.mailer;
 
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.flat.FlatSearchParametersDto;
 import com.softserve.maklertaboo.entity.Subscription;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.flat.FlatSearchMapper;
 import com.softserve.maklertaboo.repository.SubscriptionRepository;
 import com.softserve.maklertaboo.repository.search.FlatFullTextSearch;
@@ -89,19 +91,22 @@ public class MailingService {
         FlatSearchParameters flatParameters = flatSearchMapper.convertToEntity(parameters);
         Subscription subscription = new Subscription();
         subscription.setFlatSearchParameters(flatParameters);
-        subscription.setUser(userRepository.findUserByEmail(email));
+        subscription.setUser(userRepository.findUserByEmail(email).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND)));
         subscription.setActive(true);
         subscriptionRepository.save(subscription);
     }
 
     public void unsubscribe(String email) {
-        List<Subscription> subscriptions = subscriptionRepository.findAllByUser(userRepository.findUserByEmail(email));
+        List<Subscription> subscriptions = subscriptionRepository.findAllByUser(userRepository.findUserByEmail(email).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND)));
         subscriptions.forEach(x -> x.setActive(false));
         subscriptionRepository.saveAll(subscriptions);
     }
 
     public void turnOnTelegramNotifications(String email) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         List<Subscription> subscriptions = subscriptionRepository.findAllByUser(user);
         subscriptions.forEach(subscription -> subscription.setTelegram(true));
         subscriptionRepository.saveAll(subscriptions);
