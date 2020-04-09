@@ -7,6 +7,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import static com.softserve.maklertaboo.constant.ErrorMessage.EMAIL_SENDING_ERROR;
+
 @Slf4j
 @Service
 public class EmailSenderService {
@@ -22,7 +24,7 @@ public class EmailSenderService {
         try {
             emailSender.send(message);
         } catch (MailException e) {
-            log.error("Email sending error", e);
+            log.error(EMAIL_SENDING_ERROR, e);
         }
     }
 

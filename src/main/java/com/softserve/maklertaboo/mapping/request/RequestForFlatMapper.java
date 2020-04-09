@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 public class RequestForFlatMapper implements MapperToDto<RequestForFlatVerification, RequestForFlatDto>,
         MapperToEntity<RequestForFlatDto, RequestForFlatVerification> {
 
-
     private UserRepository userRepository;
     private FlatRepository flatRepository;
     private UserMapper userMapper;

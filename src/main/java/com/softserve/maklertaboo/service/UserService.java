@@ -75,6 +75,7 @@ public class UserService {
     public List<UserDto> findAllUser() {
         return userRepository.findAll()
                 .stream()
+                .filter(user -> user.getRole() != (UserRole.ROLE_ADMIN))
                 .map(userMapper::convertToDto)
                 .collect(Collectors.toList());
     }
@@ -90,8 +91,7 @@ public class UserService {
         if (user == null) {
             throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
         }
-        UserDto userDto = userMapper.convertToDto(user);
-        return userDto;
+        return userMapper.convertToDto(user);
     }
 
     public UserDto findByUsername(String username) {
@@ -114,11 +114,6 @@ public class UserService {
         return userRepository.findAllByPhoneNumberLike(pageable, "%" + phone + "%").map(userMapper::convertToDto);
     }
 
-    public UserDto findUserByPhoneNumber(String phoneNumber) {
-        User user = userRepository.findUserByPhoneNumber(phoneNumber);
-        return userMapper.convertToDto(user);
-    }
-
     public void updateUser(String email, UserUpdateDto userUpdateDto) {
         User user = userRepository.findUserByEmail(email);
         user.setUsername(userUpdateDto.getUsername());
@@ -127,10 +122,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updateUserIntoAdminPanel(UserDto userDto) {
-        User user = userRepository.findUserByEmail(userDto.getEmail());
-        user.setUsername(userDto.getUsername());
-        user.setPhoneNumber(userDto.getPhoneNumber());
+    public void updateUserIntoAdminPanel(UserUpdateDto userUpdateDto) {
+        User user = userRepository.findUserByEmail(userUpdateDto.getEmail());
+        user.setUsername(userUpdateDto.getUsername());
+        user.setPhoneNumber(userUpdateDto.getPhoneNumber());
         userRepository.save(user);
     }
 

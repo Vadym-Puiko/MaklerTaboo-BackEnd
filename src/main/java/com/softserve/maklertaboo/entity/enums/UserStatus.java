@@ -1,12 +1,14 @@
 package com.softserve.maklertaboo.entity.enums;
 
-public enum RequestForVerificationStatus {
-    NEW,
-    VIEWED,
-    APPROVED,
-    DECLINED,
-    ALL,
+
+public enum UserStatus {
+
+    ACTIVE,
+    WARNED,
+    BANNED,
+    REACTIVATION,
     DEACTIVATED;
+
 
     public String getStatus() {
         return this.name();

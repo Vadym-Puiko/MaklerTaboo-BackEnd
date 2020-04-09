@@ -5,6 +5,7 @@ import com.softserve.maklertaboo.entity.Order;
 import com.softserve.maklertaboo.entity.Tag;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.photo.FlatPhoto;
+import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 import org.hibernate.search.annotations.*;
@@ -24,7 +25,6 @@ public class Flat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
@@ -53,18 +53,21 @@ public class Flat {
     @Field
     private Boolean isActive;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private FlatLocation flatLocation;
+
     @IndexedEmbedded
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private User owner;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<FlatPhoto> flatPhotoList;
 
     @IndexedEmbedded(includePaths = {"name"})
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.DETACH)
     private Set<Tag> tags;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -76,6 +79,9 @@ public class Flat {
     @OneToMany(cascade = CascadeType.ALL)
     @IndexedEmbedded
     private List<FlatComment> commentFlatList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "flat")
+    private List<RequestForFlatVerification> requestFlat;
 
     @Override
     public boolean equals(Object o) {
