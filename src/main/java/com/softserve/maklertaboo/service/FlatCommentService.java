@@ -1,11 +1,11 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.controller.UserController;
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.comment.FlatCommentDto;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
-import com.softserve.maklertaboo.entity.comment.UserComment;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.comment.FlatCommentMapper;
 import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.comment.FlatCommentRepository;
@@ -13,7 +13,6 @@ import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -47,7 +46,8 @@ public class FlatCommentService {
         FlatComment flatComment=flatCommentMapper.convertToEntity(flatCommentDto);
         String accessToken = httpServletRequest.getHeader("Authorization");
         String email = jwtTokenProvider.getEmailFromJWT(accessToken);
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         flatComment.setUserAuthor(user);
         flatCommentRepository.save(flatComment);
     }
@@ -55,7 +55,8 @@ public class FlatCommentService {
         FlatComment flatComment=flatCommentMapper.convertToEntity(flatCommentDto);
         String accessToken = httpServletRequest.getHeader("Authorization");
         String email = jwtTokenProvider.getEmailFromJWT(accessToken);
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         flatComment.setUserAuthor(user);
         flatCommentRepository.save(flatComment);
     }
@@ -64,7 +65,8 @@ public class FlatCommentService {
         FlatComment flatComment=flatCommentRepository.getOne(id);
         String accessToken = httpServletRequest.getHeader("Authorization");
         String email = jwtTokenProvider.getEmailFromJWT(accessToken);
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         if (flatComment.getUserAuthor().equals(user)){
             flatComment.setIsActive(false);
             flatComment.setDeletedDate(LocalDateTime.now());
