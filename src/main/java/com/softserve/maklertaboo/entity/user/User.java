@@ -1,5 +1,4 @@
 package com.softserve.maklertaboo.entity.user;
-
 import com.softserve.maklertaboo.entity.Order;
 import com.softserve.maklertaboo.entity.Passport;
 import com.softserve.maklertaboo.entity.TelegramUserData;
