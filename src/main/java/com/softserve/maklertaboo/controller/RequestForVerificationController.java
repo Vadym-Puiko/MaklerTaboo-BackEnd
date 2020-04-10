@@ -114,12 +114,16 @@ public class RequestForVerificationController {
 
     }
 
-   /* @PostMapping("/create-request")
-    public void createRequestForFlatBooking(@RequestBody RequestForFlatDto requestForFlatDto) {
-        requestForVerificationService.createRequestForFlatBooking(requestForFlatDto);
+    @PostMapping("/book-flat")
+    public void createRequestForFlatBooking(@RequestBody Long id,
+                                            @RequestHeader("Authorization") String token) {
+
+        String email = jwtTokenProvider.getEmailFromJWT(token);
+        requestForVerificationService.createRequestForFlatBooking(id, email);
+
     }
 
-    @GetMapping("/booked-flats")
+/*    @GetMapping("/booked-flats")
     public List<RequestForFlatDto> getAllRequestsForFlatBookingByOwner(
             @RequestHeader("Authorization") String token) {
 

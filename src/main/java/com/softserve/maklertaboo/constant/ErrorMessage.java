@@ -20,5 +20,9 @@ public class ErrorMessage {
     public static final String JSON_PARSING_EXCEPTION = "Cannot parse json";
     public static final String TELEGRAM_BINDED_MESSAGE = "Telegram is already binded to this account";
     public static final String EMAIL_SENDING_ERROR = "Email sending error";
+    public static final String REQUEST_FOR_FLAT_BOOKING_ALREADY_EXISTS = "You've already sent request to book apartment. " +
+            "Wait for approval.";
+    public static final String ACCESS_DENIED_TO_BOOK_APARTMENT = "You need to fill passport data in order to book apartment.";
+
 
 }

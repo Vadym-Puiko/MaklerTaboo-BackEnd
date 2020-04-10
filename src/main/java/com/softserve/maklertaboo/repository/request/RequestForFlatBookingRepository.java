@@ -8,4 +8,6 @@ public interface RequestForFlatBookingRepository
         extends RequestBaseRepository<RequestForFlatBooking> {
 
     List<RequestForFlatBooking> getAllByFlat_Owner_Email(String email);
+
+    RequestForFlatBooking findRequestForFlatBookingByAuthor_IdAndFlat_Id(Long authorId, Long flatId);
 }

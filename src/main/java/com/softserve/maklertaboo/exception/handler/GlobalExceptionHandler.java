@@ -77,6 +77,32 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
+    @ExceptionHandler(RequestAlreadyExistsException.class)
+    public final ResponseEntity<Object> handleUserAlreadyExistsException(
+            RequestAlreadyExistsException exception,
+            WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(
+                HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public final ResponseEntity<Object> handleUserAlreadyExistsException(
+            AccessDeniedException exception,
+            WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(
+                HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
     @ExceptionHandler(FavoriteListIsEmptyException.class)
     public final ResponseEntity<Object> handleFavoriteListIsEmptyException(
             FavoriteListIsEmptyException exception, WebRequest request) {

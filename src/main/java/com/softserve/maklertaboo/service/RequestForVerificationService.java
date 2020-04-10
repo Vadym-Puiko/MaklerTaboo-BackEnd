@@ -6,11 +6,15 @@ import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.flat.Flat;
+import com.softserve.maklertaboo.entity.request.RequestForFlatBooking;
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.entity.request.RequestForVerification;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.AccessDeniedException;
+import com.softserve.maklertaboo.exception.exceptions.RequestAlreadyExistsException;
 import com.softserve.maklertaboo.exception.exceptions.RequestNotFoundException;
+import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.repository.request.RequestBaseRepository;
@@ -40,6 +44,7 @@ public class RequestForVerificationService {
     private final UserService userService;
     private final RequestForUserMapper requestForUserMapper;
     private final RequestForFlatMapper requestForFlatMapper;
+    private final UserMapper userMapper;
 
     @Autowired
     public RequestForVerificationService(RequestForFlatVerificationRepository requestForFlatVerificationRepository,
@@ -48,7 +53,8 @@ public class RequestForVerificationService {
                                          FlatService flatService,
                                          UserService userService,
                                          RequestForUserMapper requestForUserMapper,
-                                         RequestForFlatMapper requestForFlatMapper) {
+                                         RequestForFlatMapper requestForFlatMapper,
+                                         UserMapper userMapper) {
 
         this.requestFlatRepository = requestForFlatVerificationRepository;
         this.requestUserRepository = requestForUserVerificationRepository;
@@ -57,6 +63,7 @@ public class RequestForVerificationService {
         this.userService = userService;
         this.requestForUserMapper = requestForUserMapper;
         this.requestForFlatMapper = requestForFlatMapper;
+        this.userMapper = userMapper;
     }
 
     public void createRequestForUserVerification(RequestForUserDto requestForUserDto, RequestForVerificationType type) {
@@ -64,6 +71,35 @@ public class RequestForVerificationService {
         requestForUserVerification.setType(type);
         requestUserRepository.save(requestForUserVerification);
     }
+
+    public void createRequestForFlatBooking(Long id, String email) {
+
+        User user = userMapper.convertToEntity(userService.findByEmail(email));
+        UserRole userRole = user.getRole();
+
+        if (userRole.getStatus().equals("ROLE_USER")) {
+            throw new AccessDeniedException(ErrorMessage
+                    .ACCESS_DENIED_TO_BOOK_APARTMENT);
+        }
+
+        Flat flat = flatService.getById(id);
+
+        RequestForFlatBooking requestForFlatBooking = requestForFlatBookingRepository
+                .findRequestForFlatBookingByAuthor_IdAndFlat_Id(user.getId(), flat.getId());
+
+        if (requestForFlatBooking == null) {
+            RequestForFlatBooking requestForFlatBooking1 = new RequestForFlatBooking();
+            requestForFlatBooking1.setFlat(flat);
+            requestForFlatBooking1.setAuthor(user);
+            requestForFlatBookingRepository.save(requestForFlatBooking1);
+        } else {
+            throw new RequestAlreadyExistsException(ErrorMessage
+                    .REQUEST_FOR_FLAT_BOOKING_ALREADY_EXISTS);
+        }
+
+    }
+
+
 
     public List<RequestForFlatVerification> getAllRequestsForFlatVerification() {
         return requestFlatRepository.findAll();
