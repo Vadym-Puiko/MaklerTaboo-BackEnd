@@ -29,7 +29,7 @@ public class Passport {
     private String passportNumber;
     private Long identificationNumber;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "passport")
+    @OneToOne(cascade = CascadeType.DETACH, mappedBy = "passport")
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL)

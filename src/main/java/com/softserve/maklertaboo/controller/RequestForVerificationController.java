@@ -60,7 +60,6 @@ public class RequestForVerificationController {
                 .map(requestForUserMapper::convertToDto);
     }
 
-
     @PutMapping("/flats/{id}/approve")
     public void approveRequestForFlat(@PathVariable Long id) {
         requestForVerificationService.approveFlatRequest(id);

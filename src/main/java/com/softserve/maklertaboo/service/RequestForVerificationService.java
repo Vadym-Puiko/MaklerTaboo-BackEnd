@@ -11,7 +11,6 @@ import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.entity.request.RequestForVerification;
 import com.softserve.maklertaboo.entity.user.User;
-import com.softserve.maklertaboo.exception.exceptions.DuplicateRenterRequest;
 import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.exception.exceptions.RequestNotFoundException;
@@ -147,7 +146,6 @@ public class RequestForVerificationService {
         requestForVerification.setVerificationDate(new Date());
         requestBaseRepository.save(requestForVerification);
     }
-
 
     public Page<RequestForFlatVerification> getRequestsForFlatVerification(Integer page, Integer size,
                                                                            RequestForVerificationStatus status) {

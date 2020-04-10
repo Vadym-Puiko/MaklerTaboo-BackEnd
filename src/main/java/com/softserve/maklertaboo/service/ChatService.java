@@ -1,13 +1,14 @@
 package com.softserve.maklertaboo.service;
 
+import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.entity.chat.Chat;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.repository.chat.ChatRepository;
 import com.softserve.maklertaboo.repository.chat.MessageRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,7 +61,8 @@ public class ChatService {
 
     public Long getChatId(String recieverName, Long senderId) {
 
-        User reciever = userRepository.findUserByUsername(recieverName);
+        User reciever = userRepository.findUserByUsername(recieverName).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_USERNAME));
         User sender = userRepository.findById(senderId).get();
 
         if (sender.getId().equals(reciever.getId())) {

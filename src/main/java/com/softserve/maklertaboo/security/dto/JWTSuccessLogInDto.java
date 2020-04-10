@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JWTSuccessLogIn {
+public class JWTSuccessLogInDto {
     private Long userId;
     private String username;
     private String email;
