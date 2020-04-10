@@ -36,14 +36,6 @@ public class RequestForVerificationController {
                 .map(requestForFlatMapper::convertToDto);
     }
 
-    @GetMapping(path = "/posts/flats", params = {"page", "size", "status"})
-    public Page<RequestForFlatDto> getPostsForFlats(@RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                       @RequestParam(name = "size", defaultValue = "10") Integer size,
-                                                       @RequestParam(name = "status") RequestForVerificationStatus status) {
-        return requestForVerificationService.getAllAndBannedFlats(page, size, status)
-                .map(requestForFlatMapper::convertToDto);
-    }
-
     @GetMapping(path = "/renters", params = {"page", "size", "status"})
     public Page<RequestForUserDto> getRequestsForRenters(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                                          @RequestParam(name = "size", defaultValue = "10") Integer size,
@@ -66,11 +58,6 @@ public class RequestForVerificationController {
                                                             @RequestParam(name = "status", defaultValue = "NEW") RequestForVerificationStatus status) {
         return requestForVerificationService.getRequestsForModeratorVerification(page, size, status)
                 .map(requestForUserMapper::convertToDto);
-    }
-
-    @PutMapping("/flats/{id}/ban")
-    public void banRequestForFlat(@PathVariable Long id) {
-        requestForVerificationService.bannedFlatRequest(id);
     }
 
     @PutMapping("/flats/{id}/approve")
