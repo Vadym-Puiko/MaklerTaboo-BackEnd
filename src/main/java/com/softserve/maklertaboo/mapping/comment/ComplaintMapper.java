@@ -65,6 +65,7 @@ public class ComplaintMapper implements MapperToDto<Complaint, ComplaintDto>, Ma
     @Override
     public Complaint convertToEntity(ComplaintDto dto) {
         Complaint complaint=new Complaint();
+        complaint.setText(dto.getText());
         UserComment userComment;
         FlatComment flatComment;
         if (dto.getFlatComment()==null){
@@ -79,7 +80,6 @@ public class ComplaintMapper implements MapperToDto<Complaint, ComplaintDto>, Ma
             userComment=userCommentRepository.findById(dto.getUserComment().getId()).orElseThrow();
             complaint.setUserComment(userComment);
         }
-        complaint.setText(dto.getText());
         return complaint;
     }
 }
