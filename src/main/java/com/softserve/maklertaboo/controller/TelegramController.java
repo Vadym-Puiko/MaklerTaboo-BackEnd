@@ -1,39 +1,36 @@
 package com.softserve.maklertaboo.controller;
 
 
-import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import com.softserve.maklertaboo.service.telegram.TelegramService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/telegram")
 public class TelegramController {
 
-    private final JWTTokenProvider jwtTokenProvider;
     private final TelegramService telegramService;
 
     @Autowired
-    public TelegramController(JWTTokenProvider jwtTokenProvider,TelegramService telegramService) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public TelegramController(TelegramService telegramService) {
         this.telegramService = telegramService;
     }
 
     @GetMapping
-    public String getCode(@RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        return telegramService.getCode(email);
+    public String getCode() {
+        return telegramService.getCode();
     }
 
     @GetMapping("/check")
-    public Boolean checkBinding(@RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        return telegramService.checkIfBinded(email);
+    public Boolean checkBinding() {
+        return telegramService.checkIfBinded();
     }
 
     @DeleteMapping
-    public void removeBinding(@RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        telegramService.unbind(email);
+    public void removeBinding() {
+        telegramService.unbind();
     }
 }

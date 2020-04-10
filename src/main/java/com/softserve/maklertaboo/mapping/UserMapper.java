@@ -6,15 +6,23 @@ import com.softserve.maklertaboo.entity.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.util.UUID;
 
+/**
+ * Class that used by {@link MapperToDto}, {@link MapperToEntity} fot mapping {@link UserDto} into {@link User}
+ * and versa.
+ */
 @Component
 @AllArgsConstructor
 public class UserMapper implements MapperToDto<User, UserDto>, MapperToEntity<UserDto, User> {
-
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Method for converting {@link User} into {@link UserDto}.
+     *
+     * @param user object to convert.
+     * @return converted object.
+     */
     @Override
     public UserDto convertToDto(User user) {
         UserDto userDto = new UserDto();
@@ -28,6 +36,12 @@ public class UserMapper implements MapperToDto<User, UserDto>, MapperToEntity<Us
         return userDto;
     }
 
+    /**
+     * Method for converting {@link UserDto} into {@link User}.
+     *
+     * @param userDto object to convert.
+     * @return converted object.
+     */
     @Override
     public User convertToEntity(UserDto userDto) {
         User user = new User();
