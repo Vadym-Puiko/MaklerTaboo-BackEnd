@@ -8,11 +8,10 @@ import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.*;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.security.dto.ChangePasswordDto;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogInDto;
 import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.security.dto.LoginDto;
-import com.softserve.maklertaboo.security.dto.ChangePasswordDto;
-import com.softserve.maklertaboo.security.entity.UserDetailsImpl;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,6 +102,14 @@ public class UserService {
         return new JWTSuccessLogInDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
 
+    /**
+     * Method that compare and check exist password, and login for a given user.
+     *
+     * @param loginDto - of current user
+     * @param passwordEncoder - service interface for encoding passwords.
+     * @return boolean check result
+     * @author Mike Ostapiuk
+     */
     public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
             throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
