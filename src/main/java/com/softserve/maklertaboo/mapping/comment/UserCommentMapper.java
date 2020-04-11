@@ -36,7 +36,7 @@ public class UserCommentMapper implements MapperToDto<UserComment, UserCommentDt
         userCommentDto.setCommentAboutComment(entity.getCommentAboutComment());
         userCommentDto.setPublicationDate(entity.getPublicationDate());
         userCommentDto.setUserId(entity.getUsr().getId());
-        userCommentDto.setUserAuthor(userMapper.convertToDto(entity.getUserAuthor()));
+        userCommentDto.setUserAuthor(userMapper.convertToDto(entity.getUsrAuthor()));
         return userCommentDto;
     }
 

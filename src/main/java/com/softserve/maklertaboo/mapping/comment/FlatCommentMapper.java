@@ -35,7 +35,7 @@ public class FlatCommentMapper implements MapperToDto<FlatComment, FlatCommentDt
         flatCommentDto.setText(entity.getText());
         flatCommentDto.setPublicationDate(entity.getPublicationDate());
         flatCommentDto.setFlatId(entity.getFlat().getId());
-        flatCommentDto.setUserAuthor(userMapper.convertToDto(entity.getUserAuthor()));
+        flatCommentDto.setUserAuthor(userMapper.convertToDto(entity.getUsrAuthor()));
 
 
         return flatCommentDto;

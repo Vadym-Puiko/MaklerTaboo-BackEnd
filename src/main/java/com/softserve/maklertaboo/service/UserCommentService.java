@@ -36,21 +36,21 @@ public class UserCommentService {
     public void saveUserComment(UserCommentDto userCommentDto){
         UserComment userComment=userCommentMapper.convertToEntity(userCommentDto);
         User user = jwtTokenProvider.getCurrentUser();
-        userComment.setUserAuthor(user);
+        userComment.setUsrAuthor(user);
         userCommentRepository.save(userComment);
     }
 
     public void saveCommentAboutComment(UserCommentDto userCommentDto){
         UserComment userComment=userCommentMapper.convertToEntity(userCommentDto);
         User user = jwtTokenProvider.getCurrentUser();
-        userComment.setUserAuthor(user);
+        userComment.setUsrAuthor(user);
         userCommentRepository.save(userComment);
     }
 
     public void deleteUserComment(Long id){
         UserComment userComment= userCommentRepository.getOne(id);
         User user = jwtTokenProvider.getCurrentUser();
-        if (userComment.getUserAuthor().equals(user)){
+        if (userComment.getUsrAuthor().equals(user)){
             userComment.setIsActive(false);
             userComment.setDeletedDate(LocalDateTime.now());
             userCommentRepository.save(userComment);
