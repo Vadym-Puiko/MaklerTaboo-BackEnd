@@ -26,7 +26,7 @@ public abstract class Comment {
     private Boolean isActive;
 
     @ManyToOne(cascade = CascadeType.DETACH)
-    private User userAuthor;
+    private User usrAuthor;
 
     @PrePersist
     public void prePersist() {
