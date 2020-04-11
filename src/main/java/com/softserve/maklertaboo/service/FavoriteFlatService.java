@@ -51,7 +51,7 @@ public class FavoriteFlatService {
         if (favoriteFlat == null) {
             FavoriteFlat favoriteFlat1 = new FavoriteFlat();
             favoriteFlat1.setFlat(flat);
-            favoriteFlat1.setUser(user);
+            favoriteFlat1.setUsr(user);
             favoriteFlatRepository.save(favoriteFlat1);
         } else {
             throw new FlatAlreadyInTheFavoriteListException(
