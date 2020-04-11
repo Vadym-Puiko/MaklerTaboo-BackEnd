@@ -16,6 +16,6 @@ public class TelegramUserData {
     private String verificationCode;
 
     @OneToOne(cascade = CascadeType.DETACH)
-    private User user;
+    private User usr;
 
 }

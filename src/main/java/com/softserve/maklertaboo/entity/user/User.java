@@ -46,19 +46,19 @@ public class User {
     @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private Passport passport;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usr")
     private List<Order> orders;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private List<Flat> flats;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usr")
     private List<FavoriteFlat> favoriteFlats;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userAuthor")
     private List<Comment> comments;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usr")
     private List<UserComment> userComments;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
@@ -69,7 +69,7 @@ public class User {
 
     private String refreshKey;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "usr")
     @JoinColumn(name = "telegram_id", referencedColumnName = "id")
     private TelegramUserData telegramUserData;
 

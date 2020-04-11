@@ -17,6 +17,6 @@ public class FavoriteFlat {
     private Flat flat;
 
     @ManyToOne
-    private User user;
+    private User usr;
 
 }
