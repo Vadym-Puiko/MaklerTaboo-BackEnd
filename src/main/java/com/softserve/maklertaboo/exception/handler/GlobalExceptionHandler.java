@@ -74,7 +74,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(FlatAlreadyInTheFavoriteListException.class)
-    public final ResponseEntity<Object> handleUserAlreadyExistsException(
+    public final ResponseEntity<Object> handleFlatAlreadyInTheFavoriteListException(
             FlatAlreadyInTheFavoriteListException exception,
             WebRequest request) {
 
@@ -87,7 +87,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RequestAlreadyExistsException.class)
-    public final ResponseEntity<Object> handleUserAlreadyExistsException(
+    public final ResponseEntity<Object> handleRequestAlreadyExistsException(
             RequestAlreadyExistsException exception,
             WebRequest request) {
 
@@ -100,7 +100,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public final ResponseEntity<Object> handleUserAlreadyExistsException(
+    public final ResponseEntity<Object> handleAccessDeniedException(
             AccessDeniedException exception,
             WebRequest request) {
 
@@ -222,6 +222,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error(exception.getMessage(), exception);
         return ResponseEntity.status(
                 HttpStatus.UNAUTHORIZED).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(RequestForFlatBookingException.class)
+    public final ResponseEntity<Object> handleRequestForFlatBookingException(
+            RequestForFlatBookingException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+        return ResponseEntity.status(
+                HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
     @Override

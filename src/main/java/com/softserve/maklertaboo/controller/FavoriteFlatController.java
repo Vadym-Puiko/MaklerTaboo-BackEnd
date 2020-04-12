@@ -4,7 +4,6 @@ import com.softserve.maklertaboo.dto.flat.FlatDto;
 import com.softserve.maklertaboo.mapping.flat.FavoriteFlatMapper;
 import com.softserve.maklertaboo.service.FavoriteFlatService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

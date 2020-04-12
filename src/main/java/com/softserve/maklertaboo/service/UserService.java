@@ -81,7 +81,7 @@ public class UserService {
         }
     }
 
-    public Authentication getAuthentication(LoginDto loginDto){
+    public Authentication getAuthentication(LoginDto loginDto) {
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),
@@ -99,7 +99,7 @@ public class UserService {
      */
     public JWTSuccessLogInDto validateLogin(LoginDto loginDto) {
         User user = userRepository.findUserByEmail(loginDto.getEmail()).orElseThrow(
-                () -> new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD + loginDto.getEmail()));
+                () -> new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD));
         comparePasswordLogin(loginDto, passwordEncoder);
         return new JWTSuccessLogInDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
@@ -173,7 +173,7 @@ public class UserService {
      * Method that allow you to update role of {@link User}.
      *
      * @param userId a value of {@link Long}
-     * @param role a value of {@link UserRole}
+     * @param role   a value of {@link UserRole}
      * @author Vadym Puiko
      */
     public void updateRole(Long userId, UserRole role) {
@@ -210,7 +210,7 @@ public class UserService {
     /**
      * Method returns page of users by email without ROLE_ADMIN.
      *
-     * @param email contains objects whose values determine the search parameters of the returned list.
+     * @param email    contains objects whose values determine the search parameters of the returned list.
      * @param pageable a value with pageable configuration.
      * @return a dto of {@link Page}.
      * @author Vadym Puiko.
@@ -222,7 +222,7 @@ public class UserService {
     /**
      * Method returns page of users by phone without ROLE_ADMIN.
      *
-     * @param phone contains objects whose values determine the search parameters of the returned list.
+     * @param phone    contains objects whose values determine the search parameters of the returned list.
      * @param pageable a value with pageable configuration.
      * @return a dto of {@link Page}.
      * @author Vadym Puiko.
@@ -347,7 +347,7 @@ public class UserService {
                 user.getId());
     }
 
-    public UserDto getCurrentUserDto(){
+    public UserDto getCurrentUserDto() {
         return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
     }
 }

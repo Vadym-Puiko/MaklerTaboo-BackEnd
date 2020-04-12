@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -159,5 +160,9 @@ public class FlatService {
     public List<Flat> findByOwnerId(Long id) {
         User user = userRepository.findById(id).get();
         return flatRepository.findByOwnerAndIsActiveIsTrue(user);
+    }
+
+    public void saveFlat(Flat flat) {
+        flatRepository.save(flat);
     }
 }

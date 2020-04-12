@@ -27,7 +27,8 @@ public class ErrorMessage {
     public static final String CURRENT_PASSWORD_DOES_NOT_MATCH = "Current password is wrong";
     public static final String REQUEST_FOR_FLAT_BOOKING_ALREADY_EXISTS = "You've already sent request to book apartment. " +
             "Wait for approval.";
-    public static final String ACCESS_DENIED_TO_BOOK_APARTMENT = "You need to fill passport data in order to book apartment.";
+    public static final String ACCESS_DENIED_TO_BOOK_APARTMENT = "You need to fill passport data in order to book apartment!";
+    public static final String REQUEST_FOR_FLAT_BOOKING_NOT_FOUND = "Request for flat booking not found.";
 
 
 }

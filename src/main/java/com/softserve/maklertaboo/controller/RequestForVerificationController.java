@@ -98,24 +98,5 @@ public class RequestForVerificationController {
     @GetMapping("/new")
     public Long getCountOfNewRequests() {
         return requestForVerificationService.getCountOfNewRequests(RequestForVerificationStatus.NEW);
-
     }
-
-    @PostMapping("/book-flat")
-    public void createRequestForFlatBooking(@RequestBody Long id,
-                                            @RequestHeader("Authorization") String token) {
-
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        requestForVerificationService.createRequestForFlatBooking(id, email);
-
-    }
-
-/*    @GetMapping("/booked-flats")
-    public List<RequestForFlatDto> getAllRequestsForFlatBookingByOwner(
-            @RequestHeader("Authorization") String token) {
-
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        return requestForVerificationService
-                .getAllRequestsForFlatBookingByOwnerEmail(email);
-    }*/
 }
