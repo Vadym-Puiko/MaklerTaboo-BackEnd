@@ -22,7 +22,7 @@ public class Order {
     private Flat flat;
 
     @ManyToOne(cascade = CascadeType.DETACH)
-    private User usr;
+    private User user;
 
     @ManyToMany
     private List<Tag> tags;

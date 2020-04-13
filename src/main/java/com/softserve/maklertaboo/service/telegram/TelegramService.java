@@ -49,7 +49,7 @@ public class TelegramService {
             throw new TelegramAlreadyBindedException(TELEGRAM_BINDED_MESSAGE);
         }
         TelegramUserData telegramUserData = new TelegramUserData();
-        telegramUserData.setUsr(user);
+        telegramUserData.setUser(user);
         telegramUserData.setVerificationCode(generateCode(LEFT_LIMIT, RIGHT_LIMIT, CODE_LENGTH));
         telegramUserDataRepository.save(telegramUserData);
     }

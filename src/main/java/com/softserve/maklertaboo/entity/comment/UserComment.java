@@ -12,5 +12,5 @@ import javax.persistence.ManyToOne;
 public class UserComment extends Comment {
 
     @ManyToOne(cascade = CascadeType.DETACH)
-    private User usr;
+    private User user;
 }

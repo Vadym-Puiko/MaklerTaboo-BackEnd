@@ -23,9 +23,6 @@ public class UserCommentMapper implements MapperToDto<UserComment, UserCommentDt
         this.userMapper=userMapper;
     }
 
-
-
-
     @Override
     public UserCommentDto convertToDto(UserComment entity) {
 
@@ -35,12 +32,10 @@ public class UserCommentMapper implements MapperToDto<UserComment, UserCommentDt
         userCommentDto.setText(entity.getText());
         userCommentDto.setCommentAboutComment(entity.getCommentAboutComment());
         userCommentDto.setPublicationDate(entity.getPublicationDate());
-        userCommentDto.setUserId(entity.getUsr().getId());
-        userCommentDto.setUserAuthor(userMapper.convertToDto(entity.getUsrAuthor()));
+        userCommentDto.setUserId(entity.getUser().getId());
+        userCommentDto.setUserAuthor(userMapper.convertToDto(entity.getUserAuthor()));
         return userCommentDto;
     }
-
-
 
     @Override
     public UserComment convertToEntity(UserCommentDto dto) {
@@ -50,7 +45,7 @@ public class UserCommentMapper implements MapperToDto<UserComment, UserCommentDt
         userComment.setCommentAboutComment(dto.getCommentAboutComment());
         userComment.setText(dto.getText());
         User user = userRepository.findById(dto.getUserId()).orElseThrow(IllegalArgumentException::new);
-        userComment.setUsr(user);
+        userComment.setUser(user);
 
 
         return userComment;

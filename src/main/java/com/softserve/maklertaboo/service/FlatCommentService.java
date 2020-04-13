@@ -42,20 +42,20 @@ public class FlatCommentService {
     public void saveFlatComment(FlatCommentDto flatCommentDto){
         FlatComment flatComment=flatCommentMapper.convertToEntity(flatCommentDto);
         User user = jwtTokenProvider.getCurrentUser();
-        flatComment.setUsrAuthor(user);
+        flatComment.setUserAuthor(user);
         flatCommentRepository.save(flatComment);
     }
     public void saveCommentAboutComment(FlatCommentDto flatCommentDto){
         FlatComment flatComment=flatCommentMapper.convertToEntity(flatCommentDto);
         User user = jwtTokenProvider.getCurrentUser();
-        flatComment.setUsrAuthor(user);
+        flatComment.setUserAuthor(user);
         flatCommentRepository.save(flatComment);
     }
 
     public void deleteFlatComment(Long id){
         FlatComment flatComment=flatCommentRepository.getOne(id);
         User user = jwtTokenProvider.getCurrentUser();
-        if (flatComment.getUsrAuthor().equals(user)){
+        if (flatComment.getUserAuthor().equals(user)){
             flatComment.setIsActive(false);
             flatComment.setDeletedDate(LocalDateTime.now());
             flatCommentRepository.save(flatComment);
