@@ -15,7 +15,7 @@ public interface FlatBookingRepository
     Optional<RequestForFlatBooking> findRequestForFlatBookingByAuthor_IdAndFlat_Id(
             Long authorId, Long flatId);
 
-    Page<RequestForFlatBooking> findAllByFlat_Owner_Id(Pageable pageable, Long id);
+    Page<RequestForFlatBooking> findAllByFlat_Owner_IdAndStatus(Pageable pageable, Long id, RequestForVerificationStatus status);
 
     Optional<RequestForFlatBooking> findRequestForFlatBookingById(Long id);
 

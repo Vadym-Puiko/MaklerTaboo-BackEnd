@@ -28,13 +28,14 @@ public class FlatBookingController {
         flatBookingService.createRequestForFlatBooking(id);
     }
 
-    @GetMapping("/get-requests/landlord")
+    @GetMapping(value = "/get-requests/landlord", params = {"page", "size", "status"})
     public ResponseEntity<Page<RequestForFlatDto>> getLandlordRequests(
             @RequestParam(name = "page", defaultValue = "0") Integer page,
-            @RequestParam(name = "size", defaultValue = "5") Integer size) {
+            @RequestParam(name = "size", defaultValue = "5") Integer size,
+            @RequestParam(name = "status", defaultValue = "NEW") RequestForVerificationStatus status) {
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                flatBookingService.getLandlordRequests(page, size));
+                flatBookingService.getLandlordRequests(page, size, status));
     }
 
     @GetMapping("/get-requests/renter")

@@ -79,12 +79,12 @@ public class FlatBookingService {
     }
 
     public Page<RequestForFlatDto> getLandlordRequests(
-            Integer page, Integer size) {
+            Integer page, Integer size, RequestForVerificationStatus status) {
 
         User user = jwtTokenProvider.getCurrentUser();
 
         Pageable pageable = PageRequest.of(page, size);
-        return flatBookingRepository.findAllByFlat_Owner_Id(pageable, user.getId())
+        return flatBookingRepository.findAllByFlat_Owner_IdAndStatus(pageable, user.getId(), status)
                 .map(bookingMapper::convertToDto);
     }
 
@@ -123,6 +123,11 @@ public class FlatBookingService {
         RequestForFlatBooking requestForFlatBooking = getRequestForFlatBookingById(id);
         requestForFlatBooking.setStatus(RequestForVerificationStatus.DECLINED);
         requestForFlatBooking.setVerificationDate(new Date());
+
+        Flat flat = flatService.getById(requestForFlatBooking.getFlat().getId());
+        flat.setIsActive(true);
+        flat.setIsBooked(false);
+        flatService.saveFlat(flat);
 
         flatBookingRepository.save(requestForFlatBooking);
     }
