@@ -1,6 +1,7 @@
 package com.softserve.maklertaboo.mapping.comment;
 
 import com.softserve.maklertaboo.dto.comment.ComplaintDto;
+import com.softserve.maklertaboo.dto.comment.ComplaintDtoId;
 import com.softserve.maklertaboo.dto.comment.FlatCommentDto;
 import com.softserve.maklertaboo.dto.comment.UserCommentDto;
 import com.softserve.maklertaboo.entity.comment.Complaint;
@@ -13,39 +14,40 @@ import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.comment.FlatCommentRepository;
 import com.softserve.maklertaboo.repository.comment.UserCommentRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.service.FlatCommentService;
+import com.softserve.maklertaboo.service.UserCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ComplaintMapper implements MapperToDto<Complaint, ComplaintDto>, MapperToEntity<ComplaintDto, Complaint> {
-    private final FlatCommentRepository flatCommentRepository;
-    private final UserCommentRepository userCommentRepository;
+public class ComplaintMapper implements MapperToDto<Complaint, ComplaintDto>, MapperToEntity<ComplaintDtoId, Complaint> {
+    private final FlatCommentService flatCommentService;
+    private final UserCommentService userCommentService;
     private final UserMapper userMapper;
-    private final UserRepository userRepository;
     private final FlatCommentMapper flatCommentMapper;
     private final UserCommentMapper userCommentMapper;
 
 
     @Autowired
-    ComplaintMapper(FlatCommentRepository flatCommentRepository,
-               UserCommentRepository userCommentRepository,
+    ComplaintMapper(FlatCommentService flatCommentService,
+                    UserCommentService userCommentService,
                     UserMapper userMapper, FlatCommentMapper flatCommentMapper,
-                    UserCommentMapper userCommentMapper,
-                    UserRepository userRepository){
-        this.flatCommentRepository=flatCommentRepository;
-        this.userCommentRepository=userCommentRepository;
+                    UserCommentMapper userCommentMapper){
+        this.userCommentService=userCommentService;
+        this.flatCommentService=flatCommentService;
         this.userMapper=userMapper;
         this.flatCommentMapper=flatCommentMapper;
         this.userCommentMapper=userCommentMapper;
-        this.userRepository=userRepository;
     }
 
     @Override
     public ComplaintDto convertToDto(Complaint entity) {
         ComplaintDto complaintDto=new ComplaintDto();
         complaintDto.setUser(userMapper.convertToDto(entity.getUser()));
+
         FlatCommentDto flatCommentDto;
         UserCommentDto userCommentDto;
+
         if (entity.getFlatComment()==null){
             complaintDto.setFlatComment(null);
         }else{
@@ -58,28 +60,32 @@ public class ComplaintMapper implements MapperToDto<Complaint, ComplaintDto>, Ma
             userCommentDto=userCommentMapper.convertToDto(entity.getUserComment());
             complaintDto.setUserComment(userCommentDto);
         }
+
         complaintDto.setText(entity.getText());
         return complaintDto;
     }
 
     @Override
-    public Complaint convertToEntity(ComplaintDto dto) {
+    public Complaint convertToEntity(ComplaintDtoId dto) {
         Complaint complaint=new Complaint();
         complaint.setText(dto.getText());
+
         UserComment userComment;
         FlatComment flatComment;
-        if (dto.getFlatComment()==null){
+
+        if (dto.getFlatCommentId()==null){
             complaint.setFlatComment(null);
         }else {
-            flatComment=flatCommentRepository.findById(dto.getFlatComment().getId()).orElseThrow();
+            flatComment=flatCommentService.getFlatCommentById(dto.getFlatCommentId());
             complaint.setFlatComment(flatComment);
         }
-        if (dto.getUserComment()==null){
+        if (dto.getUserCommentId()==null){
             complaint.setUserComment(null);
         }else{
-            userComment=userCommentRepository.findById(dto.getUserComment().getId()).orElseThrow();
+            userComment=userCommentService.getUserCommentById(dto.getUserCommentId());
             complaint.setUserComment(userComment);
         }
+
         return complaint;
     }
 }
