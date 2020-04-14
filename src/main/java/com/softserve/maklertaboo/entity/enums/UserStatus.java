@@ -3,7 +3,7 @@ package com.softserve.maklertaboo.entity.enums;
 
 public enum UserStatus {
 
-    ACTIVE,
+    ACTIVATED,
     WARNED,
     BANNED,
     REACTIVATION,

@@ -134,11 +134,13 @@ public class FlatService {
         flat.setFlatLocation(flatLocation);
         flatRepository.save(flat);
         requestForVerificationService.createFlatRequest(flat);
+        requestForVerificationService.createForBan(flat);
     }
 
     @CachePut("flats")
     public void activate(Long id) {
-        Flat flat = flatRepository.findById(id).orElse(null);
+        Flat flat = flatRepository.findById(id).orElseThrow(
+                () -> new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id));
         if (flat == null) {
             throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id);
         }
@@ -148,9 +150,10 @@ public class FlatService {
 
     @CachePut("flats")
     public void deactivateFlat(Long id) {
-        Flat flat = flatRepository.findById(id).orElseThrow(() -> new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id));
-        if (!flat.getOwner().equals(jwtTokenProvider.getCurrentUser())) {
-            throw new NotOwnerException(IS_NOT_OWNER);
+        Flat flat = flatRepository.findById(id).orElseThrow(
+                () -> new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id));
+        if (flat == null) {
+            throw new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id);
         }
         flat.setIsActive(false);
         flatRepository.save(flat);
@@ -159,5 +162,17 @@ public class FlatService {
     public List<Flat> findByOwnerId(Long id) {
         User user = userRepository.findById(id).get();
         return flatRepository.findByOwnerAndIsActiveIsTrue(user);
+    }
+
+    /**
+     * Method for deleting publication of {@link Flat}.
+     *
+     * @param id a value of {@link Long}
+     * @author Vadym Puiko
+     */
+    public void deleteFlat(Long id) {
+        Flat flat = flatRepository.findById(id).orElseThrow(
+                () -> new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id));
+        flatRepository.delete(flat);
     }
 }
