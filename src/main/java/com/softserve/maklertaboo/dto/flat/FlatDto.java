@@ -3,7 +3,6 @@ package com.softserve.maklertaboo.dto.flat;
 import com.softserve.maklertaboo.entity.Address;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 @Data

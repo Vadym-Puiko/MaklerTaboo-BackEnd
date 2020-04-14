@@ -53,6 +53,9 @@ public class Flat {
     @Field
     private Boolean isActive;
 
+    @Field
+    private Boolean isBooked;
+
     @OneToOne(cascade = CascadeType.ALL)
     private FlatLocation flatLocation;
 
@@ -98,4 +101,5 @@ public class Flat {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }
