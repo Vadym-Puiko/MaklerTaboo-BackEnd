@@ -9,6 +9,7 @@ import com.softserve.maklertaboo.repository.chat.MessageRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,7 +23,9 @@ public class ChatService {
     private final UserRepository userRepository;
 
     @Autowired
-    public ChatService(ChatRepository chatRepository, MessageRepository messageRepository, UserRepository userRepository) {
+    public ChatService(ChatRepository chatRepository,
+                       MessageRepository messageRepository,
+                       UserRepository userRepository) {
         this.chatRepository = chatRepository;
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
@@ -48,7 +51,6 @@ public class ChatService {
 
     public User findOne(Long id) {
         return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        /*  .orElseThrow(IllegalArgumentException::new)*/
     }
 
     public Long getCountOfMessages(Long chatId) {

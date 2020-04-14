@@ -33,7 +33,7 @@ import javax.validation.constraints.NotBlank;
 @RestController
 @RequestMapping("/users")
 @Validated
-public class UserController {
+public class    UserController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JWTTokenProvider jwtTokenProvider;

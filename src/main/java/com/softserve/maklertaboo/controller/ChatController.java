@@ -37,10 +37,8 @@ public class ChatController {
         return chatService.getCountOfUnreadMessages(chatId);
     }
 
-
-
     @GetMapping("/chats/{id}")
-        public List<ChatDTO> getCurrentChatsByUserId(@Valid @PathVariable Long id) {
+    public List<ChatDTO> getCurrentChatsByUserId(@Valid @PathVariable Long id) {
         log.info("СhatController get chats by userId");
         return chatService.getChatByUserId(id)
                 .stream()
