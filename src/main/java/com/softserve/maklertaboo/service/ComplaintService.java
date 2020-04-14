@@ -1,51 +1,70 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.constant.ErrorMessage;
+
 import com.softserve.maklertaboo.dto.comment.ComplaintDto;
+import com.softserve.maklertaboo.dto.comment.ComplaintDtoId;
 import com.softserve.maklertaboo.entity.comment.Complaint;
 import com.softserve.maklertaboo.entity.user.User;
-import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
+import com.softserve.maklertaboo.exception.exceptions.ComplaintExistsException;
 import com.softserve.maklertaboo.mapping.comment.ComplaintMapper;
 import com.softserve.maklertaboo.repository.comment.ComplainRepository;
-import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.servlet.http.HttpServletRequest;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.softserve.maklertaboo.constant.ErrorMessage.COMPLAINT_IS_FOUND;
+
 @Service
 public class ComplaintService {
-    private final UserRepository userRepository;
     private final JWTTokenProvider jwtTokenProvider;
-    private final HttpServletRequest httpServletRequest;
     private final ComplaintMapper complaintMapper;
     private final ComplainRepository complainRepository;
 
     @Autowired
-    ComplaintService(UserRepository userRepository,JWTTokenProvider jwtTokenProvider,
-                     HttpServletRequest httpServletRequest, ComplaintMapper complaintMapper,
-                     ComplainRepository complainRepository){
-        this.userRepository=userRepository;
-        this.httpServletRequest=httpServletRequest;
-        this.jwtTokenProvider=jwtTokenProvider;
-        this.complaintMapper=complaintMapper;
-        this.complainRepository=complainRepository;
+    ComplaintService(JWTTokenProvider jwtTokenProvider,
+                     ComplaintMapper complaintMapper,
+                     ComplainRepository complainRepository) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.complaintMapper = complaintMapper;
+        this.complainRepository = complainRepository;
     }
 
-    public void saveComplaint(ComplaintDto complaintDto){
-        Complaint complaint=complaintMapper.convertToEntity(complaintDto);
-        String accessToken = httpServletRequest.getHeader("Authorization");
-        String email = jwtTokenProvider.getEmailFromJWT(accessToken);
-        User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+    public void checkComplaintFlatComment(ComplaintDtoId complaintDtoId) {
+        Complaint complaint = complaintMapper.convertToEntity(complaintDtoId);
+        User user = jwtTokenProvider.getCurrentUser();
         complaint.setUser(user);
+        Complaint complaintExists = complainRepository
+                .findByUserAndFlatComment(complaint.getUser(), complaint.getFlatComment());
+        if (complaintExists == null) {
+            saveComplaint(complaint);
+        } else {
+            throw new ComplaintExistsException(COMPLAINT_IS_FOUND);
+        }
+    }
+
+    public void checkComplaintUserComment(ComplaintDtoId complaintDtoId) {
+        Complaint complaint = complaintMapper.convertToEntity(complaintDtoId);
+        User user = jwtTokenProvider.getCurrentUser();
+        complaint.setUser(user);
+        Complaint complaintExists = complainRepository
+                .findByUserAndUserComment(complaint.getUser(), complaint.getUserComment());
+        if (complaintExists == null) {
+            saveComplaint(complaint);
+        } else {
+            throw new ComplaintExistsException(COMPLAINT_IS_FOUND);
+        }
+    }
+
+    public void saveComplaint(Complaint complaint) {
         complainRepository.save(complaint);
     }
 
-    public List<ComplaintDto> getAllComplaint(){
+    public List<ComplaintDto> getAllComplaint() {
         List<Complaint> list = complainRepository.findAll();
         return list.stream().map(complaintMapper::convertToDto).collect(Collectors.toList());
     }
+
 }

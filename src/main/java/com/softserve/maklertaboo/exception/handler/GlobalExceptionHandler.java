@@ -64,6 +64,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
+    @ExceptionHandler(PasswordsDoNotMatchesException.class)
+    public final ResponseEntity<Object> handlePasswordDoNotMatchesException(PasswordsDoNotMatchesException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
     @ExceptionHandler(FlatAlreadyInTheFavoriteListException.class)
     public final ResponseEntity<Object> handleUserAlreadyExistsException(
             FlatAlreadyInTheFavoriteListException exception,
@@ -214,6 +223,42 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private Map<String, Object> getErrorAttributes(WebRequest webRequest) {
         return new HashMap<>(
                 errorAttributes.getErrorAttributes(webRequest, true));
+    }
+
+    @ExceptionHandler(FlatCommentNotFoundException.class)
+    public ResponseEntity<Object> handleFlatCommentNotFoundException(
+            FlatCommentNotFoundException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(
+                HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(UserCommentNotFoundException.class)
+    public ResponseEntity<Object> handleUserCommentNotFoundException(
+            UserCommentNotFoundException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(
+                HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(ComplaintExistsException.class)
+    public ResponseEntity<Object> handleComplaintExistsException(
+            ComplaintExistsException exception, WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(
+                HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
 }

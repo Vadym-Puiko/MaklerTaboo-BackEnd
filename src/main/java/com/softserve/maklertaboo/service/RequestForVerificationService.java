@@ -96,13 +96,6 @@ public class RequestForVerificationService {
         requestFlatRepository.save(requestForFlatVerification);
     }
 
-    public void deactivateFlatRequest(Long id) {
-        RequestForFlatVerification requestForFlatVerification = getRequestsForFlatVerificationById(id);
-        requestForFlatVerification.setVerificationDate(new Date());
-        flatService.deactivateFlat(requestForFlatVerification.getFlat().getId(), "");
-        requestFlatRepository.save(requestForFlatVerification);
-    }
-
     public void approveUserRequest(Long id) {
         RequestForUserVerification requestForUserVerification = getRequestsForUserVerificationById(id);
         requestForUserVerification.setStatus(RequestForVerificationStatus.APPROVED);
@@ -153,18 +146,6 @@ public class RequestForVerificationService {
         requestForVerification.setVerificationDate(new Date());
         requestBaseRepository.save(requestForVerification);
     }
-
-    public Page<RequestForFlatVerification> getAllAndBannedFlats(Integer page, Integer size,
-                                                        RequestForVerificationStatus status) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("creationDate")));
-////        if (status == RequestForVerificationStatus.DEACTIVATED) {
-//            return requestFlatRepository.findAllByStatus(pageable, status);
-//        } else {
-//            return requestFlatRepository.findAll(pageable);
-//        }
-        return null;
-    }
-
 
     public Page<RequestForFlatVerification> getRequestsForFlatVerification(Integer page, Integer size,
                                                                            RequestForVerificationStatus status) {
