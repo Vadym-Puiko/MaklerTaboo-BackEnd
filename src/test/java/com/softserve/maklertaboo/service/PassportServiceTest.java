@@ -1,4 +1,4 @@
-package com.softserve.maklertaboo;
+package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.passport.PassportDto;
 import com.softserve.maklertaboo.dto.user.UserDto;

@@ -55,7 +55,7 @@ public class MailingService {
     }
 
     public void sendFlatsByUserRequests() {
-        Set<User> usersWithSubscription = getUsersWithSubscription();
+        List<User> usersWithSubscription = userRepository.findAll();
         for (User user : usersWithSubscription) {
             sendNotificationsForUser(user);
         }

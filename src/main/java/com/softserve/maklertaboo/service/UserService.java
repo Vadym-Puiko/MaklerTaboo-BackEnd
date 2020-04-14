@@ -101,6 +101,14 @@ public class UserService {
         return new JWTSuccessLogInDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
 
+    /**
+     * Method that compare and check exist password, and login for a given user.
+     *
+     * @param loginDto - of current user
+     * @param passwordEncoder - service interface for encoding passwords.
+     * @return boolean check result
+     * @author Mike Ostapiuk
+     */
     public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
             throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
