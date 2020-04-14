@@ -1,6 +1,7 @@
 package com.softserve.maklertaboo.mapping;
 
 import com.softserve.maklertaboo.dto.user.UserDto;
+import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 /**
- * Class that used by {@link MapperToDto}, {@link MapperToEntity} fot mapping {@link UserDto} into {@link User}
+ * Class that used by {@link MapperToDto}, {@link MapperToEntity} for mapping {@link UserDto} into {@link User}
  * and versa.
  */
 @Component
@@ -49,7 +50,11 @@ public class UserMapper implements MapperToDto<User, UserDto>, MapperToEntity<Us
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setPhoneNumber(userDto.getPhoneNumber());
+        if (userDto.getUserRole() != null) {
+            user.setRole(UserRole.valueOf(userDto.getUserRole()));
+        }
         user.setPhotoUrl(userDto.getPhotoUrl());
+
         user.setRefreshKey(UUID.randomUUID().toString());
         return user;
     }

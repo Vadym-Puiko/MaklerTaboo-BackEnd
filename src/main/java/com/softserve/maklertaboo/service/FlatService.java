@@ -9,7 +9,6 @@ import com.softserve.maklertaboo.entity.flat.FlatSearchParameters;
 import com.softserve.maklertaboo.entity.photo.FlatPhoto;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.FlatNotFoundException;
-import com.softserve.maklertaboo.exception.exceptions.NotOwnerException;
 import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
 import com.softserve.maklertaboo.mapping.flat.FlatMapper;
 import com.softserve.maklertaboo.mapping.flat.FlatSearchMapper;
@@ -19,8 +18,8 @@ import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.repository.search.FlatFullTextSearch;
 import com.softserve.maklertaboo.repository.search.FlatSearchRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
-import com.softserve.maklertaboo.service.map.FlatLocationService;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
+import com.softserve.maklertaboo.service.map.FlatLocationService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
@@ -29,12 +28,12 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static com.softserve.maklertaboo.constant.ErrorMessage.FLAT_NOT_FOUND_BY_ID;
-import static com.softserve.maklertaboo.constant.ErrorMessage.IS_NOT_OWNER;
 
 @Data
 @Service
@@ -174,5 +173,9 @@ public class FlatService {
         Flat flat = flatRepository.findById(id).orElseThrow(
                 () -> new FlatNotFoundException(FLAT_NOT_FOUND_BY_ID + id));
         flatRepository.delete(flat);
+    }
+
+    public void saveFlat(Flat flat) {
+        flatRepository.save(flat);
     }
 }
