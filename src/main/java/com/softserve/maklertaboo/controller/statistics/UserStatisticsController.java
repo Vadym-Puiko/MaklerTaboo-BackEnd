@@ -66,8 +66,8 @@ public class UserStatisticsController {
         return statisticsService.getCountOfLandlordsForBetweenMonths(asDate(fromMonth), asDate(toMonth));
     }
 
-    @GetMapping(value = "statistics/get-top-landlords", params = {"number"})
-    public List<UserDto> getLandlordsSortedByFlatCountLimit(@RequestParam(defaultValue = "8") Integer limit) {
+    @GetMapping(value = "get-top-landlords", params = {"limit"})
+    public List<UserDto> getLandlordsSortedByFlatCountLimit(@RequestParam(name = "limit", defaultValue = "8") Integer limit) {
         return statisticsService.getLandlordsSortedByFlatCountLimit(limit).stream()
                 .map(userMapper::convertToDto)
                 .collect(Collectors.toList());

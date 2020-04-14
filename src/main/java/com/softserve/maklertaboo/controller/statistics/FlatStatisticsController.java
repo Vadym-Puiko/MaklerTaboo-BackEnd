@@ -1,7 +1,6 @@
 package com.softserve.maklertaboo.controller.statistics;
 
 import com.softserve.maklertaboo.service.StatisticsService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,7 @@ public class FlatStatisticsController {
     private StatisticsService statisticsService;
 
     @Autowired
-    public FlatStatisticsController(StatisticsService statisticsService){
+    public FlatStatisticsController(StatisticsService statisticsService) {
         this.statisticsService = statisticsService;
     }
 
@@ -40,7 +39,7 @@ public class FlatStatisticsController {
         return statisticsService.countPostedFlatsByDay(day);
     }
 
-    @GetMapping(value = "statistics/get-flat-count-of-user", params = {"id"})
+    @GetMapping(value = "get-flat-count-of-user", params = {"id"})
     public Long getFlatsCountOfUser(@RequestParam Long id) {
         return statisticsService.countFlatsByOwner(id);
     }
