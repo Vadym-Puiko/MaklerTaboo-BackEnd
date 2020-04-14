@@ -32,7 +32,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
 
         registry.addEndpoint("/wss")
-                .setAllowedOrigins("https://maklertaboo.herokuapp.com")
+                .setAllowedOrigins("https://maklertabooclient.herokuapp.com")
                 .withSockJS()
                 .setInterceptors(httpHandshakeInterceptor);
     }
