@@ -5,11 +5,11 @@ import com.softserve.maklertaboo.entity.Order;
 import com.softserve.maklertaboo.entity.Tag;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.photo.FlatPhoto;
+import com.softserve.maklertaboo.entity.request.RequestForBanFlat;
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 import org.hibernate.search.annotations.*;
-import org.hibernate.search.bridge.builtin.IntegerBridge;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -60,7 +60,7 @@ public class Flat {
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     private User owner;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -82,6 +82,9 @@ public class Flat {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "flat")
     private List<RequestForFlatVerification> requestFlat;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "flat")
+    private List<RequestForBanFlat> requestForBanFlat;
 
     @Override
     public boolean equals(Object o) {

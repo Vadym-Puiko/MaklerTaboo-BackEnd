@@ -1,35 +1,32 @@
 package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.user.UserDto;
-import com.softserve.maklertaboo.entity.Passport;
-import com.softserve.maklertaboo.entity.TelegramUserData;
+import com.softserve.maklertaboo.dto.user.UserUpdateDto;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.enums.UserStatus;
 import com.softserve.maklertaboo.entity.user.User;
+import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExistsException;
 import com.softserve.maklertaboo.repository.user.UserRepository;
-import org.junit.Before;
+import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.modelmapper.ModelMapper;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.telegram.telegrambots.ApiContextInitializer;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.ExpectedCount.times;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.verifyPrivate;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 
 @RunWith(PowerMockRunner.class)
@@ -40,25 +37,87 @@ class UserServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private JWTTokenProvider jwtTokenProvider;
 
     @Mock
     private AmazonStorageService amazonStorageService;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private AuthenticationManager authenticationManager;
+
     @InjectMocks
     private UserService userService;
 
+    @BeforeAll
+    public static void initializeMock() {
+        ApiContextInitializer.init();
+    }
+
+    private User user = new User(
+            22L,
+            "username",
+            "email@gmail.com",
+            "password",
+            "+380988124589",
+            "picture",
+            UserRole.ROLE_USER,
+            UserStatus.ACTIVATED
+    );
+
+    private User user2 = new User(
+            2L,
+            "username2",
+            "email2@gmail.com",
+            "password2",
+            "+380988124000",
+            "picture2",
+            UserRole.ROLE_RENTER,
+            UserStatus.ACTIVATED
+    );
+
+    private UserDto userDto = new UserDto(
+            22L,
+            "username",
+            "email@gmail.com",
+            "password",
+            "+380988124589",
+            "picture",
+            UserRole.ROLE_USER.getStatus()
+    );
+
+
+    private UserUpdateDto userUpdateDto = new UserUpdateDto(
+            4L,
+            "usernameUpdateDto",
+            "emailUpdateDto@gmail.com",
+            "+380988124222",
+            "pictureUpdateDto",
+            UserRole.ROLE_RENTER.getStatus()
+    );
+
+//    @Test
+//    public void saveUser() {
+//
+//    }
 
     @Test
-    void getAuthentication() {
+    public void saveUserSuccessfully() {
+        final User user = new User(22L,
+                "username",
+                "email@gmail.com",
+                "password",
+                "+380988124589",
+                "picture",
+                UserRole.ROLE_USER,
+                UserStatus.ACTIVATED);
+
     }
 
     @Test
-    void validateLogin() {
-    }
-
-    @Test
-    void comparePasswordLogin() {
+    public void saveFail() {
     }
 
     @Test
@@ -71,6 +130,12 @@ class UserServiceTest {
 
     @Test
     void deleteUser() {
+        final Long userId = 1L;
+
+        userService.deleteUser(userId);
+        userService.deleteUser(userId);
+
+        verify(userRepository, times(2)).deleteById(userId);
     }
 
     @Test
@@ -99,29 +164,6 @@ class UserServiceTest {
 
     @Test
     void findByPage() {
-        int pageNumber = 0;
-        int pageSize = 1;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        User user = new User();
-        user.setUsername("Roman");
-
-        UserDto userDto = new UserDto();
-        userDto.setUsername("Roman");
-
-        Page<User> usersPage = new PageImpl<>(Collections.singletonList(user), pageable, 1);
-        List<UserDto> userDtos = Collections.singletonList(userDto);
-
-        PageableDto<UserDto> userPageableDto =
-                new PageableDto<>(userDtos,
-                        userDtos.size(), 0);
-
-        ReflectionTestUtils.setField(userService, "modelMapper", new ModelMapper());
-
-        when(userRepository.findAll(pageable)).thenReturn(usersPage);
-
-        assertEquals(userPageableDto, userService.findByPage(pageable));
-        verify(userRepository, times(1)).findAll(pageable);
     }
 
     @Test
@@ -144,15 +186,4 @@ class UserServiceTest {
     void emailExists() {
     }
 
-    @Test
-    void updateAccessTokens() {
-    }
-
-    @Test
-    void changeUserPassword() {
-    }
-
-    @Test
-    void getCurrentUserDto() {
-    }
 }
