@@ -70,7 +70,7 @@ public class TelegramService {
     public Boolean checkIfBinded() {
         User user = jwtTokenProvider.getCurrentUser();
         TelegramUserData userData = user.getTelegramUserData();
-        return (userData == null || userData.getChatId() == null);
+        return !(userData == null || userData.getChatId() == null);
     }
 
     public void unbind() {

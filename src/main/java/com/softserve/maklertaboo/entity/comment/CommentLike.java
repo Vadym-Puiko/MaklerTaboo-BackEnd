@@ -11,14 +11,12 @@ public class CommentLike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne
     private User user;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne
     private FlatComment flatComment;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne
     private UserComment userComment;
-
-
 }

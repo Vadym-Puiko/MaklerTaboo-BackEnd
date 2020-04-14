@@ -4,6 +4,7 @@ import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -22,4 +23,14 @@ public class Complaint {
     private UserComment userComment;
 
     private String text;
+
+    @Column(columnDefinition = "DATETIME default NOW()")
+    private LocalDateTime publicationDate;
+
+    @PrePersist
+    public void prePersist() {
+        if (publicationDate == null) {
+            publicationDate = LocalDateTime.now();
+        }
+    }
 }

@@ -15,6 +15,9 @@ public abstract class Comment {
 
     private Long commentAboutComment;
 
+    @Column(columnDefinition = "BIGINT default 0")
+    private Long commentLikes;
+
     private String text;
 
     @Column(columnDefinition = "DATETIME default NOW()")
@@ -35,6 +38,9 @@ public abstract class Comment {
         }
         if (publicationDate == null) {
             publicationDate = LocalDateTime.now();
+        }
+        if(commentLikes==null){
+            commentLikes = (long) 0;
         }
     }
 }
