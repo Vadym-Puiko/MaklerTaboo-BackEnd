@@ -25,6 +25,9 @@ public class ErrorMessage {
     public static final String DELETE_USER_ERROR = "User tried deleting some user but such object not exist";
     public static final String PASSWORDS_DO_NOT_MATCHES = "Password do not matches";
     public static final String CURRENT_PASSWORD_DOES_NOT_MATCH = "Current password is wrong";
+    public static final String FLATCOMMENT_NOT_FOUND = "Flat comment not found";
+    public static final String USERCOMMENT_NOT_FOUND = "User comment not found";
+    public static final String COMPLAINT_IS_FOUND = "A complaint has already been submitted";
 
 
 }

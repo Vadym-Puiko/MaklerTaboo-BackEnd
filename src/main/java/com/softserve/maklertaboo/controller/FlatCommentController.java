@@ -40,6 +40,11 @@ public class FlatCommentController {
         return  flatCommentService.getAllFlatCommentsForFlat(id);
     }
 
+    @GetMapping("/getallbylikes/{id}")
+    public List<FlatCommentDto> getAllFlatCommentsByLikes(@PathVariable Long id){
+        return  flatCommentService.getAllFlatCommentsByLikes(id);
+    }
+
     @GetMapping("/getallaboutcomment/{id}")
     public List<FlatCommentDto> getAllCommentsAboutComment(@PathVariable Long id){
         return  flatCommentService.getAllCommentsForComment(id);

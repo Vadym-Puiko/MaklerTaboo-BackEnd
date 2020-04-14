@@ -10,6 +10,7 @@ public class UserCommentDto {
     private Long userId;
     private UserDto userAuthor;
     private Long commentAboutComment;
+    private Long commentLikes;
     private String text;
     private LocalDateTime publicationDate;
 }
