@@ -16,5 +16,4 @@ public class RequestForFlatBooking extends RequestForVerification {
 
     @ManyToOne
     private Flat flat;
-
 }

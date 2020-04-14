@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 /**
- * Class that used by {@link MapperToDto}, {@link MapperToEntity} fot mapping {@link UserDto} into {@link User}
+ * Class that used by {@link MapperToDto}, {@link MapperToEntity} for mapping {@link UserDto} into {@link User}
  * and versa.
  */
 @Component

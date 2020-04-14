@@ -13,13 +13,20 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+
+import javax.validation.Valid;
+
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
+/**
+ * Global exception handler.
+ *
+ * @author Roman Blavatskyi
+ */
 @ControllerAdvice
 @AllArgsConstructor
 @Slf4j
@@ -27,6 +34,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ErrorAttributes errorAttributes;
 
+    /**
+     * Method that intercepts exception {@link RuntimeException}.
+     *
+     * @param exception Exception witch should be intercepted
+     * @param request   contains details about occurred exception
+     * @return {@link ResponseEntity} witch contains http status
+     * and body with message of the exception.
+     * @author Roman Blavatskyi
+     */
     @ExceptionHandler(RuntimeException.class)
     public final ResponseEntity<Object> handleRuntimeException(
             RuntimeException exception, WebRequest request) {
@@ -40,6 +56,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
+    /**
+     * Method that intercepts exception {@link BadEmailOrPasswordException}.
+     *
+     * @param exception Exception witch should be intercepted
+     * @param request   contains details about occurred exception
+     * @return {@link ResponseEntity} witch contains http status
+     * and body with message of the exception.
+     * @author Roman Blavatskyi
+     */
     @ExceptionHandler(BadEmailOrPasswordException.class)
     public final ResponseEntity<Object> handleBadEmailOrPasswordException(
             BadEmailOrPasswordException exception, WebRequest request) {
@@ -73,6 +98,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
+    /**
+     * Method that intercepts exception {@link FlatAlreadyInTheFavoriteListException}.
+     *
+     * @param exception Exception witch should be intercepted
+     * @param request   contains details about occurred exception
+     * @return {@link ResponseEntity} witch contains http status
+     * and body with message of the exception.
+     * @author Roman Blavatskyi
+     */
     @ExceptionHandler(FlatAlreadyInTheFavoriteListException.class)
     public final ResponseEntity<Object> handleFlatAlreadyInTheFavoriteListException(
             FlatAlreadyInTheFavoriteListException exception,
@@ -86,6 +120,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
+    /**
+     * Method that intercepts exception {@link RequestAlreadyExistsException}.
+     *
+     * @param exception Exception witch should be intercepted
+     * @param request   contains details about occurred exception
+     * @return {@link ResponseEntity} witch contains http status
+     * and body with message of the exception.
+     * @author Roman Blavatskyi
+     */
     @ExceptionHandler(RequestAlreadyExistsException.class)
     public final ResponseEntity<Object> handleRequestAlreadyExistsException(
             RequestAlreadyExistsException exception,
@@ -99,6 +142,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
+    /**
+     * Method that intercepts exception {@link AccessDeniedException}.
+     *
+     * @param exception Exception witch should be intercepted
+     * @param request   contains details about occurred exception
+     * @return {@link ResponseEntity} witch contains http status
+     * and body with message of the exception.
+     * @author Roman Blavatskyi
+     */
     @ExceptionHandler(AccessDeniedException.class)
     public final ResponseEntity<Object> handleAccessDeniedException(
             AccessDeniedException exception,
@@ -112,18 +164,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
-    @ExceptionHandler(FavoriteListIsEmptyException.class)
-    public final ResponseEntity<Object> handleFavoriteListIsEmptyException(
-            FavoriteListIsEmptyException exception, WebRequest request) {
-
-        ExceptionResponse exceptionResponse =
-                new ExceptionResponse(getErrorAttributes(request));
-        log.error(exception.getMessage(), exception);
-
-        return ResponseEntity.status(
-                HttpStatus.NOT_FOUND).body(exceptionResponse);
-    }
-
+    /**
+     * Method that intercepts exception {@link FavoriteFlatNotFoundException}.
+     *
+     * @param exception Exception witch should be intercepted
+     * @param request   contains details about occurred exception
+     * @return {@link ResponseEntity} witch contains http status
+     * and body with message of the exception.
+     * @author Roman Blavatskyi
+     */
     @ExceptionHandler(FavoriteFlatNotFoundException.class)
     public final ResponseEntity<Object> handleFavoriteFlatNotFoundException(
             FavoriteFlatNotFoundException exception, WebRequest request) {
@@ -224,6 +273,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.UNAUTHORIZED).body(exceptionResponse);
     }
 
+    /**
+     * Method that intercepts exception {@link RequestForFlatBookingException}.
+     *
+     * @param exception Exception witch should be intercepted
+     * @param request   contains details about occurred exception
+     * @return {@link ResponseEntity} witch contains http status
+     * and body with message of the exception.
+     * @author Roman Blavatskyi
+     */
     @ExceptionHandler(RequestForFlatBookingException.class)
     public final ResponseEntity<Object> handleRequestForFlatBookingException(
             RequestForFlatBookingException exception, WebRequest request) {
@@ -235,11 +293,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
+    /**
+     * Method that intercepts exceptions of {@link Valid} annotation.
+     *
+     * @param exception Exception witch should be intercepted
+     * @param headers   contains details of the occurred exception
+     * @param status    contains status of the occurred exception
+     * @param request   contains details of the occurred exception
+     * @return {@link ResponseEntity} witch contains http status, body
+     * and header with message of the exception.
+     * @author Roman Blavatskyi
+     */
     @Override
     protected ResponseEntity<Object>
     handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
                                  HttpHeaders headers,
-                                 HttpStatus status, WebRequest request) {
+                                 HttpStatus status,
+                                 WebRequest request) {
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("status", status.value());
@@ -257,9 +327,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, headers, status);
     }
 
+    /**
+     * Method that returns attributes of the occurred error.
+     *
+     * @param webRequest contains details of the occurred error
+     * @return {@link Map<String, Object>}
+     * @author Roman Blavatskyi
+     */
     private Map<String, Object> getErrorAttributes(WebRequest webRequest) {
         return new HashMap<>(
                 errorAttributes.getErrorAttributes(webRequest, true));
     }
-
 }

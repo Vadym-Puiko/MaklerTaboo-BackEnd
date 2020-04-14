@@ -9,17 +9,63 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Provides an interface to manage {@link RequestForFlatBooking} entity.
+ *
+ * @author Roman Blavatskyi
+ */
 public interface FlatBookingRepository
         extends RequestBaseRepository<RequestForFlatBooking> {
 
+    /**
+     * Find {@link RequestForFlatBooking} by authorId and flatId.
+     *
+     * @param authorId Long
+     * @param flatId   Long
+     * @return {@link RequestForFlatBooking}
+     * @author Roman Blavatskyi
+     */
     Optional<RequestForFlatBooking> findRequestForFlatBookingByAuthor_IdAndFlat_Id(
             Long authorId, Long flatId);
 
-    Page<RequestForFlatBooking> findAllByFlat_Owner_IdAndStatus(Pageable pageable, Long id, RequestForVerificationStatus status);
+    /**
+     * Find {@link RequestForFlatBooking} by page.
+     *
+     * @param pageable {@link Pageable}
+     * @param id       Long
+     * @param status   {@link RequestForVerificationStatus}
+     * @return {@link Page} of {@link RequestForFlatBooking} entities
+     * @author Roman Blavatskyi
+     */
+    Page<RequestForFlatBooking> findAllByFlat_Owner_IdAndStatus(
+            Pageable pageable,
+            Long id,
+            RequestForVerificationStatus status);
 
+    /**
+     * Find {@link RequestForFlatBooking} by request's id.
+     *
+     * @param id Long
+     * @return {@link RequestForFlatBooking}
+     * @author Roman Blavatskyi
+     */
     Optional<RequestForFlatBooking> findRequestForFlatBookingById(Long id);
 
+    /**
+     * Find {@link List<RequestForFlatBooking>} by flat author's id.
+     *
+     * @param id Long
+     * @return {@link List<RequestForFlatBooking>}
+     * @author Roman Blavatskyi
+     */
     Optional<List<RequestForFlatBooking>> findAllByAuthor_Id(Long id);
 
+    /**
+     * Count number of {@link RequestForFlatBooking} by {@link RequestForVerificationStatus}.
+     *
+     * @param status {@link RequestForVerificationStatus}
+     * @return amount of {@link RequestForFlatBooking}
+     * @author Roman Blavatskyi
+     */
     Long countAllByStatus(RequestForVerificationStatus status);
 }

@@ -18,5 +18,4 @@ public class FavoriteFlat {
 
     @ManyToOne(cascade = CascadeType.DETACH)
     private User user;
-
 }

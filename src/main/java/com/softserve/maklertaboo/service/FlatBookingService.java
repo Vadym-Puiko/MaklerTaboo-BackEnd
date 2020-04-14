@@ -10,7 +10,6 @@ import com.softserve.maklertaboo.exception.exceptions.AccessDeniedException;
 import com.softserve.maklertaboo.exception.exceptions.RequestAlreadyExistsException;
 import com.softserve.maklertaboo.exception.exceptions.RequestForFlatBookingException;
 import com.softserve.maklertaboo.mapping.FlatBookingMapper;
-import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.FlatBookingRepository;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -22,37 +21,47 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.softserve.maklertaboo.constant.ErrorMessage.*;
 
+
+/**
+ * Service implementation for {@link RequestForFlatBooking} entity.
+ *
+ * @author Roman Blavatskyi
+ */
 @Slf4j
 @Service
 public class FlatBookingService {
 
     private final FlatBookingRepository flatBookingRepository;
-    private final UserMapper userMapper;
     private final FlatService flatService;
-    private final UserService userService;
     private final JWTTokenProvider jwtTokenProvider;
     private final FlatBookingMapper bookingMapper;
 
+    /**
+     * Constructor with parameters of {@link FlatBookingService}.
+     *
+     * @author Roman Blavatskyi
+     */
     @Autowired
     public FlatBookingService(FlatBookingRepository flatBookingRepository,
-                              UserMapper userMapper,
                               FlatService flatService,
-                              UserService userService,
                               JWTTokenProvider jwtTokenProvider,
                               FlatBookingMapper bookingMapper) {
         this.flatBookingRepository = flatBookingRepository;
-        this.userMapper = userMapper;
         this.flatService = flatService;
-        this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.bookingMapper = bookingMapper;
     }
 
+    /**
+     * Method that creates new entity of {@link RequestForFlatBooking}.
+     *
+     * @param id of {@link Flat}
+     * @author Roman Blavatskyi
+     */
     public void createRequestForFlatBooking(Long id) {
 
         User user = jwtTokenProvider.getCurrentUser();
@@ -78,6 +87,15 @@ public class FlatBookingService {
         }
     }
 
+    /**
+     * Method that finds all {@link RequestForFlatBooking} for Landlord.
+     *
+     * @param page   Integer
+     * @param size   Integer
+     * @param status {@link RequestForVerificationStatus}
+     * @return {@link Page} of {@link RequestForFlatDto}
+     * @author Roman Blavatskyi
+     */
     public Page<RequestForFlatDto> getLandlordRequests(
             Integer page, Integer size, RequestForVerificationStatus status) {
 
@@ -88,6 +106,12 @@ public class FlatBookingService {
                 .map(bookingMapper::convertToDto);
     }
 
+    /**
+     * Method that finds all {@link RequestForFlatBooking} for Renter.
+     *
+     * @return {@link List<RequestForFlatDto>}
+     * @author Roman Blavatskyi
+     */
     public List<RequestForFlatDto> getRenterRequests() {
 
         User user = jwtTokenProvider.getCurrentUser();
@@ -102,10 +126,17 @@ public class FlatBookingService {
 
         return requestForFlatBookings
                 .stream()
+                .filter(request -> request.getStatus() != (RequestForVerificationStatus.DECLINED))
                 .map(bookingMapper::convertToDto)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method that approves {@link RequestForFlatBooking} of Renter.
+     *
+     * @param id of {@link RequestForFlatBooking}
+     * @author Roman Blavatskyi
+     */
     public void approveFlatRequest(Long id) {
         RequestForFlatBooking requestForFlatBooking = getRequestForFlatBookingById(id);
         requestForFlatBooking.setStatus(RequestForVerificationStatus.APPROVED);
@@ -119,6 +150,12 @@ public class FlatBookingService {
         flatBookingRepository.save(requestForFlatBooking);
     }
 
+    /**
+     * Method that declines {@link RequestForFlatBooking} of Renter.
+     *
+     * @param id of {@link RequestForFlatBooking}
+     * @author Roman Blavatskyi
+     */
     public void declineFlatRequest(Long id) {
         RequestForFlatBooking requestForFlatBooking = getRequestForFlatBookingById(id);
         requestForFlatBooking.setStatus(RequestForVerificationStatus.DECLINED);
@@ -132,16 +169,37 @@ public class FlatBookingService {
         flatBookingRepository.save(requestForFlatBooking);
     }
 
+    /**
+     * Method that allows review {@link RequestForFlatBooking} of Renter
+     * and change its status.
+     *
+     * @param id of {@link RequestForFlatBooking}
+     * @author Roman Blavatskyi
+     */
     public void reviewFlatRequest(Long id) {
         RequestForFlatBooking requestForFlatBooking = getRequestForFlatBookingById(id);
         requestForFlatBooking.setStatus(RequestForVerificationStatus.VIEWED);
         flatBookingRepository.save(requestForFlatBooking);
     }
 
+    /**
+     * Method that finds amount of new {@link RequestForFlatBooking}.
+     *
+     * @param status of {@link RequestForVerificationStatus}
+     * @return amount of {@link RequestForVerificationStatus}
+     * @author Roman Blavatskyi
+     */
     public Long getCountOfNewRequests(RequestForVerificationStatus status) {
         return flatBookingRepository.countAllByStatus(status);
     }
 
+    /**
+     * Method that finds {@link RequestForFlatBooking} by id.
+     *
+     * @param id of {@link RequestForFlatBooking}
+     * @return {@link RequestForFlatBooking}
+     * @author Roman Blavatskyi
+     */
     private RequestForFlatBooking getRequestForFlatBookingById(Long id) {
         RequestForFlatBooking requestForFlatBooking = flatBookingRepository
                 .findRequestForFlatBookingById(id)

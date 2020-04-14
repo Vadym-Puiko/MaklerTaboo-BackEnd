@@ -10,6 +10,12 @@ import com.softserve.maklertaboo.repository.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class that used by {@link MapperToDto}, {@link MapperToEntity}
+ * for mapping {@link RequestForFlatDto} into {@link RequestForFlatBooking} and versa.
+ *
+ * @author Roman Blavatskyi
+ */
 @Component
 @AllArgsConstructor
 public class FlatBookingMapper implements MapperToDto<RequestForFlatBooking, RequestForFlatDto>,
@@ -20,6 +26,12 @@ public class FlatBookingMapper implements MapperToDto<RequestForFlatBooking, Req
     private UserMapper userMapper;
     private FlatMapper flatMapper;
 
+    /**
+     * Method for converting {@link RequestForFlatBooking} into {@link RequestForFlatDto}.
+     *
+     * @param requestForFlat {@link RequestForFlatBooking}
+     * @return {@link RequestForFlatDto}
+     */
     @Override
     public RequestForFlatDto convertToDto(RequestForFlatBooking requestForFlat) {
         RequestForFlatDto requestForFlatDto = new RequestForFlatDto();
@@ -34,6 +46,12 @@ public class FlatBookingMapper implements MapperToDto<RequestForFlatBooking, Req
         return requestForFlatDto;
     }
 
+    /**
+     * Method for converting {@link RequestForFlatDto} into {@link RequestForFlatBooking}.
+     *
+     * @param dto {@link RequestForFlatDto}
+     * @return {@link RequestForFlatBooking}
+     */
     @Override
     public RequestForFlatBooking convertToEntity(RequestForFlatDto dto) {
         RequestForFlatBooking requestForFlatBooking = new RequestForFlatBooking();
