@@ -9,11 +9,23 @@ import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.stream.Collectors;
 
+/**
+ * Class that used by {@link MapperToDto} for mapping {@link FavoriteFlat}
+ * into {@link FlatDto}.
+ *
+ * @author Roman Blavatskyi
+ */
 @Component
 public class FavoriteFlatMapper implements MapperToDto<FavoriteFlat, FlatDto> {
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM HH:mm");
 
+    /**
+     * Method for converting {@link FavoriteFlat} into {@link FlatDto}.
+     *
+     * @param entity {@link FavoriteFlat}
+     * @return {@link FlatDto}
+     */
     @Override
     public FlatDto convertToDto(FavoriteFlat entity) {
         FlatDto flatDto = new FlatDto();

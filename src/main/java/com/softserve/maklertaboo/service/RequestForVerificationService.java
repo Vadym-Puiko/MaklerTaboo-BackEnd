@@ -2,7 +2,6 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.request.RequestForBanFlatDto;
-import com.softserve.maklertaboo.dto.request.RequestForFlatDto;
 import com.softserve.maklertaboo.dto.request.RequestForUserDto;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
@@ -38,6 +37,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class RequestForVerificationService {
+
     private final RequestForFlatVerificationRepository requestFlatRepository;
     private final RequestForUserVerificationRepository requestUserRepository;
     private final FlatService flatService;
@@ -51,8 +51,10 @@ public class RequestForVerificationService {
     @Autowired
     public RequestForVerificationService(RequestForFlatVerificationRepository requestForFlatVerificationRepository,
                                          RequestForUserVerificationRepository requestForUserVerificationRepository,
-                                         FlatService flatService, UserService userService,
-                                         RequestForUserMapper requestForUserMapper, RequestForFlatMapper requestForFlatMapper,
+                                         FlatService flatService,
+                                         UserService userService,
+                                         RequestForUserMapper requestForUserMapper,
+                                         RequestForFlatMapper requestForFlatMapper,
                                          RequestForBanFlatRepository requestForBanFlatRepository,
                                          RequestForBanFlatMapper requestForBanFlatMapper) {
 
@@ -70,11 +72,6 @@ public class RequestForVerificationService {
         RequestForUserVerification requestForUserVerification = requestForUserMapper.convertToEntity(requestForUserDto);
         requestForUserVerification.setType(type);
         requestUserRepository.save(requestForUserVerification);
-    }
-
-    public void createRequestForFlatVerification(RequestForFlatDto requestForFlatDto) {
-        RequestForFlatVerification requestForFlatVerification = requestForFlatMapper.convertToEntity(requestForFlatDto);
-        requestFlatRepository.save(requestForFlatVerification);
     }
 
     public List<RequestForFlatVerification> getAllRequestsForFlatVerification() {
@@ -238,7 +235,7 @@ public class RequestForVerificationService {
      * Method returns activated publication by page.
      *
      * @param pageable a value with pageable configuration.
-     * @param status {@link String}.
+     * @param status   {@link String}.
      * @return page of {@link RequestForBanFlatDto}.
      * @author Vadym Puiko
      */
