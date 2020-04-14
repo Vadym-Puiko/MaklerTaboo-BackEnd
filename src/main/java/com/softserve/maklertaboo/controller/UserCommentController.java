@@ -38,6 +38,11 @@ public class UserCommentController {
         return  userCommentService.getAllUserCommentsForUser(id);
     }
 
+    @GetMapping("/getallbylikes/{id}")
+    public List<UserCommentDto> getAllUserCommentsByLikes(@PathVariable  Long id){
+        return  userCommentService.getAllUserCommentsByLikes(id);
+    }
+
     @GetMapping("/getallaboutcomment/{id}")
     public List<UserCommentDto> getAllCommentsAboutComment(@PathVariable  Long id){
         return  userCommentService.getAllCommentsForComment(id);

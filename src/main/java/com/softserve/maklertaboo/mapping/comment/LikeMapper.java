@@ -10,26 +10,27 @@ import com.softserve.maklertaboo.mapping.MapperToEntity;
 import com.softserve.maklertaboo.repository.comment.FlatCommentRepository;
 import com.softserve.maklertaboo.repository.comment.UserCommentRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.service.FlatCommentService;
+import com.softserve.maklertaboo.service.UserCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LikeMapper implements MapperToDto<CommentLike, LikeDto>, MapperToEntity<LikeDto, CommentLike> {
-    private final FlatCommentRepository flatCommentRepository;
-    private final UserCommentRepository userCommentRepository;
+    private final FlatCommentService flatCommentService;
+    private final UserCommentService userCommentService;
 
 
     @Autowired
-    LikeMapper(FlatCommentRepository flatCommentRepository,
-               UserCommentRepository userCommentRepository){
-        this.flatCommentRepository=flatCommentRepository;
-        this.userCommentRepository=userCommentRepository;
+    LikeMapper(FlatCommentService flatCommentService,
+               UserCommentService userCommentService){
+        this.flatCommentService=flatCommentService;
+        this.userCommentService=userCommentService;
     }
 
     @Override
     public LikeDto convertToDto(CommentLike entity) {
         LikeDto likeDto=new LikeDto();
-        likeDto.setUserId(entity.getUser().getId());
         likeDto.setFlatCommentId(entity.getFlatComment().getId());
         likeDto.setUserCommentId(entity.getUserComment().getId());
 
@@ -39,10 +40,22 @@ public class LikeMapper implements MapperToDto<CommentLike, LikeDto>, MapperToEn
     @Override
     public CommentLike convertToEntity(LikeDto dto) {
         CommentLike commentLike =new CommentLike();
-        FlatComment flatComment=flatCommentRepository.findById(dto.getFlatCommentId()).orElse(null);
-        UserComment userComment=userCommentRepository.findById(dto.getUserCommentId()).orElse(null);
-        commentLike.setFlatComment(flatComment);
-        commentLike.setUserComment(userComment);
+        FlatComment flatComment;
+        UserComment userComment;
+
+        if (dto.getFlatCommentId()==null){
+            commentLike.setFlatComment(null);
+        }else {
+            flatComment=flatCommentService.getFlatCommentById(dto.getFlatCommentId());
+            commentLike.setFlatComment(flatComment);
+        }
+        if (dto.getUserCommentId()==null){
+            commentLike.setUserComment(null);
+        }else{
+            userComment=userCommentService.getUserCommentById(dto.getUserCommentId());
+            commentLike.setUserComment(userComment);
+        }
+
         return commentLike;
     }
 }
