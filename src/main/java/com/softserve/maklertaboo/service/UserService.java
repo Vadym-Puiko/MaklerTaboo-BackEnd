@@ -376,6 +376,14 @@ public class UserService {
         return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
     }
 
+    public Long getCurrentUserId() {
+        Long id = jwtTokenProvider.getCurrentUser().getId();
+        if (id == null) {
+            return 0L;
+        }
+        return id;
+    }
+
     @Transactional
     public void changeUserPassword(ChangePasswordDto changePasswordDto) {
         User user = jwtTokenProvider.getCurrentUser();

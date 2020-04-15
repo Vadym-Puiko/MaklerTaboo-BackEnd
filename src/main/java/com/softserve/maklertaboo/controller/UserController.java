@@ -301,7 +301,7 @@ public class UserController {
     })
     @GetMapping("/currentUserId")
     public ResponseEntity<Long> getCurrentUserById() {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getCurrentUserDto().getId());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getCurrentUserId());
     }
 
     /**
