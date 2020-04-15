@@ -58,8 +58,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(entryPoint)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/users/signIn/**").permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/users/create").permitAll()
+                .antMatchers("/users/signIn").permitAll()
+                .antMatchers("/users/refreshTokens").permitAll()
+                .antMatchers("/flat/**").permitAll()
+                .antMatchers("/tag/**").permitAll()
+                .antMatchers("/map/**").permitAll()
+                .antMatchers("/booking/new-requests").permitAll()
                 .anyRequest().authenticated();
 
     }

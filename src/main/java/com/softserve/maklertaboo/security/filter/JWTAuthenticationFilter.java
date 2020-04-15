@@ -55,11 +55,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (ExpiredJwtException e) {
-            final String expiredMsg = e.getMessage();
-            logger.warn(expiredMsg);
-
-            final String msg = (expiredMsg != null) ? expiredMsg : "Unauthorized";
-            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
+//            final String expiredMsg = e.getMessage();
+//            logger.warn(expiredMsg);
+//
+//            final String msg = (expiredMsg != null) ? expiredMsg : "Unauthorized";
+//            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
+            System.out.println("error");
         }
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }
