@@ -29,6 +29,10 @@ public class DateUtils {
         return LocalDateTime.of(localDate, LocalTime.now());
     }
 
+    public static LocalDateTime asLocalDateTime(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
     public static int monthsBetween(Date from, Date to) {
         return (int) ChronoUnit.MONTHS.between(asLocalDate(from), asLocalDate(to));
     }

@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -104,7 +106,7 @@ public class UserService {
     /**
      * Method that compare and check exist password, and login for a given user.
      *
-     * @param loginDto - of current user
+     * @param loginDto        - of current user
      * @param passwordEncoder - service interface for encoding passwords.
      * @return boolean check result
      * @author Mike Ostapiuk
@@ -274,6 +276,20 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
+
+    /**
+     * Method that allow you to get {@link User} by ID.
+     *
+     * @param id a value of {@link Long}
+     * @return {@link User}
+     * @author Vadym Puiko
+     */
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
+    }
+
+
     /**
      * Method that allow you to get {@link User} by email.
      *
@@ -336,6 +352,30 @@ public class UserService {
         throw new BadRefreshTokenException(REFRESH_TOKEN_NOT_VALID);
     }
 
+    public Long countAllActiveUsers() {
+        return userRepository.countAllActiveUsers();
+    }
+
+    public Long countAllActiveUsersByRole(UserRole role) {
+        return userRepository.countAllActiveUsersByRole(role);
+    }
+
+    public Long countAllUsersByRegistrationDateBetween(LocalDateTime start, LocalDateTime end) {
+        return userRepository.countAllByRegistrationDateBetween(start, end);
+    }
+
+    public List<User> findAllByRole(UserRole role) {
+        return userRepository.findAllActiveUsersByRole(role);
+    }
+
+    public Long countAllActiveByRoleAndRegistrationDateBefore(UserRole role, LocalDateTime date) {
+        return userRepository.countAllActiveByRoleAndRegistrationDateBefore(role, date);
+    }
+
+    public UserDto getCurrentUserDto() {
+        return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
+    }
+
     @Transactional
     public void changeUserPassword(ChangePasswordDto changePasswordDto) {
         User user = jwtTokenProvider.getCurrentUser();
@@ -350,9 +390,5 @@ public class UserService {
         }
         userRepository.updatePassword(passwordEncoder.encode(changePasswordDto.getNewPassword()),
                 user.getId());
-    }
-
-    public UserDto getCurrentUserDto() {
-        return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
     }
 }
