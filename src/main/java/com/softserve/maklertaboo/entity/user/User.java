@@ -9,13 +9,20 @@ import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.enums.UserStatus;
 import com.softserve.maklertaboo.entity.flat.FavoriteFlat;
 import com.softserve.maklertaboo.entity.flat.Flat;
+import com.softserve.maklertaboo.entity.request.RequestForBanFlat;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
-
+@NoArgsConstructor
+@EqualsAndHashCode(
+        exclude = {"passport", "orders", "flats", "favoriteFlats", "comments", "userComments", "requestUser",
+                "registrationDate", "refreshKey", "telegramUserData", "requestForBanFlat"})
 @Data
 @Entity
 @Table(name = "usr")
@@ -39,9 +46,9 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
-    @Column(columnDefinition = "varchar(255) default 'ACTIVE'")
+    @Column(columnDefinition = "varchar(255) default 'ACTIVATED'")
     @Enumerated(value = EnumType.STRING)
-    private UserStatus status;
+    private UserStatus userStatus;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "passport_id", referencedColumnName = "id")
@@ -65,8 +72,8 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
     private List<RequestForUserVerification> requestUser;
 
-    @Column(columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()")
-    private Date registrationDate;
+    @Column(columnDefinition = "DATETIME default NOW()")
+    private LocalDateTime registrationDate;
 
     private String refreshKey;
 
@@ -74,13 +81,27 @@ public class User {
     @JoinColumn(name = "telegram_id", referencedColumnName = "id")
     private TelegramUserData telegramUserData;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
+    private List<RequestForBanFlat> requestForBanFlat;
+
     @PrePersist
     public void prePersist() {
         setRole(UserRole.ROLE_USER);
-        setStatus(UserStatus.ACTIVE);
+        setUserStatus(UserStatus.ACTIVATED);
         if (registrationDate == null) {
-            registrationDate = new Date();
+            registrationDate = LocalDateTime.now();
         }
+    }
 
+    public User(Long id, String username, String email, String password, String phoneNumber,
+                String photoUrl, UserRole role, UserStatus userStatus) {
+        this.id = id;
+        this.username=username;
+        this.email=email;
+        this.password=password;
+        this.phoneNumber=phoneNumber;
+        this.photoUrl=photoUrl;
+        this.role=role;
+        this.userStatus=userStatus;
     }
 }

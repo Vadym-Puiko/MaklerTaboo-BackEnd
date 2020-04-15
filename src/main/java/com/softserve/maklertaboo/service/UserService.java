@@ -8,11 +8,10 @@ import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.*;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.security.dto.ChangePasswordDto;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogInDto;
 import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.security.dto.LoginDto;
-import com.softserve.maklertaboo.security.dto.ChangePasswordDto;
-import com.softserve.maklertaboo.security.entity.UserDetailsImpl;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +29,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.softserve.maklertaboo.constant.ErrorMessage.*;
-
 
 @Service
 public class UserService {
@@ -81,7 +78,7 @@ public class UserService {
         }
     }
 
-    public Authentication getAuthentication(LoginDto loginDto){
+    public Authentication getAuthentication(LoginDto loginDto) {
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),
@@ -99,11 +96,19 @@ public class UserService {
      */
     public JWTSuccessLogInDto validateLogin(LoginDto loginDto) {
         User user = userRepository.findUserByEmail(loginDto.getEmail()).orElseThrow(
-                () -> new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD + loginDto.getEmail()));
+                () -> new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD));
         comparePasswordLogin(loginDto, passwordEncoder);
         return new JWTSuccessLogInDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
 
+    /**
+     * Method that compare and check exist password, and login for a given user.
+     *
+     * @param loginDto - of current user
+     * @param passwordEncoder - service interface for encoding passwords.
+     * @return boolean check result
+     * @author Mike Ostapiuk
+     */
     public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
             throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
@@ -173,7 +178,7 @@ public class UserService {
      * Method that allow you to update role of {@link User}.
      *
      * @param userId a value of {@link Long}
-     * @param role a value of {@link UserRole}
+     * @param role   a value of {@link UserRole}
      * @author Vadym Puiko
      */
     public void updateRole(Long userId, UserRole role) {
@@ -210,7 +215,7 @@ public class UserService {
     /**
      * Method returns page of users by email without ROLE_ADMIN.
      *
-     * @param email contains objects whose values determine the search parameters of the returned list.
+     * @param email    contains objects whose values determine the search parameters of the returned list.
      * @param pageable a value with pageable configuration.
      * @return a dto of {@link Page}.
      * @author Vadym Puiko.
@@ -222,7 +227,7 @@ public class UserService {
     /**
      * Method returns page of users by phone without ROLE_ADMIN.
      *
-     * @param phone contains objects whose values determine the search parameters of the returned list.
+     * @param phone    contains objects whose values determine the search parameters of the returned list.
      * @param pageable a value with pageable configuration.
      * @return a dto of {@link Page}.
      * @author Vadym Puiko.
@@ -347,7 +352,7 @@ public class UserService {
                 user.getId());
     }
 
-    public UserDto getCurrentUserDto(){
+    public UserDto getCurrentUserDto() {
         return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
     }
 }
