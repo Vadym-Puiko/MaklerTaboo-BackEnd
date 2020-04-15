@@ -6,7 +6,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -31,21 +30,10 @@ public class CommentStatisticsController {
         return statisticsService.countActiveFlatsComments();
     }
 
-
     @GetMapping(value = "count-posted-comments", params = {"start", "end"})
-    public Long countPostedCommentsBetweenDates(@RequestParam("start") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate start,
+    public Long countCommentsPostedBetweenDates(@RequestParam("start") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate start,
                                                 @RequestParam("end") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate end) {
-        return statisticsService.countPostedCommentsBetweenDates(start, end);
-    }
-
-    @GetMapping("statistics/flat-comments-dynamics/{days}")
-    public List<Long> getCountOfFlatCommentsForLastDays(@PathVariable("days") int days) {
-        return statisticsService.getCountOfPostedFlatsCommentsFlatsLastDays(days);
-    }
-
-    @GetMapping("statistics/user-comments-dynamics/{days}")
-    public List<Long> getCountOfUserCommentsForLastDays(@PathVariable("days") int days) {
-        return statisticsService.getCountOfPostedUsersCommentsFlatsLastDays(days);
+        return statisticsService.countCommentsPostedBetweenDates(start, end);
     }
 
     @GetMapping(value = "count-flat-comments-posted-before-month", params = {"month"})

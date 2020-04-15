@@ -162,4 +162,27 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Long countAllActiveByRoleAndRegistrationDateBefore(UserRole role, Date date);
 
 
+    /**
+     * The method counts all users by ACTIVE user status.
+     *
+     * @return amount of user with ACTIVE status.
+     * @author Andriy Pyzh
+     */
+    @Query("SELECT COUNT(u) FROM User u WHERE u.status = 'ACTIVE'")
+    long countAllActiveUsers();
+
+    /**
+     * The method counts all users with ACTIVE status by given user role.
+     *
+     * @param role - user role
+     * @return amount of user with ACTIVE status and given {@link UserRole}.
+     * @author Andriy Pyzh
+     */
+    @Query("SELECT COUNT(u) FROM User u" +
+            " WHERE u.status = 'ACTIVE' AND u.role =:role")
+    Long countAllActiveUsersByRole(UserRole role);
+
+    @Query("SELECT u FROM User u" +
+            " WHERE u.status = 'ACTIVE' AND u.role =:role")
+    List<User> findAllActiveUsersByRole(UserRole role);
 }

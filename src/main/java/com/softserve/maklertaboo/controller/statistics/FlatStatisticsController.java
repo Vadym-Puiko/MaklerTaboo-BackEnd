@@ -6,8 +6,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -39,9 +37,9 @@ public class FlatStatisticsController {
     }
 
     @GetMapping("count-posted-flats-on-day")
-    public Long countPostedFlatsByDay(@RequestParam("day")
+    public Long countPostedFlatsOnDay(@RequestParam("day")
                                       @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate day) {
-        return statisticsService.countPostedFlatsByDay(day);
+        return statisticsService.countFlatsPostedOnDay(day);
     }
 
     @GetMapping(value = "get-flat-count-of-user", params = {"id"})
@@ -52,6 +50,6 @@ public class FlatStatisticsController {
     @GetMapping(value = "count-posted-flats-between-dates", params = {"start", "end"})
     public Long countPostedFlatsBetweenDates(@RequestParam("start") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate start,
                                              @RequestParam("end") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate end) {
-        return statisticsService.countPostedFlatsBetweenDates(start, end);
+        return statisticsService.countFlatsPostedBetweenDates(start, end);
     }
 }

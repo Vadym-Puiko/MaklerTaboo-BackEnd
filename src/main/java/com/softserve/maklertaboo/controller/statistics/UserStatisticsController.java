@@ -9,11 +9,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.softserve.maklertaboo.utils.DateUtils.asDate;
 
 @CrossOrigin
 @RestController
@@ -46,41 +43,22 @@ public class UserStatisticsController {
         return statisticsService.countActiveModerators();
     }
 
-    @GetMapping("statistics/users-landlords")
-    public List<Long> getCountOfUsersByRole() {
-        return Arrays.asList(statisticsService.countActiveRenters(),
-                statisticsService.countActiveLandlords(),
-                statisticsService.countActiveModerators());
-    }
-
     @GetMapping(value = "count-registered-users-on-day",params = {"day"})
-    public Long countRegisteredUsersByDay(@RequestParam("day")
+    public Long countUsersRegisteredOnDay(@RequestParam("day")
                                           @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate day) {
-        return statisticsService.countRegisteredUsersByDay(day);
+        return statisticsService.countUsersRegisteredOnDay(day);
     }
 
     @GetMapping(value = "count-registered-renters-before-month",params = {"month"})
-    public Long countRegisteredRentersBeforeMonth(@RequestParam("month")
-                                          @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate month) {
-        return statisticsService.countRentersRegisteredRentersBeforeMonth(month);
+    public Long countRentersRegisteredBeforeMonth(@RequestParam("month")
+                                                  @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate month) {
+        return statisticsService.countRentersRegisteredBeforeMonth(month);
     }
 
     @GetMapping(value = "count-registered-landlords-before-month",params = {"month"})
-    public Long countRegisteredLandlordsByMonth(@RequestParam("month")
-                                            @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate month) {
-        return statisticsService.countRentersRegisteredLandlordsBeforeMonth(month);
-    }
-
-    @GetMapping("statistics/users-dynamics/{fromMonth}/{toMonth}")
-    public List<Long> getCountOfUsersForMount(@PathVariable("fromMonth") String fromMonth,
-                                              @PathVariable("toMonth") String toMonth) {
-        return statisticsService.getCountOfUsersForBetweenMonths(asDate(fromMonth), asDate(toMonth));
-    }
-
-    @GetMapping("statistics/landlords-dynamics/{fromMonth}/{toMonth}")
-    public List<Long> getCountOfLandlordsForMount(@PathVariable("fromMonth") String fromMonth,
-                                                  @PathVariable("toMonth") String toMonth) {
-        return statisticsService.getCountOfLandlordsForBetweenMonths(asDate(fromMonth), asDate(toMonth));
+    public Long countLandlordsRegisteredBeforeMonth(@RequestParam("month")
+                                                    @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate month) {
+        return statisticsService.countLandlordsRegisteredBeforeMonth(month);
     }
 
     @GetMapping(value = "get-top-landlords", params = {"limit"})
