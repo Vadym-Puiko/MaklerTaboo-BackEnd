@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,6 +96,7 @@ public class FlatService {
     }
 
     @Cacheable("flats")
+    @Transactional
     public Flat getById(Long id) {
         Flat flat = flatRepository.findById(id).orElse(null);
         if (flat == null) {
