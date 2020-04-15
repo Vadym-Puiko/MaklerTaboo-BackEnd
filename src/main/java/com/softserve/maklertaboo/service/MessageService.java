@@ -1,6 +1,7 @@
 package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.chat.*;
+import com.softserve.maklertaboo.entity.chat.Chat;
 import com.softserve.maklertaboo.entity.chat.Message;
 import com.softserve.maklertaboo.repository.chat.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,11 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 
+/**
+ * Service implementation for {@link Message} entity.
+ *
+ * @author Mykola Borovets
+ */
 @Slf4j
 @Service
 public class MessageService {
@@ -27,6 +33,11 @@ public class MessageService {
     @Autowired
     private MessageRepository messageRepository;
 
+    /**
+     * Constructor with parameters of {@link MessageService}.
+     *
+     * @author Mykola Borovets
+     */
     public MessageService(SimpMessagingTemplate simpMessagingTemplate,
                           UserService userService,
                           ChatService chatService,
@@ -38,15 +49,22 @@ public class MessageService {
     }
 
     /**
-     * @param message
-     * @return
+     * Method that save message.
+     *
+     * @param message of {@link Message}
+     * @return {@link Message}
+     * @author Mykola Borovets
      */
     public Message addMessage(Message message) {
         return messageRepository.save(message);
     }
 
     /**
-     * @param id
+     * Method that update message.
+     *
+     * @param id of {@link Message}
+     * @return {@link Message}
+     * @author Mykola Borovets
      */
     public void updateMessage(Long id) {
         Message message = messageRepository.findById(id).orElseThrow(IllegalArgumentException::new);
@@ -55,7 +73,11 @@ public class MessageService {
     }
 
     /**
-     * @param id
+     * Method that delete message.
+     *
+     * @param id of {@link Message}
+     * @return {@link Message}
+     * @author Mykola Borovets
      */
     public void deleteMessage(Long id) {
         Optional<Message> message = messageRepository.findById(id);
@@ -65,16 +87,21 @@ public class MessageService {
     }
 
     /**
-     * @param chatId
-     * @param pageable
-     * @return
+     * Method that get messages by page and chatId.
+     *
+     * @param chatId of {@link Chat}
+     * @param pageable Pageable
+     * @return {@link Message}
+     * @author Mykola Borovets
      */
     public Page<Message> getMessageByChatId(Long chatId, Pageable pageable) {
         return messageRepository.findAllByChatId(chatId, pageable);
     }
 
     /**
-     * @param chatMessageInfoDTO
+     * Method that get message and give response using simpMessagingTemplate.convertAndSend().
+     * @param chatMessageInfoDTO of {@link ChatMessageInfoDTO}
+     * @author Mykola Borovets
      */
     public void sendMessage(ChatMessageInfoDTO chatMessageInfoDTO) {
         Message message = new Message();
@@ -87,7 +114,9 @@ public class MessageService {
     }
 
     /**
-     * @param deleteMessageInfoDTO
+     * Method that get message and give response using simpMessagingTemplate.convertAndSend().
+     * @param deleteMessageInfoDTO of {@link DeleteMessageInfoDTO}
+     * @author Mykola Borovets
      */
     public void setStatusToDeletedMessage(DeleteMessageInfoDTO deleteMessageInfoDTO) {
         DeletedMessageDTO deletedMessageDTO = new DeletedMessageDTO();
@@ -98,7 +127,9 @@ public class MessageService {
     }
 
     /**
-     * @param updateMessageDTO
+     * Method that get message and give response using simpMessagingTemplate.convertAndSend().
+     * @param updateMessageDTO of {@link UpdatedMessageDTO}
+     * @author Mykola Borovets
      */
     public void setStatusAndUpdateMessage(UpdateMessageDTO updateMessageDTO) {
         UpdatedMessageDTO updatedMessageDTO = new UpdatedMessageDTO();
@@ -110,7 +141,9 @@ public class MessageService {
     }
 
     /**
-     * @param counterOfUnreadMessagesDTO
+     * Method that get message and give response using simpMessagingTemplate.convertAndSend().
+     * @param counterOfUnreadMessagesDTO of {@link CounterOfUnreadMessagesDTO}
+     * @author Mykola Borovets
      */
     public void getCountOfUnreadMessages(CounterOfUnreadMessagesDTO counterOfUnreadMessagesDTO) {
         CounterOfUnreadMessagesInfoDTO counterOfUnreadMessagesInfoDTO = new CounterOfUnreadMessagesInfoDTO();

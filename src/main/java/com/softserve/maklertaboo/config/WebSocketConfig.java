@@ -10,6 +10,11 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 
+/**
+ * Configuration Web Socket into Makler Taboo project.
+ *
+ * @author Mykola Borovets
+ */
 @Configuration
 @EnableWebSocketMessageBroker
 @Component
@@ -45,7 +50,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
 
         registry.addEndpoint("/wss")
-                .setAllowedOrigins("https://maklertabooclient.herokuapp.com")
+                .setAllowedOrigins("https://maklertabooclient.herokuapp.com", "http://localhost:4200")
                 .withSockJS()
                 .setInterceptors(httpHandshakeInterceptor);
     }
