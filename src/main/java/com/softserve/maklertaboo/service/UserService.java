@@ -104,7 +104,7 @@ public class UserService {
     /**
      * Method that compare and check exist password, and login for a given user.
      *
-     * @param loginDto - of current user
+     * @param loginDto        - of current user
      * @param passwordEncoder - service interface for encoding passwords.
      * @return boolean check result
      * @author Mike Ostapiuk
@@ -138,7 +138,7 @@ public class UserService {
      */
     public void updateUserIntoAdminPanel(UserUpdateDto userUpdateDto) {
         User user = userRepository.findUserByEmail(userUpdateDto.getEmail()).orElseThrow(
-                () -> new UserNotUpdatedException(ErrorMessage.UPDATE_USER_ERROR + userUpdateDto.getEmail()));
+                () -> new UserNotUpdatedException(ErrorMessage.UPDATE_USER_ERROR));
         user.setUsername(userUpdateDto.getUsername());
         user.setPhoneNumber(userUpdateDto.getPhoneNumber());
         userRepository.save(user);
@@ -283,7 +283,7 @@ public class UserService {
      */
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND + email));
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         return userMapper.convertToDto(user);
     }
 
@@ -296,7 +296,7 @@ public class UserService {
      */
     public UserDto findByUsername(String username) {
         User user = userRepository.findUserByUsername(username).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_USERNAME + username));
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_USERNAME));
         return userMapper.convertToDto(user);
     }
 
