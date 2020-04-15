@@ -153,6 +153,10 @@ public class StatisticsService {
         return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(asDate(start), asDate(end));
     }
 
+    public Long countUsersRegisteredBetweenDates(LocalDate start, LocalDate end) {
+        return userRepository.countAllByRegistrationDateBetween(asDate(start), asDate(end));
+    }
+
     public Long countPostedCommentsBetweenDates(LocalDate start, LocalDate end) {
         return flatCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end)) +
                 userCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end));
@@ -167,5 +171,28 @@ public class StatisticsService {
     public Long countFlatsByOwner(Long id) {
         User user = userRepository.findById(id).orElseThrow(IllegalAccessError::new);
         return flatRepository.countAllByOwner(user);
+    }
+
+    public Long countRentersRegisteredRentersBeforeMonth(LocalDate month) {
+        return userRepository.countAllActiveByRoleAndRegistrationDateBefore(UserRole.ROLE_RENTER,
+                asDate(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
+    }
+
+
+    public Long countRentersRegisteredLandlordsBeforeMonth(LocalDate month) {
+        return userRepository.countAllActiveByRoleAndRegistrationDateBefore(UserRole.ROLE_LANDLORD,
+                asDate(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
+    }
+
+    public Long countFlatsPostedBeforeMonth(LocalDate month) {
+        return requestFlatRepository.countAllVerificationDateBeforeAndStatusIsApproved(asDate(month));
+    }
+
+    public Long countFlatCommentsPostedBeforeMonth(LocalDate month) {
+        return flatCommentRepository.countAllByPublicationDateBefore(asLocalDateTime(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
+    }
+
+    public Long countUserCommentsPostedBeforeMonth(LocalDate month) {
+        return userCommentRepository.countAllByPublicationDateBefore(asLocalDateTime(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
     }
 }

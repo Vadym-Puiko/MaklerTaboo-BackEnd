@@ -41,6 +41,11 @@ public class UserStatisticsController {
         return statisticsService.countActiveLandlords();
     }
 
+    @GetMapping("count-active-moderators")
+    public Long countActiveModerators() {
+        return statisticsService.countActiveModerators();
+    }
+
     @GetMapping("statistics/users-landlords")
     public List<Long> getCountOfUsersByRole() {
         return Arrays.asList(statisticsService.countActiveRenters(),
@@ -48,10 +53,22 @@ public class UserStatisticsController {
                 statisticsService.countActiveModerators());
     }
 
-    @GetMapping("count-registered-users")
+    @GetMapping(value = "count-registered-users-on-day",params = {"day"})
     public Long countRegisteredUsersByDay(@RequestParam("day")
                                           @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate day) {
         return statisticsService.countRegisteredUsersByDay(day);
+    }
+
+    @GetMapping(value = "count-registered-renters-before-month",params = {"month"})
+    public Long countRegisteredRentersBeforeMonth(@RequestParam("month")
+                                          @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate month) {
+        return statisticsService.countRentersRegisteredRentersBeforeMonth(month);
+    }
+
+    @GetMapping(value = "count-registered-landlords-before-month",params = {"month"})
+    public Long countRegisteredLandlordsByMonth(@RequestParam("month")
+                                            @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate month) {
+        return statisticsService.countRentersRegisteredLandlordsBeforeMonth(month);
     }
 
     @GetMapping("statistics/users-dynamics/{fromMonth}/{toMonth}")
@@ -71,6 +88,12 @@ public class UserStatisticsController {
         return statisticsService.getLandlordsSortedByFlatCountLimit(limit).stream()
                 .map(userMapper::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "count-users-registered-between-dates", params = {"start", "end"})
+    public Long countUsersRegisteredBetweenDates(@RequestParam("start") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate start,
+                                             @RequestParam("end") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate end) {
+        return statisticsService.countUsersRegisteredBetweenDates(start, end);
     }
 
 }

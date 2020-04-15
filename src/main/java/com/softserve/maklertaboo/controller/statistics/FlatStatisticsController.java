@@ -26,14 +26,19 @@ public class FlatStatisticsController {
         return statisticsService.countActiveFlats();
     }
 
-
-    @GetMapping("statistics/active-unactive-flats")
-    public List<Long> getCountOfActiveUnactiveFlats() {
-        return Arrays.asList(statisticsService.countActiveFlats(),
-                statisticsService.countUnactiveFlats());
+    @GetMapping("count-unactive-flats")
+    public Long countUnactiveFlats() {
+        return statisticsService.countUnactiveFlats();
     }
 
-    @GetMapping("count-posted-flats")
+
+    @GetMapping(value = "count-flats-posted-before-month",params = {"month"})
+    public Long countFlatsPostedBeforeMonth(@RequestParam("month")
+                                            @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate month) {
+        return statisticsService.countFlatsPostedBeforeMonth(month);
+    }
+
+    @GetMapping("count-posted-flats-on-day")
     public Long countPostedFlatsByDay(@RequestParam("day")
                                       @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate day) {
         return statisticsService.countPostedFlatsByDay(day);
@@ -44,7 +49,7 @@ public class FlatStatisticsController {
         return statisticsService.countFlatsByOwner(id);
     }
 
-    @GetMapping(value = "count-posted-flats", params = {"start", "end"})
+    @GetMapping(value = "count-posted-flats-between-dates", params = {"start", "end"})
     public Long countPostedFlatsBetweenDates(@RequestParam("start") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate start,
                                              @RequestParam("end") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate end) {
         return statisticsService.countPostedFlatsBetweenDates(start, end);

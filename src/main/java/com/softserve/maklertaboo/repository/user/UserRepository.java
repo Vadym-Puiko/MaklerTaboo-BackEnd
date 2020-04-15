@@ -157,4 +157,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByRole(UserRole role);
 
+    @Query("SELECT COUNT(u) FROM User u" +
+            " WHERE u.role = :role AND u.registrationDate < :date AND u.status='ACTIVE'")
+    Long countAllActiveByRoleAndRegistrationDateBefore(UserRole role, Date date);
+
+
 }
