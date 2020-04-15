@@ -71,7 +71,7 @@ public class UserService {
         boolean existsUserByUsername = userRepository.existsUserByUsername(userDto.getUsername());
         boolean existsUserByPhone = userRepository.existsUserByPhoneNumber(userDto.getPhoneNumber());
         if (existsUserByEmail || existsUserByUsername || existsUserByPhone) {
-            throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS + userDto.getEmail());
+            throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS);
         } else {
             User user = userMapper.convertToEntity(userDto);
             userRepository.save(user);
