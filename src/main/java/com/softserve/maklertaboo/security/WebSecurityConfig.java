@@ -68,8 +68,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/map/**").permitAll()
                 .antMatchers("/booking/new-requests").permitAll()
                 .antMatchers("/wss/**").permitAll()
-                .antMatchers("/chat/*").permitAll()
-                .antMatchers("/chats/**").permitAll()
                 .antMatchers("/flatcomments/getall/*").permitAll()
                 .antMatchers("/flatcomments/getallbylikes/*").permitAll()
                 .antMatchers("/flatcomments/getallaboutcomment/*").permitAll()
