@@ -182,4 +182,35 @@ public class UserCommentService {
         userComment.setCommentLikes(userComment.getCommentLikes() - 1);
         userCommentRepository.save(userComment);
     }
+
+    /**
+     * Method that return amount of not deleted comments.
+     *
+     * @return {@link Long} amount of not deleted comments
+     * @author Isachenko Dmytro
+     */
+    public Long countAllActiveComments() {
+        return userCommentRepository.countAllByIsActiveTrue();
+    }
+
+    /**
+     * Method that return amount of comments from start to end date.
+     *@param start date
+     *@param end date
+     * @return {@link Long} amount of comments from start to end date
+     * @author Isachenko Dmytro
+     */
+    public Long countAllByPublicationDateBetween(LocalDateTime start, LocalDateTime end) {
+        return userCommentRepository.countAllByPublicationDateBetween(start, end);
+    }
+
+    /**
+     * Method that return amount of comments before some date.
+     *@param date all comments before date
+     * @return {@link Long} amount of comments before some date
+     * @author Isachenko Dmytro
+     */
+    public Long countAllByPublicationDateBefore(LocalDateTime date) {
+        return userCommentRepository.countAllByPublicationDateBefore(date);
+    }
 }
