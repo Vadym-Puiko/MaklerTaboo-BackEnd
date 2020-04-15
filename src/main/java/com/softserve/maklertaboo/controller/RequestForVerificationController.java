@@ -9,12 +9,16 @@ import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import com.softserve.maklertaboo.service.RequestForVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 
 @CrossOrigin
 @RestController
 @RequestMapping("/requests")
+@PreAuthorize("hasRole ('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
 public class RequestForVerificationController {
 
     RequestForVerificationService requestForVerificationService;

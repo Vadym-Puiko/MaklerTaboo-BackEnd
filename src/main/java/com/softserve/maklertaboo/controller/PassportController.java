@@ -40,4 +40,9 @@ public class PassportController {
         passportService.getLandlordAdminApproval(userService.getCurrentUserDto());
     }
 
+    @GetMapping("/get-passport/{id}")
+    public PassportDto getPassportByUser(@PathVariable Long id) {
+        return passportService.getPassport(id);
+    }
+
 }

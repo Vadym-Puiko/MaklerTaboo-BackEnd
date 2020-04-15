@@ -11,6 +11,7 @@ import com.softserve.maklertaboo.repository.comment.UserCommentRepository;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,84 +31,96 @@ public class UserCommentService {
                        UserCommentMapper userCommentMapper,
                        UserService userService,
                        UserMapper userMapper,
-                       JWTTokenProvider jwtTokenProvider){
-        this.userCommentRepository=userCommentRepository;
-        this.userCommentMapper=userCommentMapper;
-        this.userService=userService;
-        this.userMapper=userMapper;
-        this.jwtTokenProvider=jwtTokenProvider;
+                       JWTTokenProvider jwtTokenProvider) {
+        this.userCommentRepository = userCommentRepository;
+        this.userCommentMapper = userCommentMapper;
+        this.userService = userService;
+        this.userMapper = userMapper;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
 
-    public void saveUserComment(UserCommentDto userCommentDto){
-        UserComment userComment=userCommentMapper.convertToEntity(userCommentDto);
+    public void saveUserComment(UserCommentDto userCommentDto) {
+        UserComment userComment = userCommentMapper.convertToEntity(userCommentDto);
         User user = jwtTokenProvider.getCurrentUser();
         userComment.setUserAuthor(user);
         userCommentRepository.save(userComment);
     }
 
-    public void saveCommentAboutComment(UserCommentDto userCommentDto){
-        UserComment userComment=userCommentMapper.convertToEntity(userCommentDto);
+    public void saveCommentAboutComment(UserCommentDto userCommentDto) {
+        UserComment userComment = userCommentMapper.convertToEntity(userCommentDto);
         User user = jwtTokenProvider.getCurrentUser();
         userComment.setUserAuthor(user);
         userCommentRepository.save(userComment);
     }
 
-    public void deleteUserComment(Long id){
-        UserComment userComment= userCommentRepository.getOne(id);
+    public void deleteUserComment(Long id) {
+        UserComment userComment = userCommentRepository.getOne(id);
         User user = jwtTokenProvider.getCurrentUser();
-        if (userComment.getUserAuthor().equals(user)){
+        if (userComment.getUserAuthor().equals(user)) {
             userComment.setIsActive(false);
             userComment.setDeletedDate(LocalDateTime.now());
             userCommentRepository.save(userComment);
         }
     }
 
-    public List<UserCommentDto> getAllUserCommentsForUser(Long UserId){
-        User user=userMapper.convertToEntity(userService.findUserById(UserId));
-        List<UserComment> list=userCommentRepository.
+    public List<UserCommentDto> getAllUserCommentsForUser(Long UserId) {
+        User user = userMapper.convertToEntity(userService.findUserById(UserId));
+        List<UserComment> list = userCommentRepository.
                 findAllByUserAndIsActiveIsTrueAndCommentAboutCommentIsNull(user);
         return list.stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
-    public List<UserCommentDto> getAllUserCommentsByLikes(Long UserId){
-        User user=userMapper.convertToEntity(userService.findUserById(UserId));
-        List<UserComment> list=userCommentRepository.
+    public List<UserCommentDto> getAllUserCommentsByLikes(Long UserId) {
+        User user = userMapper.convertToEntity(userService.findUserById(UserId));
+        List<UserComment> list = userCommentRepository.
                 findAllByUserAndIsActiveIsTrueAndCommentAboutCommentIsNull(user);
-        List<UserComment> likesList= list.stream().sorted((o1,o2) -> o2.getCommentLikes().
+        List<UserComment> likesList = list.stream().sorted((o1, o2) -> o2.getCommentLikes().
                 compareTo(o1.getCommentLikes())).collect(Collectors.toList());
         return likesList.stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
-    public List<UserCommentDto> getAllCommentsForComment(Long CommentAboutComment){
-        List<UserComment> list=userCommentRepository.
+    public List<UserCommentDto> getAllCommentsForComment(Long CommentAboutComment) {
+        List<UserComment> list = userCommentRepository.
                 findAllByCommentAboutCommentAndIsActiveIsTrue(CommentAboutComment);
         return list.stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
-    public UserComment getUserCommentById(Long id){
-        UserComment userComment=userCommentRepository.findById(id).orElse(null);
-        if (userComment==null){
+    public Long countAllActiveComments() {
+        return userCommentRepository.countAllByIsActiveTrue();
+    }
+
+    public Long countAllByPublicationDateBetween(LocalDateTime start, LocalDateTime end) {
+        return userCommentRepository.countAllByPublicationDateBetween(start, end);
+    }
+
+    public Long countAllByPublicationDateBefore(LocalDateTime date) {
+        return userCommentRepository.countAllByPublicationDateBefore(date);
+    }
+
+    public UserComment getUserCommentById(Long id) {
+        UserComment userComment = userCommentRepository.findById(id).orElse(null);
+        if (userComment == null) {
             throw new UserCommentNotFoundException(USERCOMMENT_NOT_FOUND + id);
         }
         return userComment;
     }
 
-    public void addLike(Long id){
-        UserComment userComment=userCommentRepository.findById(id).orElse(null);
-        if (userComment==null){
+    public void addLike(Long id) {
+        UserComment userComment = userCommentRepository.findById(id).orElse(null);
+        if (userComment == null) {
             throw new FlatCommentNotFoundException(USERCOMMENT_NOT_FOUND + id);
         }
-        userComment.setCommentLikes(userComment.getCommentLikes()+1);
+        userComment.setCommentLikes(userComment.getCommentLikes() + 1);
         userCommentRepository.save(userComment);
     }
 
-    public void minusLike(Long id){
-        UserComment userComment=userCommentRepository.findById(id).orElse(null);
-        if (userComment==null){
+    public void minusLike(Long id) {
+        UserComment userComment = userCommentRepository.findById(id).orElse(null);
+        if (userComment == null) {
             throw new UserCommentNotFoundException(USERCOMMENT_NOT_FOUND + id);
         }
-        userComment.setCommentLikes(userComment.getCommentLikes()-1);
+        userComment.setCommentLikes(userComment.getCommentLikes() - 1);
         userCommentRepository.save(userComment);
     }
 }

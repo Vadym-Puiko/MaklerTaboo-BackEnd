@@ -17,8 +17,6 @@ public interface RequestForUserVerificationRepository extends RequestBaseReposit
             " f WHERE f.status='APPROVED' AND f.type=:type AND f.verificationDate <:start")
     long countAllVerificationDateLessAndStatusIsApproved(Date start, RequestForVerificationType type);
 
-    long countAllByStatus(RequestForVerificationStatus status);
-
     Page<RequestForUserVerification> findAllByStatusAndType(Pageable pageable,
                                                             RequestForVerificationStatus status,
                                                             RequestForVerificationType type);

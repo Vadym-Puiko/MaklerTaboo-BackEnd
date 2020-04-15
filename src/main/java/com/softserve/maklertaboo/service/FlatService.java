@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,6 +96,7 @@ public class FlatService {
     }
 
     @Cacheable("flats")
+    @Transactional
     public Flat getById(Long id) {
         Flat flat = flatRepository.findById(id).orElse(null);
         if (flat == null) {
@@ -132,6 +134,7 @@ public class FlatService {
         flatLocation.setFlat(flat);
         flat.setFlatLocation(flatLocation);
         flatRepository.save(flat);
+
         requestForVerificationService.createFlatRequest(flat);
         requestForVerificationService.createForBan(flat);
     }
@@ -161,6 +164,14 @@ public class FlatService {
     public List<Flat> findByOwnerId(Long id) {
         User user = userRepository.findById(id).get();
         return flatRepository.findByOwnerAndIsActiveIsTrue(user);
+    }
+
+    public Long countAllByIsActive(boolean b) {
+        return flatRepository.countAllByIsActive(b);
+    }
+
+    public long countAllByOwner(User owner) {
+        return flatRepository.countAllByOwner(owner);
     }
 
     /**
