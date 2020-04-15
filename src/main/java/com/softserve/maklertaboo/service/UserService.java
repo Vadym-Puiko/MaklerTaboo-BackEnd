@@ -73,7 +73,7 @@ public class UserService {
         boolean existsUserByUsername = userRepository.existsUserByUsername(userDto.getUsername());
         boolean existsUserByPhone = userRepository.existsUserByPhoneNumber(userDto.getPhoneNumber());
         if (existsUserByEmail || existsUserByUsername || existsUserByPhone) {
-            throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS + userDto.getEmail());
+            throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS);
         } else {
             User user = userMapper.convertToEntity(userDto);
             userRepository.save(user);
@@ -140,7 +140,7 @@ public class UserService {
      */
     public void updateUserIntoAdminPanel(UserUpdateDto userUpdateDto) {
         User user = userRepository.findUserByEmail(userUpdateDto.getEmail()).orElseThrow(
-                () -> new UserNotUpdatedException(ErrorMessage.UPDATE_USER_ERROR + userUpdateDto.getEmail()));
+                () -> new UserNotUpdatedException(ErrorMessage.UPDATE_USER_ERROR));
         user.setUsername(userUpdateDto.getUsername());
         user.setPhoneNumber(userUpdateDto.getPhoneNumber());
         userRepository.save(user);
@@ -299,7 +299,7 @@ public class UserService {
      */
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND + email));
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         return userMapper.convertToDto(user);
     }
 
@@ -312,7 +312,7 @@ public class UserService {
      */
     public UserDto findByUsername(String username) {
         User user = userRepository.findUserByUsername(username).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_USERNAME + username));
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_USERNAME));
         return userMapper.convertToDto(user);
     }
 
