@@ -25,6 +25,11 @@ public class UserCommentService {
     private final UserMapper userMapper;
     private final JWTTokenProvider jwtTokenProvider;
 
+    /**
+     * Constructor with parameters
+     *
+     * @author Isachenko Dmytro
+     */
     @Autowired
     UserCommentService(UserCommentRepository userCommentRepository,
                        UserCommentMapper userCommentMapper,
@@ -39,6 +44,12 @@ public class UserCommentService {
     }
 
 
+    /**
+     * Method that allow you to save new {@link UserComment}.
+     *
+     * @param userCommentDto a value of {@link UserCommentDto}
+     * @author Isachenko Dmytro
+     */
     public void saveUserComment(UserCommentDto userCommentDto){
         UserComment userComment=userCommentMapper.convertToEntity(userCommentDto);
         User user = jwtTokenProvider.getCurrentUser();
@@ -46,6 +57,12 @@ public class UserCommentService {
         userCommentRepository.save(userComment);
     }
 
+    /**
+     * Method that allow you to save new comment about comment{@link UserComment}.
+     *
+     * @param userCommentDto a value of {@link UserCommentDto}
+     * @author Isachenko Dmytro
+     */
     public void saveCommentAboutComment(UserCommentDto userCommentDto){
         UserComment userComment=userCommentMapper.convertToEntity(userCommentDto);
         User user = jwtTokenProvider.getCurrentUser();
@@ -53,25 +70,45 @@ public class UserCommentService {
         userCommentRepository.save(userComment);
     }
 
+    /**
+     * Method for deleting comment of {@link UserComment}. but actually it save in db
+     *
+     * @param id a value of {@link UserComment}
+     * @author Isachenko Dmytro
+     */
     public void deleteUserComment(Long id){
         UserComment userComment= userCommentRepository.getOne(id);
         User user = jwtTokenProvider.getCurrentUser();
         if (userComment.getUserAuthor().equals(user)){
             userComment.setIsActive(false);
-            userComment.setDeletedDate(LocalDateTime.now());
+            userComment.setDeletedDate(LocalDateTime.now().plusHours(3));
             userCommentRepository.save(userComment);
         }
     }
 
-    public List<UserCommentDto> getAllUserCommentsForUser(Long UserId){
-        User user=userMapper.convertToEntity(userService.findUserById(UserId));
+    /**
+     * Method that return you list of comments about user{@link UserComment}.
+     *
+     * @param userId a value of {@link User}
+     * @return {@List UserCommentDto}  where comment is not deleted and where it is not a multilevel comment
+     * @author Isachenko Dmytro
+     */
+    public List<UserCommentDto> getAllUserCommentsForUser(Long userId){
+        User user=userMapper.convertToEntity(userService.findUserById(userId));
         List<UserComment> list=userCommentRepository.
                 findAllByUserAndIsActiveIsTrueAndCommentAboutCommentIsNull(user);
         return list.stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
-    public List<UserCommentDto> getAllUserCommentsByLikes(Long UserId){
-        User user=userMapper.convertToEntity(userService.findUserById(UserId));
+    /**
+     * Method that return you list of comments about user{@link UserComment}.
+     *
+     * @param userId a value of {@List User}
+     * @return {@List UserCommentDto}  where comment is not deleted and where it is not a multilevel comment and sorted by likes
+     * @author Isachenko Dmytro
+     */
+    public List<UserCommentDto> getAllUserCommentsByLikes(Long userId){
+        User user=userMapper.convertToEntity(userService.findUserById(userId));
         List<UserComment> list=userCommentRepository.
                 findAllByUserAndIsActiveIsTrueAndCommentAboutCommentIsNull(user);
         List<UserComment> likesList= list.stream().sorted((o1,o2) -> o2.getCommentLikes().
@@ -79,12 +116,26 @@ public class UserCommentService {
         return likesList.stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
-    public List<UserCommentDto> getAllCommentsForComment(Long CommentAboutComment){
+    /**
+     * Method that return you list of comments about user{@link UserComment}.
+     *
+     * @param commentAboutComment a value of {@List UserComment}
+     * @return {@List UserCommentDto}  where comment is not deleted and where it is a multilevel comment and sorted
+     * @author Isachenko Dmytro
+     */
+    public List<UserCommentDto> getAllCommentsForComment(Long commentAboutComment){
         List<UserComment> list=userCommentRepository.
-                findAllByCommentAboutCommentAndIsActiveIsTrue(CommentAboutComment);
+                findAllByCommentAboutCommentAndIsActiveIsTrue(commentAboutComment);
         return list.stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
+    /**
+     * Method that return you object{@link UserComment}.
+     *
+     * @param id a value of {@link UserComment}
+     * @return {@link UserComment} or if null send exception
+     * @author Isachenko Dmytro
+     */
     public UserComment getUserCommentById(Long id){
         UserComment userComment=userCommentRepository.findById(id).orElse(null);
         if (userComment==null){
@@ -93,6 +144,12 @@ public class UserCommentService {
         return userComment;
     }
 
+    /**
+     * Method adds like to object{@link UserComment}.
+     *
+     * @param id a value of {@link UserComment}
+     * @author Isachenko Dmytro
+     */
     public void addLike(Long id){
         UserComment userComment=userCommentRepository.findById(id).orElse(null);
         if (userComment==null){
@@ -102,6 +159,12 @@ public class UserCommentService {
         userCommentRepository.save(userComment);
     }
 
+    /**
+     * Method subtracts like from object{@link UserComment}.
+     *
+     * @param id a value of {@link UserComment}
+     * @author Isachenko Dmytro
+     */
     public void minusLike(Long id){
         UserComment userComment=userCommentRepository.findById(id).orElse(null);
         if (userComment==null){

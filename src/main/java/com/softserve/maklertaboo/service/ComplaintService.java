@@ -3,7 +3,11 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.comment.ComplaintDto;
 import com.softserve.maklertaboo.dto.comment.ComplaintDtoId;
+import com.softserve.maklertaboo.dto.comment.LikeDto;
+import com.softserve.maklertaboo.entity.comment.CommentLike;
 import com.softserve.maklertaboo.entity.comment.Complaint;
+import com.softserve.maklertaboo.entity.comment.FlatComment;
+import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.ComplaintExistsException;
 import com.softserve.maklertaboo.mapping.comment.ComplaintMapper;
@@ -23,6 +27,11 @@ public class ComplaintService {
     private final ComplaintMapper complaintMapper;
     private final ComplainRepository complainRepository;
 
+    /**
+     * Constructor with parameters
+     *
+     * @author Iachenko Dmytro
+     */
     @Autowired
     ComplaintService(JWTTokenProvider jwtTokenProvider,
                      ComplaintMapper complaintMapper,
@@ -32,6 +41,12 @@ public class ComplaintService {
         this.complainRepository = complainRepository;
     }
 
+    /**
+     * Method that allow you to save new {@link Complaint}.
+     * first check is this flatComplaint exist then delete Complaint else save
+     * @param complaintDtoId a value of {@link ComplaintDtoId}
+     * @author Isachenko Dmytro
+     */
     public void checkComplaintFlatComment(ComplaintDtoId complaintDtoId) {
         Complaint complaint = complaintMapper.convertToEntity(complaintDtoId);
         User user = jwtTokenProvider.getCurrentUser();
@@ -45,6 +60,12 @@ public class ComplaintService {
         }
     }
 
+    /**
+     * Method that allow you to save new {@link Complaint}.
+     * first check is this userComplaint exist then delete Complaint else save
+     * @param complaintDtoId a value of {@link ComplaintDtoId}
+     * @author Isachenko Dmytro
+     */
     public void checkComplaintUserComment(ComplaintDtoId complaintDtoId) {
         Complaint complaint = complaintMapper.convertToEntity(complaintDtoId);
         User user = jwtTokenProvider.getCurrentUser();
@@ -58,10 +79,22 @@ public class ComplaintService {
         }
     }
 
+    /**
+     * Method that allow you to save new {@link Complaint}.
+     *
+     * @param complaint a value of {@link Complaint}
+     * @author Isachenko Dmytro
+     */
     public void saveComplaint(Complaint complaint) {
         complainRepository.save(complaint);
     }
 
+    /**
+     * Method that return you list of complaints about comments{@link Complaint}.
+     *
+     * @return {@List ComplaintDto}
+     * @author Isachenko Dmytro
+     */
     public List<ComplaintDto> getAllComplaint() {
         List<Complaint> list = complainRepository.findAll();
         return list.stream().map(complaintMapper::convertToDto).collect(Collectors.toList());
