@@ -95,7 +95,6 @@ public class FlatService {
         }
     }
 
-    @Cacheable("flats")
     @Transactional
     public Flat getById(Long id) {
         Flat flat = flatRepository.findById(id).orElse(null);
