@@ -124,6 +124,7 @@ public class FlatCommentService {
         return list.stream().map(flatCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
+
     /**
      * Method that return you object{@link FlatComment}.
      *

@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
-
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
@@ -36,7 +35,7 @@ public class UserController {
     private final JWTTokenProvider jwtTokenProvider;
 
     /**
-     * The method which save of new user.
+     * The method which saves new user.
      *
      * @param userDto to save
      * @return {@link ResponseEntity} with {@link UserDto}
@@ -46,7 +45,6 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = HttpStatuses.CREATED),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
             @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
     })
     @PostMapping("/create")
@@ -56,7 +54,7 @@ public class UserController {
     }
 
     /**
-     * The method set email and password of user for full authentication
+     * The method sets email and password of user for full authentication
      *
      * @param loginDto {@link LoginDto}
      * @param response {@link HttpServletResponse}
@@ -79,7 +77,7 @@ public class UserController {
     }
 
     /**
-     * The method which return list of users by provided search criteria (username).
+     * The method which returns list of users by provided search criteria (username).
      *
      * @param username URL string with search criteria
      * @return {@link ResponseEntity} with page of {@link UserDto}
@@ -102,7 +100,7 @@ public class UserController {
     }
 
     /**
-     * The method which return list of users by provided search criteria (email).
+     * The method which returns list of users by provided search criteria (email).
      *
      * @param email URL string with search criteria
      * @return {@link ResponseEntity} with page of {@link UserDto}
@@ -125,7 +123,7 @@ public class UserController {
     }
 
     /**
-     * The method which return list of users by provided search criteria (phone).
+     * The method which returns list of users by provided search criteria (phone).
      *
      * @param phone URL string with search criteria
      * @return {@link ResponseEntity} with page of {@link UserDto}
@@ -148,7 +146,7 @@ public class UserController {
     }
 
     /**
-     * The method which return list of users by page.
+     * The method which returns list of users by page.
      *
      * @param page,size {@link Integer} for pageable configuration.
      * @return {@link ResponseEntity} with page of {@link UserDto}
@@ -159,9 +157,7 @@ public class UserController {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
     })
     @GetMapping("/admin/all")
     public ResponseEntity<Page<UserDto>> getAllUsers(@RequestParam(name = "page", defaultValue = "0") Integer page,
@@ -172,7 +168,7 @@ public class UserController {
     }
 
     /**
-     * The method which update of user.
+     * The method which updates user.
      *
      * @param userUpdateDto for updating
      * @return {@link ResponseEntity} with {@link UserDto}
@@ -183,7 +179,6 @@ public class UserController {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
             @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
     })
     @PutMapping("/update/all")
@@ -193,7 +188,7 @@ public class UserController {
     }
 
     /**
-     * The method which update of user into admin panel.
+     * The method which updates user into admin panel.
      *
      * @param userUpdateDto for updating
      * @return {@link ResponseEntity} with {@link UserDto}
@@ -204,7 +199,6 @@ public class UserController {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
             @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
     })
     @PutMapping("/admin/update")
@@ -214,7 +208,7 @@ public class UserController {
     }
 
     /**
-     * The method for delete user by ID.
+     * The method for deleting user by ID.
      *
      * @param id for deleting
      * @return {@link ResponseEntity} with {@link Long}
@@ -223,9 +217,10 @@ public class UserController {
     @ApiOperation(value = "Delete user by ID")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
             @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
     })
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Long> deleteUser(@PathVariable Long id) {
@@ -243,9 +238,9 @@ public class UserController {
     @ApiOperation(value = "Updating photo in user profile")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
-            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+            @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
     })
     @PutMapping("/profile/update/photo")
     public ResponseEntity<Object> updateUserPhoto(@RequestPart(value = "file") MultipartFile file) {
@@ -262,9 +257,10 @@ public class UserController {
     @ApiOperation(value = "Deleting photo in user profile")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
             @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
     })
     @DeleteMapping("/profile/delete/photo")
     public ResponseEntity<Object> deletePhoto() {
@@ -283,8 +279,7 @@ public class UserController {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
     })
     @GetMapping("/currentUser")
     public ResponseEntity<UserDto> getCurrentUser() {
@@ -302,19 +297,18 @@ public class UserController {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
     })
     @GetMapping("/currentUserId")
     public ResponseEntity<Long> getCurrentUserById() {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getCurrentUserDto().getId());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getCurrentUserId());
     }
 
     /**
-     * The method updating access token by refreshKey token
+     * The method for updating access token by refreshKey token
      *
      * @param refreshToken {@link String}
-     * @param response {@link HttpServletResponse}
+     * @param response     {@link HttpServletResponse}
      * @return {@link ResponseEntity}
      * @author Mike Ostapiuk
      */
@@ -333,7 +327,7 @@ public class UserController {
     }
 
     /**
-     * The method which return user by ID.
+     * The method which returns user by ID.
      *
      * @param id {@link Long}.
      * @return {@link ResponseEntity} with {@link UserDto}
@@ -344,8 +338,7 @@ public class UserController {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
     })
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
@@ -353,7 +346,7 @@ public class UserController {
     }
 
     /**
-     * The method change old user password to new.
+     * The method changes old user password to new.
      *
      * @param passwordDto {@link ChangePasswordDto}
      * @return {@link ResponseEntity}

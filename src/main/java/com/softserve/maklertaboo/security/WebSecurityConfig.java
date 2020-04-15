@@ -17,7 +17,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -58,8 +57,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(entryPoint)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/users/signIn/**").permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/users/create").permitAll()
+                .antMatchers("/users/signIn").permitAll()
+                .antMatchers("/users/refreshTokens").permitAll()
+                .antMatchers(HttpMethod.GET, "/users/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/flat/*").permitAll()
+                .antMatchers("/flat/userflat/*").permitAll()
+                .antMatchers("/flat/search/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/tag/**").permitAll()
+                .antMatchers("/map/**").permitAll()
+                .antMatchers("/booking/new-requests").permitAll()
+                .antMatchers("/wss/**").permitAll()
+                .antMatchers("/flatcomments/getall/*").permitAll()
+                .antMatchers("/flatcomments/getallbylikes/*").permitAll()
+                .antMatchers("/flatcomments/getallaboutcomment/*").permitAll()
+                .antMatchers("/usercomments/getall/*").permitAll()
+                .antMatchers("/usercomments/getallbylikes/*").permitAll()
+                .antMatchers("/usercomments/getallaboutcomment/*").permitAll()
                 .anyRequest().authenticated();
 
     }

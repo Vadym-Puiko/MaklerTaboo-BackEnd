@@ -11,6 +11,7 @@ import com.softserve.maklertaboo.repository.comment.UserCommentRepository;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,13 +36,14 @@ public class UserCommentService {
                        UserCommentMapper userCommentMapper,
                        UserService userService,
                        UserMapper userMapper,
-                       JWTTokenProvider jwtTokenProvider){
-        this.userCommentRepository=userCommentRepository;
-        this.userCommentMapper=userCommentMapper;
-        this.userService=userService;
-        this.userMapper=userMapper;
-        this.jwtTokenProvider=jwtTokenProvider;
+                       JWTTokenProvider jwtTokenProvider) {
+        this.userCommentRepository = userCommentRepository;
+        this.userCommentMapper = userCommentMapper;
+        this.userService = userService;
+        this.userMapper = userMapper;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
+
 
 
     /**
@@ -57,6 +59,7 @@ public class UserCommentService {
         userCommentRepository.save(userComment);
     }
 
+
     /**
      * Method that allow you to save new comment about comment{@link UserComment}.
      *
@@ -70,6 +73,7 @@ public class UserCommentService {
         userCommentRepository.save(userComment);
     }
 
+
     /**
      * Method for deleting comment of {@link UserComment}. but actually it save in db
      *
@@ -79,12 +83,13 @@ public class UserCommentService {
     public void deleteUserComment(Long id){
         UserComment userComment= userCommentRepository.getOne(id);
         User user = jwtTokenProvider.getCurrentUser();
-        if (userComment.getUserAuthor().equals(user)){
+        if (userComment.getUserAuthor().equals(user)) {
             userComment.setIsActive(false);
             userComment.setDeletedDate(LocalDateTime.now().plusHours(3));
             userCommentRepository.save(userComment);
         }
     }
+
 
     /**
      * Method that return you list of comments about user{@link UserComment}.
@@ -100,6 +105,7 @@ public class UserCommentService {
         return list.stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
+
     /**
      * Method that return you list of comments about user{@link UserComment}.
      *
@@ -111,10 +117,11 @@ public class UserCommentService {
         User user=userMapper.convertToEntity(userService.findUserById(userId));
         List<UserComment> list=userCommentRepository.
                 findAllByUserAndIsActiveIsTrueAndCommentAboutCommentIsNull(user);
-        List<UserComment> likesList= list.stream().sorted((o1,o2) -> o2.getCommentLikes().
+        List<UserComment> likesList = list.stream().sorted((o1, o2) -> o2.getCommentLikes().
                 compareTo(o1.getCommentLikes())).collect(Collectors.toList());
         return likesList.stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
+
 
     /**
      * Method that return you list of comments about user{@link UserComment}.
@@ -144,6 +151,7 @@ public class UserCommentService {
         return userComment;
     }
 
+
     /**
      * Method adds like to object{@link UserComment}.
      *
@@ -155,9 +163,10 @@ public class UserCommentService {
         if (userComment==null){
             throw new FlatCommentNotFoundException(USERCOMMENT_NOT_FOUND + id);
         }
-        userComment.setCommentLikes(userComment.getCommentLikes()+1);
+        userComment.setCommentLikes(userComment.getCommentLikes() + 1);
         userCommentRepository.save(userComment);
     }
+
 
     /**
      * Method subtracts like from object{@link UserComment}.
@@ -170,7 +179,7 @@ public class UserCommentService {
         if (userComment==null){
             throw new UserCommentNotFoundException(USERCOMMENT_NOT_FOUND + id);
         }
-        userComment.setCommentLikes(userComment.getCommentLikes()-1);
+        userComment.setCommentLikes(userComment.getCommentLikes() - 1);
         userCommentRepository.save(userComment);
     }
 }

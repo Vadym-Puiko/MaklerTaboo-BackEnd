@@ -5,6 +5,7 @@ import com.softserve.maklertaboo.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,5 +34,6 @@ public interface UserCommentRepository extends JpaRepository<UserComment, Long> 
     List<UserComment> findAllByCommentAboutCommentAndIsActiveIsTrue(Long id);
 
     long countAllByPublicationDateBetween(LocalDateTime start, LocalDateTime end);
+    long countAllByPublicationDateBefore(LocalDateTime start);
     long countAllByIsActiveTrue();
 }

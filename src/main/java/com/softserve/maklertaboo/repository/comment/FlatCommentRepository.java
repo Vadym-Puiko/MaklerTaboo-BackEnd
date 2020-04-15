@@ -34,4 +34,6 @@ public interface FlatCommentRepository extends JpaRepository<FlatComment, Long> 
 
     long countAllByPublicationDateBetween(LocalDateTime start, LocalDateTime end);
     long countAllByIsActiveTrue();
+
+    Long countAllByPublicationDateBefore(LocalDateTime date);
 }

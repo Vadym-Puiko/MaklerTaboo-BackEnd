@@ -8,11 +8,10 @@ import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.*;
 import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.security.dto.ChangePasswordDto;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogInDto;
 import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.security.dto.LoginDto;
-import com.softserve.maklertaboo.security.dto.ChangePasswordDto;
-import com.softserve.maklertaboo.security.entity.UserDetailsImpl;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +20,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.softserve.maklertaboo.constant.ErrorMessage.*;
-
 
 @Service
 public class UserService {
@@ -74,14 +73,14 @@ public class UserService {
         boolean existsUserByUsername = userRepository.existsUserByUsername(userDto.getUsername());
         boolean existsUserByPhone = userRepository.existsUserByPhoneNumber(userDto.getPhoneNumber());
         if (existsUserByEmail || existsUserByUsername || existsUserByPhone) {
-            throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS + userDto.getEmail());
+            throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS);
         } else {
             User user = userMapper.convertToEntity(userDto);
             userRepository.save(user);
         }
     }
 
-    public Authentication getAuthentication(LoginDto loginDto){
+    public Authentication getAuthentication(LoginDto loginDto) {
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),
@@ -99,11 +98,19 @@ public class UserService {
      */
     public JWTSuccessLogInDto validateLogin(LoginDto loginDto) {
         User user = userRepository.findUserByEmail(loginDto.getEmail()).orElseThrow(
-                () -> new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD + loginDto.getEmail()));
+                () -> new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD));
         comparePasswordLogin(loginDto, passwordEncoder);
         return new JWTSuccessLogInDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
 
+    /**
+     * Method that compare and check exist password, and login for a given user.
+     *
+     * @param loginDto        - of current user
+     * @param passwordEncoder - service interface for encoding passwords.
+     * @return boolean check result
+     * @author Mike Ostapiuk
+     */
     public boolean comparePasswordLogin(LoginDto loginDto, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(loginDto.getPassword(), findByEmail(loginDto.getEmail()).getPassword())) {
             throw new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD);
@@ -133,7 +140,7 @@ public class UserService {
      */
     public void updateUserIntoAdminPanel(UserUpdateDto userUpdateDto) {
         User user = userRepository.findUserByEmail(userUpdateDto.getEmail()).orElseThrow(
-                () -> new UserNotUpdatedException(ErrorMessage.UPDATE_USER_ERROR + userUpdateDto.getEmail()));
+                () -> new UserNotUpdatedException(ErrorMessage.UPDATE_USER_ERROR));
         user.setUsername(userUpdateDto.getUsername());
         user.setPhoneNumber(userUpdateDto.getPhoneNumber());
         userRepository.save(user);
@@ -173,7 +180,7 @@ public class UserService {
      * Method that allow you to update role of {@link User}.
      *
      * @param userId a value of {@link Long}
-     * @param role a value of {@link UserRole}
+     * @param role   a value of {@link UserRole}
      * @author Vadym Puiko
      */
     public void updateRole(Long userId, UserRole role) {
@@ -210,7 +217,7 @@ public class UserService {
     /**
      * Method returns page of users by email without ROLE_ADMIN.
      *
-     * @param email contains objects whose values determine the search parameters of the returned list.
+     * @param email    contains objects whose values determine the search parameters of the returned list.
      * @param pageable a value with pageable configuration.
      * @return a dto of {@link Page}.
      * @author Vadym Puiko.
@@ -222,7 +229,7 @@ public class UserService {
     /**
      * Method returns page of users by phone without ROLE_ADMIN.
      *
-     * @param phone contains objects whose values determine the search parameters of the returned list.
+     * @param phone    contains objects whose values determine the search parameters of the returned list.
      * @param pageable a value with pageable configuration.
      * @return a dto of {@link Page}.
      * @author Vadym Puiko.
@@ -269,6 +276,20 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
+
+    /**
+     * Method that allow you to get {@link User} by ID.
+     *
+     * @param id a value of {@link Long}
+     * @return {@link User}
+     * @author Vadym Puiko
+     */
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
+    }
+
+
     /**
      * Method that allow you to get {@link User} by email.
      *
@@ -278,7 +299,7 @@ public class UserService {
      */
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND + email));
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         return userMapper.convertToDto(user);
     }
 
@@ -291,7 +312,7 @@ public class UserService {
      */
     public UserDto findByUsername(String username) {
         User user = userRepository.findUserByUsername(username).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_USERNAME + username));
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_USERNAME));
         return userMapper.convertToDto(user);
     }
 
@@ -331,6 +352,38 @@ public class UserService {
         throw new BadRefreshTokenException(REFRESH_TOKEN_NOT_VALID);
     }
 
+    public Long countAllActiveUsers() {
+        return userRepository.countAllActiveUsers();
+    }
+
+    public Long countAllActiveUsersByRole(UserRole role) {
+        return userRepository.countAllActiveUsersByRole(role);
+    }
+
+    public Long countAllUsersByRegistrationDateBetween(LocalDateTime start, LocalDateTime end) {
+        return userRepository.countAllByRegistrationDateBetween(start, end);
+    }
+
+    public List<User> findAllByRole(UserRole role) {
+        return userRepository.findAllActiveUsersByRole(role);
+    }
+
+    public Long countAllActiveByRoleAndRegistrationDateBefore(UserRole role, LocalDateTime date) {
+        return userRepository.countAllActiveByRoleAndRegistrationDateBefore(role, date);
+    }
+
+    public UserDto getCurrentUserDto() {
+        return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
+    }
+
+    public Long getCurrentUserId() {
+        Long id = jwtTokenProvider.getCurrentUser().getId();
+        if (id == null) {
+            return 0L;
+        }
+        return id;
+    }
+
     @Transactional
     public void changeUserPassword(ChangePasswordDto changePasswordDto) {
         User user = jwtTokenProvider.getCurrentUser();
@@ -345,9 +398,5 @@ public class UserService {
         }
         userRepository.updatePassword(passwordEncoder.encode(changePasswordDto.getNewPassword()),
                 user.getId());
-    }
-
-    public UserDto getCurrentUserDto(){
-        return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
     }
 }

@@ -1,168 +1,136 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
 import com.softserve.maklertaboo.entity.enums.UserRole;
-import com.softserve.maklertaboo.repository.FlatRepository;
-import com.softserve.maklertaboo.repository.comment.FlatCommentRepository;
-import com.softserve.maklertaboo.repository.comment.UserCommentRepository;
-import com.softserve.maklertaboo.repository.request.RequestForFlatVerificationRepository;
-import com.softserve.maklertaboo.repository.request.RequestForUserVerificationRepository;
-import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.entity.user.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import static com.softserve.maklertaboo.utils.DateUtils.*;
+import static com.softserve.maklertaboo.utils.DateUtils.asDate;
+import static com.softserve.maklertaboo.utils.DateUtils.asLocalDateTime;
 
 @Service
 public class StatisticsService {
-    private final UserRepository userRepository;
-    private final FlatRepository flatRepository;
-    private final RequestForFlatVerificationRepository requestFlatRepository;
-    private final RequestForUserVerificationRepository requestUserRepository;
-    private final UserCommentRepository userCommentRepository;
-    private final FlatCommentRepository flatCommentRepository;
+    private final UserService userService;
+    private final FlatService flatService;
+    private final RequestForVerificationService requestService;
+    private final FlatBookingService flatBookingService;
+    private final UserCommentService userCommentService;
+    private final FlatCommentService flatCommentService;
 
 
-    public StatisticsService(UserRepository userRepository, FlatRepository flatRepository, RequestForFlatVerificationRepository requestFlatRepository, RequestForUserVerificationRepository requestUserRepository, UserCommentRepository userCommentRepository, FlatCommentRepository flatCommentRepository) {
-        this.userRepository = userRepository;
-        this.flatRepository = flatRepository;
-        this.requestFlatRepository = requestFlatRepository;
-        this.requestUserRepository = requestUserRepository;
-        this.userCommentRepository = userCommentRepository;
-        this.flatCommentRepository = flatCommentRepository;
+    public StatisticsService(UserService userService,
+                             FlatService flatService,
+                             RequestForVerificationService requestFlatService,
+                             FlatBookingService flatBookingService, UserCommentService userCommentService,
+                             FlatCommentService flatCommentService) {
+        this.userService = userService;
+        this.flatService = flatService;
+        this.requestService = requestFlatService;
+        this.flatBookingService = flatBookingService;
+        this.userCommentService = userCommentService;
+        this.flatCommentService = flatCommentService;
     }
 
-    public Long getCountOfActiveFlats() {
-        return flatRepository.countAllByIsActive(true);
+    public Long countActiveFlats() {
+        return flatService.countAllByIsActive(true);
     }
 
-    public Long getCountOfUnactiveFlats() {
-        return flatRepository.countAllByIsActive(false);
+    public Long countUnactiveFlats() {
+        return flatService.countAllByIsActive(false);
     }
 
-    public Long getCountOfActiveUsers() {
-        return userRepository.count();
+    public Long countActiveUsers() {
+        return userService.countAllActiveUsers();
     }
 
-    public Long getCountOfActiveRenters() {
-        return userRepository.countAllByRole(UserRole.ROLE_RENTER);
+    public Long countActiveLandlords() {
+        return userService.countAllActiveUsersByRole(UserRole.ROLE_LANDLORD);
+    }
+    public Long countActiveRenters() {
+        return userService.countAllActiveUsersByRole(UserRole.ROLE_RENTER);
     }
 
-    public Long getCountOfActiveLandlords() {
-        return userRepository.countAllByRole(UserRole.ROLE_LANDLORD);
+    public Long countActiveModerators() {
+        return userService.countAllActiveUsersByRole(UserRole.ROLE_MODERATOR);
     }
 
-    public Long getCountOfActiveModerators() {
-        return userRepository.countAllByRole(UserRole.ROLE_MODERATOR);
+    public Long countActiveUsersComments() {
+        return userCommentService.countAllActiveComments();
     }
 
-    public Long getCountOfActiveUsersComments() {
-        return userCommentRepository.countAllByIsActiveTrue();
+    public Long countActiveFlatsComments() {
+        return flatCommentService.countAllActiveComments();
     }
 
-    public Long getCountOfActiveFlatsComments() {
-        return flatCommentRepository.countAllByIsActiveTrue();
-    }
-
-
-    public List<Long> getCountOfRegisteredUsersForLastDays(int numberOfDays) {
-        LocalDate date = LocalDate.now().minusDays(numberOfDays);
-        return IntStream.rangeClosed(1, numberOfDays)
-                .mapToObj(date::plusDays)
-                .map(this::getCountOfRegisteredUsersByDay)
-                .collect(Collectors.toList());
-    }
-
-
-    public List<Long> getCountOfPostedFlatsForLastDays(int numberOfDays) {
-        LocalDate date = LocalDate.now().minusDays(numberOfDays);
-        return IntStream.rangeClosed(1, numberOfDays)
-                .mapToObj(date::plusDays)
-                .map(this::getCountOfPostedFlatsByDay)
-                .collect(Collectors.toList());
-    }
-
-
-    public List<Long> getCountOfUsersForBetweenMonths(Date from, Date to) {
-        LocalDate date = asLocalDate(from);
-        return IntStream.rangeClosed(0, monthsBetween(from, to))
-                .mapToObj(date::plusMonths)
-                .map(this::getCountOfUsersBeforeMonth)
-                .collect(Collectors.toList());
-    }
-
-    public List<Long> getCountOfLandlordsForBetweenMonths(Date from, Date to) {
-        LocalDate date = asLocalDate(from);
-        return IntStream.rangeClosed(0, monthsBetween(from, to))
-                .mapToObj(date::plusMonths)
-                .map(this::getCountOfLandlordsBeforeMonth)
-                .collect(Collectors.toList());
-    }
-
-
-    public List<Long> getCountOfPostedUsersCommentsFlatsLastDays(int numberOfDays) {
-        LocalDate date = LocalDate.now().minusDays(numberOfDays);
-        return IntStream.rangeClosed(1, numberOfDays)
-                .mapToObj(date::plusDays)
-                .map(this::getCountOfPostedUsersCommentsFlatsByDay)
-                .collect(Collectors.toList());
-    }
-
-
-    public List<Long> getCountOfPostedFlatsCommentsFlatsLastDays(int numberOfDays) {
-        LocalDate date = LocalDate.now().minusDays(numberOfDays);
-        return IntStream.rangeClosed(1, numberOfDays)
-                .mapToObj(date::plusDays)
-                .map(this::getCountOfPostedFlatsCommentsFlatsByDay)
-                .collect(Collectors.toList());
-    }
-
-
-    public List<String> getNameOfMonthsInRange(Date from, Date to) {
-        LocalDate date = asLocalDate(from);
-        return IntStream.rangeClosed(0, monthsBetween(from, to))
-                .mapToObj(date::plusMonths)
-                .map(LocalDate::getMonth)
-                .map(Objects::toString)
-                .collect(Collectors.toList());
-    }
-
-    private Long getCountOfPostedFlatsCommentsFlatsByDay(LocalDate day) {
+    public Long countUsersRegisteredOnDay(LocalDate day) {
         LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
-        return flatCommentRepository.countAllByPublicationDateBetween(endOfDay.minusDays(1), endOfDay);
+        return userService.countAllUsersByRegistrationDateBetween(endOfDay.minusDays(1), endOfDay);
     }
 
-    private Long getCountOfRegisteredUsersByDay(LocalDate day) {
+    public Long countFlatsPostedOnDay(LocalDate day) {
         LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
-        return userRepository.countAllByRegistrationDateBetween(asDate(endOfDay.minusDays(1)), asDate(endOfDay));
+        return requestService.countApprovedFlatRequestsByVerificationDateBetween(
+                asDate(endOfDay.minusDays(1)), asDate(endOfDay));
     }
 
-    private Long getCountOfPostedFlatsByDay(LocalDate day) {
-        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
-        return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(asDate(endOfDay.minusDays(1)), asDate(endOfDay));
+    public Long countFlatsPostedBetweenDates(LocalDate start, LocalDate end) {
+        return requestService.countApprovedFlatRequestsByVerificationDateBetween(asDate(start), asDate(end));
     }
 
-    private Long getCountOfUsersBeforeMonth(LocalDate month) {
-        LocalDate endOfMonth = month.with(TemporalAdjusters.lastDayOfMonth());
-        return userRepository.countAllByRegistrationDateBefore(asDate(endOfMonth));
+    public Long countUsersRegisteredBetweenDates(LocalDate start, LocalDate end) {
+        return userService.countAllUsersByRegistrationDateBetween(asLocalDateTime(start), asLocalDateTime(end));
     }
 
-    private Long getCountOfLandlordsBeforeMonth(LocalDate month) {
-        LocalDate endOfMonth = month.with(TemporalAdjusters.lastDayOfMonth());
-        return requestUserRepository.countAllVerificationDateLessAndStatusIsApproved(asDate(endOfMonth), RequestForVerificationType.LANDLORD);
+    public Long countCommentsPostedBetweenDates(LocalDate start, LocalDate end) {
+        return flatCommentService.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end)) +
+                userCommentService.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end));
     }
 
-    private Long getCountOfPostedUsersCommentsFlatsByDay(LocalDate day) {
-        LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
-        return userCommentRepository.countAllByPublicationDateBetween(endOfDay.minusDays(1), endOfDay);
+    public List<User> getLandlordsSortedByFlatCountLimit(int limit) {
+        return userService.findAllByRole(UserRole.ROLE_LANDLORD).stream()
+                .sorted(Comparator.comparingLong(flatService::countAllByOwner).reversed())
+                .limit(limit).collect(Collectors.toList());
+    }
+
+    public Long countFlatsByOwner(Long id) {
+        User user = userService.findById(id);
+        return flatService.countAllByOwner(user);
+    }
+
+    public Long countRentersRegisteredBeforeMonth(LocalDate month) {
+        return userService.countAllActiveByRoleAndRegistrationDateBefore(UserRole.ROLE_RENTER,
+                asLocalDateTime(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
+    }
+
+    public Long countLandlordsRegisteredBeforeMonth(LocalDate month) {
+        return userService.countAllActiveByRoleAndRegistrationDateBefore(UserRole.ROLE_LANDLORD,
+                asLocalDateTime(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
+    }
+
+    public Long countFlatsPostedBeforeMonth(LocalDate month) {
+        return requestService.countApprovedFlatRequestsByVerificationDateBefore(asDate(month));
+    }
+
+    public Long countFlatCommentsPostedBeforeMonth(LocalDate month) {
+        return flatCommentService.countAllByPublicationDateBefore(
+                asLocalDateTime(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
+    }
+
+    public Long countUserCommentsPostedBeforeMonth(LocalDate month) {
+        return userCommentService.countAllByPublicationDateBefore(
+                asLocalDateTime(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
+    }
+
+    public Long countAllCommitmentsBetweenDates(LocalDate start, LocalDate end) {
+        return flatBookingService.countApprovedRequestsBetween(start,end);
+    }
+
+    public Long countCommitmentsOfLandlord(Long id) {
+        return flatBookingService.countApprovedRequestsOfLandlord(id);
     }
 }

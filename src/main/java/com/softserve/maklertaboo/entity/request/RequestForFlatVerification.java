@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -16,7 +15,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 public class RequestForFlatVerification extends RequestForVerification {
 
+    @NonNull
     @ManyToOne
     private Flat flat;
-
 }
