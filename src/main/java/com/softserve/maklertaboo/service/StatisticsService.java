@@ -2,10 +2,6 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
-import com.softserve.maklertaboo.repository.FlatRepository;
-import com.softserve.maklertaboo.repository.comment.FlatCommentRepository;
-import com.softserve.maklertaboo.repository.comment.UserCommentRepository;
-import com.softserve.maklertaboo.repository.request.RequestForFlatVerificationRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,30 +16,30 @@ import static com.softserve.maklertaboo.utils.DateUtils.asLocalDateTime;
 @Service
 public class StatisticsService {
     private final UserService userService;
-    private final FlatRepository flatRepository;
-    private final RequestForFlatVerificationRepository requestFlatRepository;
-    private final UserCommentRepository userCommentRepository;
-    private final FlatCommentRepository flatCommentRepository;
+    private final FlatService flatService;
+    private final RequestForVerificationService requestService;
+    private final UserCommentService userCommentService;
+    private final FlatCommentService flatCommentService;
 
 
     public StatisticsService(UserService userService,
-                             FlatRepository flatRepository,
-                             RequestForFlatVerificationRepository requestFlatRepository,
-                             UserCommentRepository userCommentRepository,
-                             FlatCommentRepository flatCommentRepository) {
+                             FlatService flatService,
+                             RequestForVerificationService requestFlatService,
+                             UserCommentService userCommentService,
+                             FlatCommentService flatCommentService) {
         this.userService = userService;
-        this.flatRepository = flatRepository;
-        this.requestFlatRepository = requestFlatRepository;
-        this.userCommentRepository = userCommentRepository;
-        this.flatCommentRepository = flatCommentRepository;
+        this.flatService = flatService;
+        this.requestService = requestFlatService;
+        this.userCommentService = userCommentService;
+        this.flatCommentService = flatCommentService;
     }
 
     public Long countActiveFlats() {
-        return flatRepository.countAllByIsActive(true);
+        return flatService.countAllByIsActive(true);
     }
 
     public Long countUnactiveFlats() {
-        return flatRepository.countAllByIsActive(false);
+        return flatService.countAllByIsActive(false);
     }
 
     public Long countActiveUsers() {
@@ -59,11 +55,11 @@ public class StatisticsService {
     }
 
     public Long countActiveUsersComments() {
-        return userCommentRepository.countAllByIsActiveTrue();
+        return userCommentService.countAllActiveComments();
     }
 
     public Long countActiveFlatsComments() {
-        return flatCommentRepository.countAllByIsActiveTrue();
+        return flatCommentService.countAllActiveComments();
     }
 
     public Long countUsersRegisteredOnDay(LocalDate day) {
@@ -73,12 +69,12 @@ public class StatisticsService {
 
     public Long countFlatsPostedOnDay(LocalDate day) {
         LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
-        return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(
+        return requestService.countApprovedFlatRequestsByVerificationDateBetween(
                 asDate(endOfDay.minusDays(1)), asDate(endOfDay));
     }
 
     public Long countFlatsPostedBetweenDates(LocalDate start, LocalDate end) {
-        return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(asDate(start), asDate(end));
+        return requestService.countApprovedFlatRequestsByVerificationDateBetween(asDate(start), asDate(end));
     }
 
     public Long countUsersRegisteredBetweenDates(LocalDate start, LocalDate end) {
@@ -86,19 +82,19 @@ public class StatisticsService {
     }
 
     public Long countCommentsPostedBetweenDates(LocalDate start, LocalDate end) {
-        return flatCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end)) +
-                userCommentRepository.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end));
+        return flatCommentService.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end)) +
+                userCommentService.countAllByPublicationDateBetween(asLocalDateTime(start), asLocalDateTime(end));
     }
 
     public List<User> getLandlordsSortedByFlatCountLimit(int limit) {
         return userService.findAllByRole(UserRole.ROLE_LANDLORD).stream()
-                .sorted(Comparator.comparingLong(flatRepository::countAllByOwner).reversed())
+                .sorted(Comparator.comparingLong(flatService::countAllByOwner).reversed())
                 .limit(limit).collect(Collectors.toList());
     }
 
     public Long countFlatsByOwner(Long id) {
         User user = userService.findById(id);
-        return flatRepository.countAllByOwner(user);
+        return flatService.countAllByOwner(user);
     }
 
     public Long countRentersRegisteredBeforeMonth(LocalDate month) {
@@ -112,16 +108,16 @@ public class StatisticsService {
     }
 
     public Long countFlatsPostedBeforeMonth(LocalDate month) {
-        return requestFlatRepository.countAllVerificationDateBeforeAndStatusIsApproved(asDate(month));
+        return requestService.countApprovedFlatRequestsByVerificationDateBefore(asDate(month));
     }
 
     public Long countFlatCommentsPostedBeforeMonth(LocalDate month) {
-        return flatCommentRepository.countAllByPublicationDateBefore(
+        return flatCommentService.countAllByPublicationDateBefore(
                 asLocalDateTime(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
     }
 
     public Long countUserCommentsPostedBeforeMonth(LocalDate month) {
-        return userCommentRepository.countAllByPublicationDateBefore(
+        return userCommentService.countAllByPublicationDateBefore(
                 asLocalDateTime(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
     }
 }

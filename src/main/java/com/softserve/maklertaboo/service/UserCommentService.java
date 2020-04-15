@@ -81,4 +81,16 @@ public class UserCommentService {
         List<UserComment> list=userCommentRepository.findAllByCommentAboutCommentAndIsActiveIsTrue(CommentAboutComment);
         return list.stream().map(userCommentMapper::convertToDto).collect(Collectors.toList());
     }
+
+    public Long countAllActiveComments() {
+        return userCommentRepository.countAllByIsActiveTrue();
+    }
+
+    public Long countAllByPublicationDateBetween(LocalDateTime start, LocalDateTime end) {
+        return userCommentRepository.countAllByPublicationDateBetween(start,end);
+    }
+
+    public Long countAllByPublicationDateBefore(LocalDateTime date) {
+        return userCommentRepository.countAllByPublicationDateBefore(date);
+    }
 }

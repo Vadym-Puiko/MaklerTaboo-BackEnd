@@ -182,4 +182,13 @@ public class RequestForVerificationService {
         request.setType(RequestForVerificationType.LANDLORD);
         requestUserRepository.save(request);
     }
+
+    public Long countApprovedFlatRequestsByVerificationDateBetween(Date start, Date end) {
+        return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(start, end);
+    }
+
+    public Long countApprovedFlatRequestsByVerificationDateBefore(Date date) {
+        return requestFlatRepository.countAllVerificationDateBeforeAndStatusIsApproved(date);
+    }
 }
+

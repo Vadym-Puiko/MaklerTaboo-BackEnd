@@ -154,4 +154,12 @@ public class FlatService {
         User user = userRepository.findById(id).get();
         return flatRepository.findByOwnerAndIsActiveIsTrue(user);
     }
+
+    public Long countAllByIsActive(boolean b) {
+        return flatRepository.countAllByIsActive(b);
+    }
+
+    public long countAllByOwner(User owner) {
+        return flatRepository.countAllByOwner(owner);
+    }
 }

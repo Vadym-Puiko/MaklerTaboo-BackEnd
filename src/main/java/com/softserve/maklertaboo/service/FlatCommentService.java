@@ -85,6 +85,17 @@ public class FlatCommentService {
         return list.stream().map(flatCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
+    public Long countAllActiveComments() {
+        return flatCommentRepository.countAllByIsActiveTrue();
+    }
+
+    public Long countAllByPublicationDateBetween(LocalDateTime start, LocalDateTime end) {
+        return flatCommentRepository.countAllByPublicationDateBetween(start, end);
+    }
+
+    public Long countAllByPublicationDateBefore(LocalDateTime date) {
+        return flatCommentRepository.countAllByPublicationDateBefore(date);
+    }
 }
 
 
