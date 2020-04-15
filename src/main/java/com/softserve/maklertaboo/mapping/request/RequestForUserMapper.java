@@ -10,6 +10,8 @@ import com.softserve.maklertaboo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class RequestForUserMapper implements MapperToDto<RequestForUserVerification, RequestForUserDto>,
         MapperToEntity<RequestForUserDto, RequestForUserVerification> {
@@ -27,9 +29,9 @@ public class RequestForUserMapper implements MapperToDto<RequestForUserVerificat
     public RequestForUserDto convertToDto(RequestForUserVerification requestForUser) {
         RequestForUserDto requestForUserDto = new RequestForUserDto();
 
-        requestForUserDto.setCreationDate(requestForUser.getCreationDate());
+        requestForUserDto.setCreationDate(LocalDateTime.now());
 
-        requestForUserDto.setVerificationDate(requestForUser.getVerificationDate());
+        requestForUserDto.setVerificationDate(LocalDateTime.now());
 
         requestForUserDto.setId(requestForUser.getId());
 

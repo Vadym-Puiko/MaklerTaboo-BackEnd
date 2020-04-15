@@ -17,6 +17,10 @@ public enum UserRole {
 
     }
 
+    public UserRole next() {
+        return values()[this.ordinal() + 1];
+    }
+
     public String getStatus() {
         return this.name();
     }
