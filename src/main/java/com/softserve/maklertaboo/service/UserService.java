@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -359,16 +360,15 @@ public class UserService {
         return userRepository.countAllActiveUsersByRole(role);
     }
 
-    public Long countAllUsersByRegistrationDateBetween(Date start, Date end) {
-        return
-                userRepository.countAllByRegistrationDateBetween(start, end);
+    public Long countAllUsersByRegistrationDateBetween(LocalDateTime start, LocalDateTime end) {
+        return userRepository.countAllByRegistrationDateBetween(start, end);
     }
 
     public List<User> findAllByRole(UserRole role) {
         return userRepository.findAllActiveUsersByRole(role);
     }
 
-    public Long countAllActiveByRoleAndRegistrationDateBefore(UserRole role, Date date) {
+    public Long countAllActiveByRoleAndRegistrationDateBefore(UserRole role, LocalDateTime date) {
         return userRepository.countAllActiveByRoleAndRegistrationDateBefore(role, date);
     }
 

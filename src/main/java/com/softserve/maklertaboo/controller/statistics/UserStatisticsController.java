@@ -33,6 +33,11 @@ public class UserStatisticsController {
         return statisticsService.countActiveUsers();
     }
 
+    @GetMapping("count-active-renters")
+    public Long countActiveRenters() {
+        return statisticsService.countActiveRenters();
+    }
+
     @GetMapping("count-active-landlords")
     public Long countActiveLandlords() {
         return statisticsService.countActiveLandlords();
@@ -43,19 +48,19 @@ public class UserStatisticsController {
         return statisticsService.countActiveModerators();
     }
 
-    @GetMapping(value = "count-registered-users-on-day",params = {"day"})
+    @GetMapping(value = "count-registered-users-on-day", params = {"day"})
     public Long countUsersRegisteredOnDay(@RequestParam("day")
                                           @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate day) {
         return statisticsService.countUsersRegisteredOnDay(day);
     }
 
-    @GetMapping(value = "count-registered-renters-before-month",params = {"month"})
+    @GetMapping(value = "count-registered-renters-before-month", params = {"month"})
     public Long countRentersRegisteredBeforeMonth(@RequestParam("month")
                                                   @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate month) {
         return statisticsService.countRentersRegisteredBeforeMonth(month);
     }
 
-    @GetMapping(value = "count-registered-landlords-before-month",params = {"month"})
+    @GetMapping(value = "count-registered-landlords-before-month", params = {"month"})
     public Long countLandlordsRegisteredBeforeMonth(@RequestParam("month")
                                                     @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate month) {
         return statisticsService.countLandlordsRegisteredBeforeMonth(month);
@@ -70,8 +75,19 @@ public class UserStatisticsController {
 
     @GetMapping(value = "count-users-registered-between-dates", params = {"start", "end"})
     public Long countUsersRegisteredBetweenDates(@RequestParam("start") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate start,
-                                             @RequestParam("end") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate end) {
+                                                 @RequestParam("end") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate end) {
         return statisticsService.countUsersRegisteredBetweenDates(start, end);
+    }
+
+    @GetMapping(value = "count-all-commitments-between-dates", params = {"start", "end"})
+    public Long countAllCommitmentsBetweenDates(@RequestParam("start") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate start,
+                                                @RequestParam("end") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate end) {
+        return statisticsService.countAllCommitmentsBetweenDates(start, end);
+    }
+
+    @GetMapping(value = "count-commitments-of-landlord", params = {"userId"})
+    public Long countCommitmentsOfLandlord(@RequestParam("userId") Long id) {
+        return statisticsService.countCommitmentsOfLandlord(id);
     }
 
 }

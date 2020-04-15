@@ -18,6 +18,7 @@ public class StatisticsService {
     private final UserService userService;
     private final FlatService flatService;
     private final RequestForVerificationService requestService;
+    private final FlatBookingService flatBookingService;
     private final UserCommentService userCommentService;
     private final FlatCommentService flatCommentService;
 
@@ -25,11 +26,12 @@ public class StatisticsService {
     public StatisticsService(UserService userService,
                              FlatService flatService,
                              RequestForVerificationService requestFlatService,
-                             UserCommentService userCommentService,
+                             FlatBookingService flatBookingService, UserCommentService userCommentService,
                              FlatCommentService flatCommentService) {
         this.userService = userService;
         this.flatService = flatService;
         this.requestService = requestFlatService;
+        this.flatBookingService = flatBookingService;
         this.userCommentService = userCommentService;
         this.flatCommentService = flatCommentService;
     }
@@ -49,6 +51,9 @@ public class StatisticsService {
     public Long countActiveLandlords() {
         return userService.countAllActiveUsersByRole(UserRole.ROLE_LANDLORD);
     }
+    public Long countActiveRenters() {
+        return userService.countAllActiveUsersByRole(UserRole.ROLE_RENTER);
+    }
 
     public Long countActiveModerators() {
         return userService.countAllActiveUsersByRole(UserRole.ROLE_MODERATOR);
@@ -64,7 +69,7 @@ public class StatisticsService {
 
     public Long countUsersRegisteredOnDay(LocalDate day) {
         LocalDateTime endOfDay = day.atStartOfDay().plusDays(1);
-        return userService.countAllUsersByRegistrationDateBetween(asDate(endOfDay.minusDays(1)), asDate(endOfDay));
+        return userService.countAllUsersByRegistrationDateBetween(endOfDay.minusDays(1), endOfDay);
     }
 
     public Long countFlatsPostedOnDay(LocalDate day) {
@@ -78,7 +83,7 @@ public class StatisticsService {
     }
 
     public Long countUsersRegisteredBetweenDates(LocalDate start, LocalDate end) {
-        return userService.countAllUsersByRegistrationDateBetween(asDate(start), asDate(end));
+        return userService.countAllUsersByRegistrationDateBetween(asLocalDateTime(start), asLocalDateTime(end));
     }
 
     public Long countCommentsPostedBetweenDates(LocalDate start, LocalDate end) {
@@ -99,12 +104,12 @@ public class StatisticsService {
 
     public Long countRentersRegisteredBeforeMonth(LocalDate month) {
         return userService.countAllActiveByRoleAndRegistrationDateBefore(UserRole.ROLE_RENTER,
-                asDate(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
+                asLocalDateTime(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
     }
 
     public Long countLandlordsRegisteredBeforeMonth(LocalDate month) {
         return userService.countAllActiveByRoleAndRegistrationDateBefore(UserRole.ROLE_LANDLORD,
-                asDate(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
+                asLocalDateTime(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
     }
 
     public Long countFlatsPostedBeforeMonth(LocalDate month) {
@@ -119,5 +124,13 @@ public class StatisticsService {
     public Long countUserCommentsPostedBeforeMonth(LocalDate month) {
         return userCommentService.countAllByPublicationDateBefore(
                 asLocalDateTime(month.withDayOfMonth(month.getMonth().length(month.isLeapYear()))));
+    }
+
+    public Long countAllCommitmentsBetweenDates(LocalDate start, LocalDate end) {
+        return flatBookingService.countApprovedRequestsBetween(start,end);
+    }
+
+    public Long countCommitmentsOfLandlord(Long id) {
+        return flatBookingService.countApprovedRequestsOfLandlord(id);
     }
 }

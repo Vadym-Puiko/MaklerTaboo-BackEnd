@@ -79,7 +79,6 @@ public class FlatCommentService {
         return list.stream().map(flatCommentMapper::convertToDto).collect(Collectors.toList());
     }
 
-<<<<<<< HEAD
     public Long countAllActiveComments() {
         return flatCommentRepository.countAllByIsActiveTrue();
     }
@@ -90,7 +89,7 @@ public class FlatCommentService {
 
     public Long countAllByPublicationDateBefore(LocalDateTime date) {
         return flatCommentRepository.countAllByPublicationDateBefore(date);
-=======
+    }
     public FlatComment getFlatCommentById(Long id){
         FlatComment flatComment=flatCommentRepository.findById(id).orElse(null);
         if (flatComment==null){
@@ -115,7 +114,6 @@ public class FlatCommentService {
         }
         flatComment.setCommentLikes(flatComment.getCommentLikes()-1);
         flatCommentRepository.save(flatComment);
->>>>>>> develop
     }
 }
 

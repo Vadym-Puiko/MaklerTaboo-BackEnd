@@ -171,6 +171,7 @@ public class FlatService {
     public long countAllByOwner(User owner) {
         return flatRepository.countAllByOwner(owner);
     }
+
     /**
      * Method for deleting publication of {@link Flat}.
      *

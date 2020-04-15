@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -134,7 +135,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return amount of user with given {@link Date}.
      * @author Andriy Pyzh
      */
-    long countAllByRegistrationDateBetween(Date start, Date end);
+    long countAllByRegistrationDateBetween(LocalDateTime start, LocalDateTime end);
 
     /**
      * The method counts all users by user registration date before.
@@ -156,12 +157,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User u set u.refreshKey= ?1 where u.id = ?2")
     void updateRefreshKey(String secret, Long id);
 
-<<<<<<< HEAD
-    List<User> findAllByRole(UserRole role);
 
     @Query("SELECT COUNT(u) FROM User u" +
-            " WHERE u.role = :role AND u.registrationDate < :date AND u.status='ACTIVE'")
-    Long countAllActiveByRoleAndRegistrationDateBefore(UserRole role, Date date);
+            " WHERE u.role = :role AND u.registrationDate < :date AND u.userStatus='ACTIVATED'")
+    Long countAllActiveByRoleAndRegistrationDateBefore(UserRole role, LocalDateTime date);
 
 
     /**
@@ -170,7 +169,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return amount of user with ACTIVE status.
      * @author Andriy Pyzh
      */
-    @Query("SELECT COUNT(u) FROM User u WHERE u.status = 'ACTIVE'")
+    @Query("SELECT COUNT(u) FROM User u WHERE u.userStatus = 'ACTIVATED'")
     long countAllActiveUsers();
 
     /**
@@ -181,15 +180,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @author Andriy Pyzh
      */
     @Query("SELECT COUNT(u) FROM User u" +
-            " WHERE u.status = 'ACTIVE' AND u.role =:role")
+            " WHERE u.userStatus = 'ACTIVATED' AND u.role =:role")
     Long countAllActiveUsersByRole(UserRole role);
 
     @Query("SELECT u FROM User u" +
-            " WHERE u.status = 'ACTIVE' AND u.role =:role")
+            " WHERE u.userStatus = 'ACTIVATED' AND u.role =:role")
     List<User> findAllActiveUsersByRole(UserRole role);
-=======
+
     @Modifying
     @Query("UPDATE User SET password = :password WHERE id = :id")
     void updatePassword(@Param("password") String password, @Param("id") Long id);
->>>>>>> develop
 }

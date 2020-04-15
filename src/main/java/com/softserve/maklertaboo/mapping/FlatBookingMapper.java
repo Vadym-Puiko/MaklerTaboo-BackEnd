@@ -10,6 +10,8 @@ import com.softserve.maklertaboo.repository.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
+
 /**
  * Class that used by {@link MapperToDto}, {@link MapperToEntity}
  * for mapping {@link RequestForFlatDto} into {@link RequestForFlatBooking} and versa.
@@ -38,8 +40,8 @@ public class FlatBookingMapper implements MapperToDto<RequestForFlatBooking, Req
 
         requestForFlatDto.setId(requestForFlat.getId());
         requestForFlatDto.setStatus(requestForFlat.getStatus());
-        requestForFlatDto.setCreationDate(requestForFlat.getCreationDate());
-        requestForFlatDto.setVerificationDate(requestForFlat.getVerificationDate());
+        requestForFlatDto.setCreationDate(requestForFlat.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        requestForFlatDto.setVerificationDate(requestForFlat.getVerificationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         requestForFlatDto.setFlat(flatMapper.convertToDto(requestForFlat.getFlat()));
         requestForFlatDto.setAuthor(userMapper.convertToDto(requestForFlat.getAuthor()));
 
