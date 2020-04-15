@@ -12,8 +12,8 @@ import java.util.Date;
 public class RequestForFlatDto {
     private Long id;
     private RequestForVerificationStatus status;
-    private LocalDateTime creationDate;
-    private LocalDateTime verificationDate;
+    private Date creationDate;
+    private Date verificationDate;
     private FlatDto flat;
     private UserDto author;
 }

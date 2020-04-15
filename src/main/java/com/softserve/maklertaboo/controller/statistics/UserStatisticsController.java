@@ -6,6 +6,7 @@ import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
-//@PreAuthorize("hasRole ('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
+@PreAuthorize("hasRole ('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
 @RequestMapping("/admin/user-statistics")
 public class UserStatisticsController {
 

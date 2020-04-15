@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Component
 public class RequestForFlatMapper implements MapperToDto<RequestForFlatVerification, RequestForFlatDto>,
@@ -38,9 +39,9 @@ public class RequestForFlatMapper implements MapperToDto<RequestForFlatVerificat
     public RequestForFlatDto convertToDto(RequestForFlatVerification requestForFlat) {
         RequestForFlatDto requestForFlatDto = new RequestForFlatDto();
 
-        requestForFlatDto.setCreationDate(LocalDateTime.now());
+        requestForFlatDto.setCreationDate(new Date());
 
-        requestForFlatDto.setVerificationDate(LocalDateTime.now());
+        requestForFlatDto.setVerificationDate(new Date());
 
         requestForFlatDto.setId(requestForFlat.getId());
 
