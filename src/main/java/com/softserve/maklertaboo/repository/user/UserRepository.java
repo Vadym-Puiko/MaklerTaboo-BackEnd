@@ -10,7 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -98,7 +100,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Find {@link User} by page.
      *
      * @param pageable pageable configuration.
-     * @param email string.
+     * @param email    string.
      * @return {@link Page} without User with ROLE_ADMIN
      * @author Vadym Puiko
      */
@@ -109,7 +111,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Find {@link User} by page.
      *
      * @param pageable pageable configuration.
-     * @param phone string.
+     * @param phone    string.
      * @return {@link Page} without User with ROLE_ADMIN
      * @author Vadym Puiko
      */
@@ -118,6 +120,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * The method counts all users by user role.
+     *
      * @param userRole user userRole.
      * @return amount of user with given {@link UserRole}.
      * @author Andriy Pyzh
@@ -126,15 +129,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * The method counts all users by user registration date between.
+     *
      * @param start user date.
-     * @param end user date.
+     * @param end   user date.
      * @return amount of user with given {@link Date}.
      * @author Andriy Pyzh
      */
-    long countAllByRegistrationDateBetween(Date start, Date end);
+    long countAllByRegistrationDateBetween(LocalDateTime start, LocalDateTime end);
 
     /**
      * The method counts all users by user registration date before.
+     *
      * @param start user date.
      * @return amount of user with given {@link Date}.
      * @author Andriy Pyzh
@@ -145,12 +150,42 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Updates refresh token for a given user.
      *
      * @param secret - new refresh token key
-     * @param id - user's id
+     * @param id     - user's id
      * @author Mike Ostapiuk
      */
     @Modifying
     @Query("update User u set u.refreshKey= ?1 where u.id = ?2")
     void updateRefreshKey(String secret, Long id);
+
+
+    @Query("SELECT COUNT(u) FROM User u" +
+            " WHERE u.role = :role AND u.registrationDate < :date AND u.userStatus='ACTIVATED'")
+    Long countAllActiveByRoleAndRegistrationDateBefore(UserRole role, LocalDateTime date);
+
+
+    /**
+     * The method counts all users by ACTIVE user status.
+     *
+     * @return amount of user with ACTIVE status.
+     * @author Andriy Pyzh
+     */
+    @Query("SELECT COUNT(u) FROM User u WHERE u.userStatus = 'ACTIVATED'")
+    long countAllActiveUsers();
+
+    /**
+     * The method counts all users with ACTIVE status by given user role.
+     *
+     * @param role - user role
+     * @return amount of user with ACTIVE status and given {@link UserRole}.
+     * @author Andriy Pyzh
+     */
+    @Query("SELECT COUNT(u) FROM User u" +
+            " WHERE u.userStatus = 'ACTIVATED' AND u.role =:role")
+    Long countAllActiveUsersByRole(UserRole role);
+
+    @Query("SELECT u FROM User u" +
+            " WHERE u.userStatus = 'ACTIVATED' AND u.role =:role")
+    List<User> findAllActiveUsersByRole(UserRole role);
 
     @Modifying
     @Query("UPDATE User SET password = :password WHERE id = :id")
