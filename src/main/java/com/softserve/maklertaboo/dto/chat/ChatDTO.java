@@ -16,4 +16,5 @@ public class ChatDTO {
     private String senderUsername;
     private String receiverUsername;
     private Long chatId;
+    private Long countOfUnreadMessages;
 }

@@ -1,7 +1,6 @@
 package com.softserve.maklertaboo.mapping.request;
 
 import com.softserve.maklertaboo.dto.request.RequestForFlatDto;
-import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.user.User;

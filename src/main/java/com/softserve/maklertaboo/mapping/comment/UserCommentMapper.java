@@ -14,12 +14,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserCommentMapper implements MapperToDto<UserComment, UserCommentDto>, MapperToEntity<UserCommentDto, UserComment> {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final UserMapper userMapper;
 
     @Autowired
-    public UserCommentMapper(UserRepository userRepository,UserMapper userMapper) {
-        this.userRepository = userRepository;
+    public UserCommentMapper(UserService userService,
+                             UserMapper userMapper) {
+        this.userService = userService;
         this.userMapper=userMapper;
     }
 
@@ -34,6 +35,7 @@ public class UserCommentMapper implements MapperToDto<UserComment, UserCommentDt
         userCommentDto.setId(entity.getId());
         userCommentDto.setText(entity.getText());
         userCommentDto.setCommentAboutComment(entity.getCommentAboutComment());
+        userCommentDto.setCommentLikes(entity.getCommentLikes());
         userCommentDto.setPublicationDate(entity.getPublicationDate());
         userCommentDto.setUserId(entity.getUser().getId());
         userCommentDto.setUserAuthor(userMapper.convertToDto(entity.getUserAuthor()));
@@ -49,7 +51,7 @@ public class UserCommentMapper implements MapperToDto<UserComment, UserCommentDt
 
         userComment.setCommentAboutComment(dto.getCommentAboutComment());
         userComment.setText(dto.getText());
-        User user = userRepository.findById(dto.getUserId()).orElseThrow(IllegalArgumentException::new);
+        User user = userMapper.convertToEntity(userService.findUserById(dto.getUserId()));
         userComment.setUser(user);
 
 

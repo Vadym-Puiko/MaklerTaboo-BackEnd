@@ -3,10 +3,11 @@ package com.softserve.maklertaboo.controller;
 import com.softserve.maklertaboo.dto.request.RequestForFlatDto;
 import com.softserve.maklertaboo.dto.request.RequestForUserDto;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
-import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
 import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
 import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
+import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import com.softserve.maklertaboo.service.RequestForVerificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +22,17 @@ public class RequestForVerificationController {
     RequestForVerificationService requestForVerificationService;
     RequestForFlatMapper requestForFlatMapper;
     RequestForUserMapper requestForUserMapper;
+    private final JWTTokenProvider jwtTokenProvider;
 
+    @Autowired
     public RequestForVerificationController(RequestForVerificationService requestForVerificationService,
                                             RequestForFlatMapper requestForFlatMapper,
-                                            RequestForUserMapper requestForUserMapper) {
+                                            RequestForUserMapper requestForUserMapper,
+                                            JWTTokenProvider jwtTokenProvider) {
         this.requestForVerificationService = requestForVerificationService;
         this.requestForFlatMapper = requestForFlatMapper;
         this.requestForUserMapper = requestForUserMapper;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @GetMapping(path = "/flats", params = {"page", "size", "status"})
@@ -35,14 +40,6 @@ public class RequestForVerificationController {
                                                        @RequestParam(name = "size", defaultValue = "10") Integer size,
                                                        @RequestParam(name = "status", defaultValue = "NEW") RequestForVerificationStatus status) {
         return requestForVerificationService.getRequestsForFlatVerification(page, size, status)
-                .map(requestForFlatMapper::convertToDto);
-    }
-
-    @GetMapping(path = "/posts/flats", params = {"page", "size", "status"})
-    public Page<RequestForFlatDto> getPostsForFlats(@RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                       @RequestParam(name = "size", defaultValue = "10") Integer size,
-                                                       @RequestParam(name = "status") RequestForVerificationStatus status) {
-        return requestForVerificationService.getAllAndBannedFlats(page, size, status)
                 .map(requestForFlatMapper::convertToDto);
     }
 
@@ -68,11 +65,6 @@ public class RequestForVerificationController {
                                                             @RequestParam(name = "status", defaultValue = "NEW") RequestForVerificationStatus status) {
         return requestForVerificationService.getRequestsForModeratorVerification(page, size, status)
                 .map(requestForUserMapper::convertToDto);
-    }
-
-    @PutMapping("/flats/{id}/deactivate")
-    public void deactivateRequestForFlat(@PathVariable Long id) {
-        requestForVerificationService.deactivateFlatRequest(id);
     }
 
     @PutMapping("/flats/{id}/approve")

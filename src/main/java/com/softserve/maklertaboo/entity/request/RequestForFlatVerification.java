@@ -4,7 +4,6 @@ import com.softserve.maklertaboo.entity.flat.Flat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;

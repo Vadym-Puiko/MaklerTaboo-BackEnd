@@ -21,17 +21,8 @@ public class LikeController {
     }
 
     @PutMapping("/usercommentlikecreate")
-    public void addUserFlatComment(@RequestBody LikeDto likeDto) {
+    public void addLikeUserComment(@RequestBody LikeDto likeDto) {
         likeService.checkLikeToUserComment(likeDto);
     }
 
-    @GetMapping("/getfcommentlike/{id}")
-    public Long getFCLike(@PathVariable Long id){
-        return  likeService.countLikeToFlatComment(id);
-    }
-
-    @GetMapping("/getucommentlike/{id}")
-    public Long getUCLike(@PathVariable Long id){
-        return  likeService.countLikeToUserComment(id);
-    }
 }

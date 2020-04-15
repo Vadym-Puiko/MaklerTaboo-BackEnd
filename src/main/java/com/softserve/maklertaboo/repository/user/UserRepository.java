@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -155,6 +156,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User u set u.refreshKey= ?1 where u.id = ?2")
     void updateRefreshKey(String secret, Long id);
 
+<<<<<<< HEAD
     List<User> findAllByRole(UserRole role);
 
     @Query("SELECT COUNT(u) FROM User u" +
@@ -185,4 +187,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u" +
             " WHERE u.status = 'ACTIVE' AND u.role =:role")
     List<User> findAllActiveUsersByRole(UserRole role);
+=======
+    @Modifying
+    @Query("UPDATE User SET password = :password WHERE id = :id")
+    void updatePassword(@Param("password") String password, @Param("id") Long id);
+>>>>>>> develop
 }

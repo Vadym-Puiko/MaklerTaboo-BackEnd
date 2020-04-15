@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -41,7 +42,6 @@ public class JWTTokenProvider implements Serializable {
     }
 
     public String generateAccessToken(String email) {
-//        Claims claims = Jwts.claims().setSubject(email);
         Date expiryDate = new Date(new Date().getTime() + Long.valueOf(accessExpirationTime));
         log.info("Access Token for " + email + " created.");
         return Jwts.builder()
@@ -59,7 +59,6 @@ public class JWTTokenProvider implements Serializable {
     public String generateRefreshToken(String email) {
         User user = userRepository.findUserByEmail(email).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
-//        Claims claims = Jwts.claims().setSubject(email);
         Date expiryDate = new Date(new Date().getTime() + Long.valueOf(refreshExpirationTime));
         log.info("Refresh Token for " + email + " created.");
         return Jwts.builder()
@@ -79,10 +78,17 @@ public class JWTTokenProvider implements Serializable {
         return ((Claims) jwt.getBody()).getSubject();
     }
 
+    public User getCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.isAuthenticated() || authentication.getPrincipal().getClass() == String.class) return new User();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        return userRepository.findUserByEmail(userDetails.getUsername()).orElseThrow(
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+    }
+
     public boolean isTokenValid(String token, String secretKey) {
         try{
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-//            return !(claims.getBody().getExpiration().before(new Date()));
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
         }catch(IllegalArgumentException e){
             log.error("Given token is not valid: " + e.getMessage());

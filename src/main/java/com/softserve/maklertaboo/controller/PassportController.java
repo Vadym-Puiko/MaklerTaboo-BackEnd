@@ -26,24 +26,18 @@ public class PassportController {
     }
 
     @GetMapping("/getPassport")
-    public PassportDto getPassportData(@RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        UserDto userDto = userService.findByEmail(email);
-        return passportService.getPassport(userDto.getId());
+    public PassportDto getPassportData() {
+        return passportService.getPassport(userService.getCurrentUserDto().getId());
     }
 
     @PostMapping("/update")
-    public void updatePassportData(@RequestHeader("Authorization") String token, @RequestBody @Valid PassportDto passportDto) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        UserDto userDto = userService.findByEmail(email);
-        passportService.updatePassport(userDto, passportDto);
+    public void updatePassportData(@RequestBody @Valid PassportDto passportDto) {
+        passportService.updatePassport(userService.getCurrentUserDto(), passportDto);
     }
 
     @PostMapping("/landlord")
-    public void EvaluateToLandlord(@RequestHeader("Authorization") String token) {
-        String email = jwtTokenProvider.getEmailFromJWT(token);
-        UserDto userDto = userService.findByEmail(email);
-        passportService.getLandlordAdminApproval(userDto);
+    public void EvaluateToLandlord() {
+        passportService.getLandlordAdminApproval(userService.getCurrentUserDto());
     }
 
     @GetMapping("/get-passport/{id}")

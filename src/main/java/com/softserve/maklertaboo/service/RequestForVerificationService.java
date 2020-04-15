@@ -1,16 +1,23 @@
 package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.constant.ErrorMessage;
+import com.softserve.maklertaboo.dto.request.RequestForBanFlatDto;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
 import com.softserve.maklertaboo.entity.enums.UserRole;
+import com.softserve.maklertaboo.entity.enums.UserStatus;
 import com.softserve.maklertaboo.entity.flat.Flat;
+import com.softserve.maklertaboo.entity.request.RequestForBanFlat;
 import com.softserve.maklertaboo.entity.request.RequestForFlatVerification;
 import com.softserve.maklertaboo.entity.request.RequestForUserVerification;
 import com.softserve.maklertaboo.entity.request.RequestForVerification;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.RequestNotFoundException;
+import com.softserve.maklertaboo.mapping.request.RequestForBanFlatMapper;
+import com.softserve.maklertaboo.mapping.request.RequestForFlatMapper;
+import com.softserve.maklertaboo.mapping.request.RequestForUserMapper;
 import com.softserve.maklertaboo.repository.request.RequestBaseRepository;
+import com.softserve.maklertaboo.repository.request.RequestForBanFlatRepository;
 import com.softserve.maklertaboo.repository.request.RequestForFlatVerificationRepository;
 import com.softserve.maklertaboo.repository.request.RequestForUserVerificationRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -27,34 +34,40 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class RequestForVerificationService {
+
     private final RequestForFlatVerificationRepository requestFlatRepository;
     private final RequestForUserVerificationRepository requestUserRepository;
     private final FlatService flatService;
     private final UserService userService;
 
+
+    private final RequestForBanFlatRepository requestForBanFlatRepository;
+    private final RequestForBanFlatMapper requestForBanFlatMapper;
+
     @Autowired
     public RequestForVerificationService(RequestForFlatVerificationRepository requestForFlatVerificationRepository,
                                          RequestForUserVerificationRepository requestForUserVerificationRepository,
-                                         FlatService flatService, UserService userService) {
+                                         FlatService flatService,
+                                         UserService userService,
+                                         RequestForUserMapper requestForUserMapper,
+                                         RequestForFlatMapper requestForFlatMapper,
+                                         RequestForBanFlatRepository requestForBanFlatRepository,
+                                         RequestForBanFlatMapper requestForBanFlatMapper) {
 
         this.requestFlatRepository = requestForFlatVerificationRepository;
         this.requestUserRepository = requestForUserVerificationRepository;
         this.flatService = flatService;
         this.userService = userService;
+        this.requestForBanFlatRepository = requestForBanFlatRepository;
+        this.requestForBanFlatMapper = requestForBanFlatMapper;
     }
+
 
     public void approveFlatRequest(Long id) {
         RequestForFlatVerification requestForFlatVerification = getRequestsForFlatVerificationById(id);
         requestForFlatVerification.setStatus(RequestForVerificationStatus.APPROVED);
         requestForFlatVerification.setVerificationDate(new Date());
         flatService.activate(requestForFlatVerification.getFlat().getId());
-        requestFlatRepository.save(requestForFlatVerification);
-    }
-
-    public void deactivateFlatRequest(Long id) {
-        RequestForFlatVerification requestForFlatVerification = getRequestsForFlatVerificationById(id);
-        requestForFlatVerification.setVerificationDate(new Date());
-        flatService.deactivateFlat(requestForFlatVerification.getFlat().getId(), "");
         requestFlatRepository.save(requestForFlatVerification);
     }
 
@@ -108,18 +121,6 @@ public class RequestForVerificationService {
         requestForVerification.setVerificationDate(new Date());
         requestBaseRepository.save(requestForVerification);
     }
-
-    public Page<RequestForFlatVerification> getAllAndBannedFlats(Integer page, Integer size,
-                                                        RequestForVerificationStatus status) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("creationDate")));
-////        if (status == RequestForVerificationStatus.DEACTIVATED) {
-//            return requestFlatRepository.findAllByStatus(pageable, status);
-//        } else {
-//            return requestFlatRepository.findAll(pageable);
-//        }
-        return null;
-    }
-
 
     public Page<RequestForFlatVerification> getRequestsForFlatVerification(Integer page, Integer size,
                                                                            RequestForVerificationStatus status) {
@@ -189,6 +190,58 @@ public class RequestForVerificationService {
 
     public Long countApprovedFlatRequestsByVerificationDateBefore(Date date) {
         return requestFlatRepository.countAllVerificationDateBeforeAndStatusIsApproved(date);
+    }
+
+    /**
+     * Method that allow you to save new {@link RequestForBanFlat}.
+     *
+     * @param flat a value of {@link Flat}
+     * @author Vadym Puiko
+     */
+    public void createForBan(Flat flat) {
+        RequestForBanFlat request = new RequestForBanFlat();
+        request.setFlat(flat);
+        request.setAuthor(flat.getOwner());
+        requestForBanFlatRepository.save(request);
+    }
+
+    /**
+     * Method returns activated publication by page.
+     *
+     * @param pageable a value with pageable configuration.
+     * @param status   {@link String}.
+     * @return page of {@link RequestForBanFlatDto}.
+     * @author Vadym Puiko
+     */
+    public Page<RequestForBanFlatDto> getAllActivePublication(Pageable pageable, String status) {
+        return requestForBanFlatRepository.findAllByStatusForVerificationLike(pageable, status)
+                .map(requestForBanFlatMapper::convertToDto);
+    }
+
+    /**
+     * Method which activate publication.
+     *
+     * @param requestForBanFlatDto {@link RequestForBanFlatDto}.
+     * @author Vadym Puiko
+     */
+    public void activatePublication(RequestForBanFlatDto requestForBanFlatDto) {
+        final RequestForBanFlat current = requestForBanFlatRepository.findById(requestForBanFlatDto.getId())
+                .orElseThrow(() -> new NullPointerException(ErrorMessage.USER_ALREADY_EXISTS));
+        current.setStatusForVerification(UserStatus.ACTIVATED.getStatus());
+        flatService.activate(requestForBanFlatDto.getFlat().getId());
+    }
+
+    /**
+     * Method which deactivate publication.
+     *
+     * @param requestForBanFlatDto {@link RequestForBanFlatDto}.
+     * @author Vadym Puiko
+     */
+    public void deactivatePublication(RequestForBanFlatDto requestForBanFlatDto) {
+        final RequestForBanFlat current = requestForBanFlatRepository.findById(requestForBanFlatDto.getId())
+                .orElseThrow(() -> new NullPointerException(ErrorMessage.USER_ALREADY_EXISTS));
+        current.setStatusForVerification(UserStatus.DEACTIVATED.getStatus());
+        flatService.deactivateFlat(requestForBanFlatDto.getFlat().getId());
     }
 }
 
