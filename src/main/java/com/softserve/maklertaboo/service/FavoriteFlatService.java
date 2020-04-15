@@ -6,7 +6,6 @@ import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.FavoriteFlatNotFoundException;
 import com.softserve.maklertaboo.exception.exceptions.FlatAlreadyInTheFavoriteListException;
-import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.FavoriteFlatRepository;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import lombok.Data;
@@ -26,9 +25,7 @@ import java.util.List;
 public class FavoriteFlatService {
 
     private final FavoriteFlatRepository favoriteFlatRepository;
-    private final UserService userService;
     private final FlatService flatService;
-    private final UserMapper userMapper;
     private final JWTTokenProvider jwtTokenProvider;
 
 
@@ -39,15 +36,11 @@ public class FavoriteFlatService {
      */
     @Autowired
     public FavoriteFlatService(FavoriteFlatRepository favoriteFlatRepository,
-                               UserService userService,
                                FlatService flatService,
-                               UserMapper userMapper,
                                JWTTokenProvider jwtTokenProvider) {
 
         this.favoriteFlatRepository = favoriteFlatRepository;
-        this.userService = userService;
         this.flatService = flatService;
-        this.userMapper = userMapper;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

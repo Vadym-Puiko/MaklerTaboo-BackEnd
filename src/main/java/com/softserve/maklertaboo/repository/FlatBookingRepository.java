@@ -52,7 +52,7 @@ public interface FlatBookingRepository
     Optional<RequestForFlatBooking> findRequestForFlatBookingById(Long id);
 
     /**
-     * Find {@link List<RequestForFlatBooking>} by flat author's id.
+     * Find {@link List<RequestForFlatBooking>} by author's id.
      *
      * @param id Long
      * @return {@link List<RequestForFlatBooking>}
