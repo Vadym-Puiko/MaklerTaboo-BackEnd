@@ -1,9 +1,9 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.constant.ErrorMessage;
+import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.chat.Chat;
 import com.softserve.maklertaboo.entity.user.User;
-import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
+import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.chat.ChatRepository;
 import com.softserve.maklertaboo.repository.chat.MessageRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
@@ -27,6 +27,10 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
+    private final UserMapper userMapper;
+
+
 
     /**
      * Constructor with parameters of {@link ChatService}.
@@ -36,10 +40,14 @@ public class ChatService {
     @Autowired
     public ChatService(ChatRepository chatRepository,
                        MessageRepository messageRepository,
-                       UserRepository userRepository) {
+                       UserRepository userRepository,
+                       UserService userService,
+                       UserMapper userMapper) {
         this.chatRepository = chatRepository;
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -133,9 +141,8 @@ public class ChatService {
      */
     public Long getChatId(String recieverName, Long senderId) {
 
-        User reciever = userRepository.findUserByUsername(recieverName).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_USERNAME));
-        User sender = userRepository.findById(senderId).get();
+        UserDto reciever = userService.findByUsername(recieverName);
+        UserDto sender = userService.findUserById(senderId);
 
         if (sender.getId().equals(reciever.getId())) {
             throw new IllegalArgumentException("YOU CANT CHAT WITH YOURSELF");
@@ -157,8 +164,8 @@ public class ChatService {
             return result;
         }
         Chat chat = new Chat();
-        chat.setReceiver(reciever);
-        chat.setSender(sender);
+        chat.setReceiver(userMapper.convertToEntity(reciever));
+        chat.setSender(userMapper.convertToEntity(sender));
         return chatRepository.save(chat).getId();
     }
 }
