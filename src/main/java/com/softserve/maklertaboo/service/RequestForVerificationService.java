@@ -29,6 +29,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -174,7 +175,16 @@ public class RequestForVerificationService {
         RequestForUserVerification request = new RequestForUserVerification();
         request.setAuthor(user);
         request.setType(RequestForVerificationType.RENTER);
-        requestUserRepository.save(request);
+        if (!checkIfExist(request)) {
+            requestUserRepository.save(request);
+        }
+    }
+
+    public boolean checkIfExist(RequestForUserVerification request) {
+        List<RequestForUserVerification> requests = requestUserRepository.findAllByAuthor(request.getAuthor());
+        return requests.stream()
+                .anyMatch(req -> req.getStatus().equals(RequestForVerificationStatus.NEW)
+                        || req.getStatus().equals(RequestForVerificationStatus.VIEWED));
     }
 
     public void createLandlordRequest(User user) {
