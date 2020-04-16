@@ -72,7 +72,6 @@ public class ComplaintController {
     /**
      * The method return list of complaints.
      *
-     * @return {@list ComplaintDto}
      * @return {@link ComplaintDto}
      * @author Isachenko Dmytro
      */
