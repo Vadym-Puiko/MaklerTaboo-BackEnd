@@ -37,7 +37,7 @@ public abstract class Comment {
             isActive = true;
         }
         if (publicationDate == null) {
-            publicationDate = LocalDateTime.now();
+            publicationDate = LocalDateTime.now().plusHours(3);
         }
         if(commentLikes==null){
             commentLikes = (long) 0;
