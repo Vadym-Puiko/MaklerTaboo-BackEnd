@@ -46,15 +46,20 @@ class MessageServiceTest {
         assertEquals(message, messageService.addMessage(message));
     }
 
-
     @Test
     void deleteMessage() {
         Message message = new Message();
         message.setId(0L);
-        when(messageRepository.findById(0L)).thenReturn(java.util.Optional.of(message));
+        when(messageRepository.findById(anyLong())).thenReturn(java.util.Optional.of(message));
         messageService.deleteMessage(0L);
         verify(messageRepository, times(1)).deleteById(anyLong());
     }
 
+    @Test
+    void updateMessage() {
+        Message message = new Message();
+        message.setId(0L);
+        when(messageRepository.findById(0L)).thenReturn(java.util.Optional.of(message));
 
+    }
 }
