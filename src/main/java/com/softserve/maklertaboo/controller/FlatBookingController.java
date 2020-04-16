@@ -159,9 +159,9 @@ public class FlatBookingController {
     }
 
     /**
-     * Method that approves request of flat booking.
+     * Method that returns number of new requests of flat booking.
      *
-     * @return amount of new requests of flat booking
+     * @return amount of new requests
      * @author Roman Blavatskyi
      */
     @ApiOperation(value = "Get amount of new flat booking requests")

@@ -1,7 +1,9 @@
 package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.dto.comment.LikeDto;
+import com.softserve.maklertaboo.dto.comment.UserCommentDto;
 import com.softserve.maklertaboo.entity.comment.CommentLike;
+import com.softserve.maklertaboo.entity.comment.UserComment;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.mapping.comment.LikeMapper;
 import com.softserve.maklertaboo.repository.comment.LikeRepository;
@@ -17,6 +19,11 @@ public class LikeService {
     private final FlatCommentService flatCommentService;
     private final JWTTokenProvider jwtTokenProvider;
 
+    /**
+     * Constructor with parameters
+     *
+     * @author Iachenko Dmytro
+     */
     @Autowired
     LikeService(LikeMapper likeMapper,
                 LikeRepository likeRepository,
@@ -29,6 +36,13 @@ public class LikeService {
         this.flatCommentService=flatCommentService;
         this.jwtTokenProvider=jwtTokenProvider;
     }
+
+    /**
+     * Method that allow you to save new {@link LikeDto}.
+     * first check is this flatLike exist then delete Like else save
+     * @param likeDto a value of {@link LikeDto}
+     * @author Isachenko Dmytro
+     */
     public void checkLikeToFlatComment(LikeDto likeDto){
         CommentLike commentLike =likeMapper.convertToEntity(likeDto);
         User user = jwtTokenProvider.getCurrentUser();
@@ -43,6 +57,13 @@ public class LikeService {
             saveLike(commentLike);
         }
     }
+
+    /**
+     * Method that allow you to save new {@link LikeDto}.
+     * first check is this userLike exist then delete Like else save
+     * @param likeDto a value of {@link LikeDto}
+     * @author Isachenko Dmytro
+     */
     public void checkLikeToUserComment(LikeDto likeDto){
         CommentLike commentLike =likeMapper.convertToEntity(likeDto);
         User user = jwtTokenProvider.getCurrentUser();
@@ -58,10 +79,22 @@ public class LikeService {
         }
     }
 
+    /**
+     * Method that allow you to save new {@link CommentLike}.
+     *
+     * @param commentLike a value of {@link CommentLike}
+     * @author Isachenko Dmytro
+     */
     public void saveLike(CommentLike commentLike){
         likeRepository.save(commentLike);
     }
 
+    /**
+     * Method for deleting like of {@link CommentLike}.
+     *
+     * @param commentLike a value of {@link CommentLike}
+     * @author Isachenko Dmytro
+     */
     public void deleteLike(CommentLike commentLike){
         likeRepository.delete(commentLike);
     }

@@ -5,36 +5,37 @@ import com.softserve.maklertaboo.dto.user.UserUpdateDto;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.enums.UserStatus;
 import com.softserve.maklertaboo.entity.user.User;
-import com.softserve.maklertaboo.exception.exceptions.UserAlreadyExistsException;
+import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.telegram.telegrambots.ApiContextInitializer;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.verifyPrivate;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-
-@RunWith(PowerMockRunner.class)
+@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 @PrepareForTest(UserService.class)
 class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private UserMapper userMapper;
 
     @Mock
     private JWTTokenProvider jwtTokenProvider;
@@ -98,11 +99,6 @@ class UserServiceTest {
             UserRole.ROLE_RENTER.getStatus()
     );
 
-//    @Test
-//    public void saveUser() {
-//
-//    }
-
     @Test
     public void saveUserSuccessfully() {
         final User user = new User(22L,
@@ -113,7 +109,12 @@ class UserServiceTest {
                 "picture",
                 UserRole.ROLE_USER,
                 UserStatus.ACTIVATED);
+        when(userRepository.existsUserByEmail(anyString()));
+        userRepository.existsUserByUsername(anyString());
+        userRepository.existsUserByPhoneNumber(anyString());
 
+        User user1 = userMapper.convertToEntity(userDto);
+        when(userRepository.getOne(anyLong())).thenReturn(user);
     }
 
     @Test

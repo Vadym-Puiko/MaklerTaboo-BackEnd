@@ -2,7 +2,6 @@ package com.softserve.maklertaboo.service;
 
 import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.request.RequestForBanFlatDto;
-import com.softserve.maklertaboo.dto.request.RequestForUserDto;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationStatus;
 import com.softserve.maklertaboo.entity.enums.RequestForVerificationType;
 import com.softserve.maklertaboo.entity.enums.UserRole;
@@ -32,7 +31,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -42,11 +40,10 @@ public class RequestForVerificationService {
     private final RequestForUserVerificationRepository requestUserRepository;
     private final FlatService flatService;
     private final UserService userService;
-    private final RequestForUserMapper requestForUserMapper;
-    private final RequestForFlatMapper requestForFlatMapper;
+
+
     private final RequestForBanFlatRepository requestForBanFlatRepository;
     private final RequestForBanFlatMapper requestForBanFlatMapper;
-
 
     @Autowired
     public RequestForVerificationService(RequestForFlatVerificationRepository requestForFlatVerificationRepository,
@@ -62,39 +59,10 @@ public class RequestForVerificationService {
         this.requestUserRepository = requestForUserVerificationRepository;
         this.flatService = flatService;
         this.userService = userService;
-        this.requestForUserMapper = requestForUserMapper;
-        this.requestForFlatMapper = requestForFlatMapper;
         this.requestForBanFlatRepository = requestForBanFlatRepository;
         this.requestForBanFlatMapper = requestForBanFlatMapper;
     }
 
-    public void createRequestForUserVerification(RequestForUserDto requestForUserDto, RequestForVerificationType type) {
-        RequestForUserVerification requestForUserVerification = requestForUserMapper.convertToEntity(requestForUserDto);
-        requestForUserVerification.setType(type);
-        requestUserRepository.save(requestForUserVerification);
-    }
-
-    public List<RequestForFlatVerification> getAllRequestsForFlatVerification() {
-        return requestFlatRepository.findAll();
-    }
-
-    public List<RequestForUserVerification> getAllRequestsForRenterVerification() {
-        return requestUserRepository.findAll().stream()
-                .filter(request -> request.getType() == RequestForVerificationType.RENTER)
-                .collect(Collectors.toList());
-    }
-
-    public List<RequestForUserVerification> getAllRequestsForLandlordVerification() {
-        return requestUserRepository.findAll().stream()
-                .filter(request -> request.getType() == RequestForVerificationType.LANDLORD)
-                .collect(Collectors.toList());
-    }
-
-    public List<RequestForUserVerification> getAllRequestsForModeratorVerification() {
-        return requestUserRepository.findAll().stream()
-                .filter(request -> request.getType() == RequestForVerificationType.MODERATOR)
-                .collect(Collectors.toList());
-    }
 
     public void approveFlatRequest(Long id) {
         RequestForFlatVerification requestForFlatVerification = getRequestsForFlatVerificationById(id);
@@ -191,7 +159,6 @@ public class RequestForVerificationService {
         requestUserRepository.save(request);
     }
 
-
     public Long getCountOfNewRequests(RequestForVerificationStatus status) {
         return requestFlatRepository.countAllByStatus(status) +
                 requestUserRepository.countAllByStatus(status);
@@ -208,7 +175,16 @@ public class RequestForVerificationService {
         RequestForUserVerification request = new RequestForUserVerification();
         request.setAuthor(user);
         request.setType(RequestForVerificationType.RENTER);
-        requestUserRepository.save(request);
+        if (!checkIfExist(request)) {
+            requestUserRepository.save(request);
+        }
+    }
+
+    public boolean checkIfExist(RequestForUserVerification request) {
+        List<RequestForUserVerification> requests = requestUserRepository.findAllByAuthor(request.getAuthor());
+        return requests.stream()
+                .anyMatch(req -> req.getStatus().equals(RequestForVerificationStatus.NEW)
+                        || req.getStatus().equals(RequestForVerificationStatus.VIEWED));
     }
 
     public void createLandlordRequest(User user) {
@@ -216,6 +192,14 @@ public class RequestForVerificationService {
         request.setAuthor(user);
         request.setType(RequestForVerificationType.LANDLORD);
         requestUserRepository.save(request);
+    }
+
+    public Long countApprovedFlatRequestsByVerificationDateBetween(Date start, Date end) {
+        return requestFlatRepository.countAllVerificationDateBetweenAndStatusIsApproved(start, end);
+    }
+
+    public Long countApprovedFlatRequestsByVerificationDateBefore(Date date) {
+        return requestFlatRepository.countAllVerificationDateBeforeAndStatusIsApproved(date);
     }
 
     /**
@@ -270,3 +254,4 @@ public class RequestForVerificationService {
         flatService.deactivateFlat(requestForBanFlatDto.getFlat().getId());
     }
 }
+

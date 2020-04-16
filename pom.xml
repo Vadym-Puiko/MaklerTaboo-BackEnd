@@ -148,7 +148,7 @@
 			<version>2.0.7</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.powermock/powermock-api-mockito -->
+		<!-- https://mvnrepository.com/artifact/org.powermock/powermock-api-mockito2 -->
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-mockito2</artifactId>
