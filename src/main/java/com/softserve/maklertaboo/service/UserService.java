@@ -74,10 +74,9 @@ public class UserService {
         boolean existsUserByPhone = userRepository.existsUserByPhoneNumber(userDto.getPhoneNumber());
         if (existsUserByEmail || existsUserByUsername || existsUserByPhone) {
             throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS);
-        } else {
-            User user = userMapper.convertToEntity(userDto);
-            userRepository.save(user);
         }
+        User user = userMapper.convertToEntity(userDto);
+        userRepository.save(user);
     }
 
     public Authentication getAuthentication(LoginDto loginDto) {
