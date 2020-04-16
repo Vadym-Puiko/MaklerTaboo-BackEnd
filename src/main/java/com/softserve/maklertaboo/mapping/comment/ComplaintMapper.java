@@ -4,6 +4,7 @@ import com.softserve.maklertaboo.dto.comment.ComplaintDto;
 import com.softserve.maklertaboo.dto.comment.ComplaintDtoId;
 import com.softserve.maklertaboo.dto.comment.FlatCommentDto;
 import com.softserve.maklertaboo.dto.comment.UserCommentDto;
+import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.comment.Complaint;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.comment.UserComment;
@@ -19,6 +20,11 @@ import com.softserve.maklertaboo.service.UserCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class that used by {@link MapperToDto}, {@link MapperToEntity} fot mapping {@link ComplaintDtoId} into {@link Complaint}
+ * and versa.
+ * @author Isachenko Dmytro
+ */
 @Component
 public class ComplaintMapper implements MapperToDto<Complaint, ComplaintDto>, MapperToEntity<ComplaintDtoId, Complaint> {
     private final FlatCommentService flatCommentService;
@@ -27,7 +33,11 @@ public class ComplaintMapper implements MapperToDto<Complaint, ComplaintDto>, Ma
     private final FlatCommentMapper flatCommentMapper;
     private final UserCommentMapper userCommentMapper;
 
-
+    /**
+     * Constructor with parameters
+     *
+     * @author Iachenko Dmytro
+     */
     @Autowired
     ComplaintMapper(FlatCommentService flatCommentService,
                     UserCommentService userCommentService,
@@ -40,6 +50,13 @@ public class ComplaintMapper implements MapperToDto<Complaint, ComplaintDto>, Ma
         this.userCommentMapper=userCommentMapper;
     }
 
+    /**
+     * Method for converting {@link Complaint} into {@link ComplaintDto}.
+     *
+     * @param entity object to convert.
+     * @return converted object.
+     * @author Isachenko Dmytro
+     */
     @Override
     public ComplaintDto convertToDto(Complaint entity) {
         ComplaintDto complaintDto=new ComplaintDto();
@@ -65,6 +82,13 @@ public class ComplaintMapper implements MapperToDto<Complaint, ComplaintDto>, Ma
         return complaintDto;
     }
 
+    /**
+     * Method for converting {@link ComplaintDtoId} into {@link Complaint}.
+     *
+     * @param dto object to convert.
+     * @return converted object.
+     * @author Isachenko Dmytro
+     */
     @Override
     public Complaint convertToEntity(ComplaintDtoId dto) {
         Complaint complaint=new Complaint();

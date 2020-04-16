@@ -104,6 +104,7 @@ public class FlatBookingService {
         User user = jwtTokenProvider.getCurrentUser();
 
         Pageable pageable = PageRequest.of(page, size);
+
         return flatBookingRepository.findAllByFlat_Owner_IdAndStatus(pageable, user.getId(), status)
                 .map(bookingMapper::convertToDto);
     }
@@ -188,7 +189,7 @@ public class FlatBookingService {
      * Method that finds amount of new {@link RequestForFlatBooking}.
      *
      * @param status of {@link RequestForVerificationStatus}
-     * @return amount of {@link RequestForVerificationStatus}
+     * @return amount of new {@link RequestForFlatBooking}
      * @author Roman Blavatskyi
      */
     public Long getCountOfNewRequests(RequestForVerificationStatus status) {
