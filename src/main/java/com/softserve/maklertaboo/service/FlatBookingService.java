@@ -18,7 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import static com.softserve.maklertaboo.utils.DateUtils.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,6 +104,7 @@ public class FlatBookingService {
         User user = jwtTokenProvider.getCurrentUser();
 
         Pageable pageable = PageRequest.of(page, size);
+
         return flatBookingRepository.findAllByFlat_Owner_IdAndStatus(pageable, user.getId(), status)
                 .map(bookingMapper::convertToDto);
     }
@@ -186,7 +189,7 @@ public class FlatBookingService {
      * Method that finds amount of new {@link RequestForFlatBooking}.
      *
      * @param status of {@link RequestForVerificationStatus}
-     * @return amount of {@link RequestForVerificationStatus}
+     * @return amount of new {@link RequestForFlatBooking}
      * @author Roman Blavatskyi
      */
     public Long getCountOfNewRequests(RequestForVerificationStatus status) {
@@ -207,5 +210,14 @@ public class FlatBookingService {
                         REQUEST_FOR_FLAT_BOOKING_NOT_FOUND));
 
         return requestForFlatBooking;
+    }
+
+    public Long countApprovedRequestsBetween(LocalDate start, LocalDate end) {
+        return flatBookingRepository.countAllApprovedRequestsByVerificationDateBetween(asDate(start),asDate(end));
+    }
+
+    public Long countApprovedRequestsOfLandlord(Long id) {
+        return flatBookingRepository.findAllApproved().stream()
+                .filter(request -> request.getFlat().getOwner().getId().equals(id)).count();
     }
 }

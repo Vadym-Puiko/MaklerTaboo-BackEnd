@@ -30,7 +30,7 @@ public class Complaint {
     @PrePersist
     public void prePersist() {
         if (publicationDate == null) {
-            publicationDate = LocalDateTime.now();
+            publicationDate = LocalDateTime.now().plusHours(3);
         }
     }
 }

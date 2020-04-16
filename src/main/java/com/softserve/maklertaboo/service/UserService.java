@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,7 +73,7 @@ public class UserService {
         boolean existsUserByUsername = userRepository.existsUserByUsername(userDto.getUsername());
         boolean existsUserByPhone = userRepository.existsUserByPhoneNumber(userDto.getPhoneNumber());
         if (existsUserByEmail || existsUserByUsername || existsUserByPhone) {
-            throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS + userDto.getEmail());
+            throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS);
         }
         User user = userMapper.convertToEntity(userDto);
         userRepository.save(user);
@@ -103,7 +105,7 @@ public class UserService {
     /**
      * Method that compare and check exist password, and login for a given user.
      *
-     * @param loginDto - of current user
+     * @param loginDto        - of current user
      * @param passwordEncoder - service interface for encoding passwords.
      * @return boolean check result
      * @author Mike Ostapiuk
@@ -137,7 +139,7 @@ public class UserService {
      */
     public void updateUserIntoAdminPanel(UserUpdateDto userUpdateDto) {
         User user = userRepository.findUserByEmail(userUpdateDto.getEmail()).orElseThrow(
-                () -> new UserNotUpdatedException(ErrorMessage.UPDATE_USER_ERROR + userUpdateDto.getEmail()));
+                () -> new UserNotUpdatedException(ErrorMessage.UPDATE_USER_ERROR));
         user.setUsername(userUpdateDto.getUsername());
         user.setPhoneNumber(userUpdateDto.getPhoneNumber());
         userRepository.save(user);
@@ -273,6 +275,20 @@ public class UserService {
         return userMapper.convertToDto(user);
     }
 
+
+    /**
+     * Method that allow you to get {@link User} by ID.
+     *
+     * @param id a value of {@link Long}
+     * @return {@link User}
+     * @author Vadym Puiko
+     */
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id));
+    }
+
+
     /**
      * Method that allow you to get {@link User} by email.
      *
@@ -282,7 +298,7 @@ public class UserService {
      */
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND + email));
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         return userMapper.convertToDto(user);
     }
 
@@ -295,7 +311,7 @@ public class UserService {
      */
     public UserDto findByUsername(String username) {
         User user = userRepository.findUserByUsername(username).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_USERNAME + username));
+                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_USERNAME));
         return userMapper.convertToDto(user);
     }
 
@@ -335,6 +351,38 @@ public class UserService {
         throw new BadRefreshTokenException(REFRESH_TOKEN_NOT_VALID);
     }
 
+    public Long countAllActiveUsers() {
+        return userRepository.countAllActiveUsers();
+    }
+
+    public Long countAllActiveUsersByRole(UserRole role) {
+        return userRepository.countAllActiveUsersByRole(role);
+    }
+
+    public Long countAllUsersByRegistrationDateBetween(LocalDateTime start, LocalDateTime end) {
+        return userRepository.countAllByRegistrationDateBetween(start, end);
+    }
+
+    public List<User> findAllByRole(UserRole role) {
+        return userRepository.findAllActiveUsersByRole(role);
+    }
+
+    public Long countAllActiveByRoleAndRegistrationDateBefore(UserRole role, LocalDateTime date) {
+        return userRepository.countAllActiveByRoleAndRegistrationDateBefore(role, date);
+    }
+
+    public UserDto getCurrentUserDto() {
+        return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
+    }
+
+    public Long getCurrentUserId() {
+        Long id = jwtTokenProvider.getCurrentUser().getId();
+        if (id == null) {
+            return 0L;
+        }
+        return id;
+    }
+
     @Transactional
     public void changeUserPassword(ChangePasswordDto changePasswordDto) {
         User user = jwtTokenProvider.getCurrentUser();
@@ -349,9 +397,5 @@ public class UserService {
         }
         userRepository.updatePassword(passwordEncoder.encode(changePasswordDto.getNewPassword()),
                 user.getId());
-    }
-
-    public UserDto getCurrentUserDto() {
-        return userMapper.convertToDto(jwtTokenProvider.getCurrentUser());
     }
 }

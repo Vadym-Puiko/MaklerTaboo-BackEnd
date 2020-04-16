@@ -13,10 +13,12 @@ import com.softserve.maklertaboo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Component
 public class RequestForFlatMapper implements MapperToDto<RequestForFlatVerification, RequestForFlatDto>,
         MapperToEntity<RequestForFlatDto, RequestForFlatVerification> {
-
 
     private UserRepository userRepository;
     private FlatRepository flatRepository;
@@ -37,9 +39,9 @@ public class RequestForFlatMapper implements MapperToDto<RequestForFlatVerificat
     public RequestForFlatDto convertToDto(RequestForFlatVerification requestForFlat) {
         RequestForFlatDto requestForFlatDto = new RequestForFlatDto();
 
-        requestForFlatDto.setCreationDate(requestForFlat.getCreationDate());
+        requestForFlatDto.setCreationDate(new Date());
 
-        requestForFlatDto.setVerificationDate(requestForFlat.getVerificationDate());
+        requestForFlatDto.setVerificationDate(new Date());
 
         requestForFlatDto.setId(requestForFlat.getId());
 

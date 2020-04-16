@@ -80,7 +80,8 @@ public class JWTTokenProvider implements Serializable {
 
     public User getCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!authentication.isAuthenticated() || authentication.getPrincipal().getClass() == String.class) return new User();
+        if (!authentication.isAuthenticated() || authentication.getPrincipal().getClass() == String.class)
+            return new User();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return userRepository.findUserByEmail(userDetails.getUsername()).orElseThrow(
                 () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));

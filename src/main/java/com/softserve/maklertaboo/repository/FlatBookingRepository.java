@@ -5,7 +5,9 @@ import com.softserve.maklertaboo.entity.request.RequestForFlatBooking;
 import com.softserve.maklertaboo.repository.request.RequestBaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,7 +54,7 @@ public interface FlatBookingRepository
     Optional<RequestForFlatBooking> findRequestForFlatBookingById(Long id);
 
     /**
-     * Find {@link List<RequestForFlatBooking>} by flat author's id.
+     * Find {@link List<RequestForFlatBooking>} by author's id.
      *
      * @param id Long
      * @return {@link List<RequestForFlatBooking>}
@@ -67,5 +69,15 @@ public interface FlatBookingRepository
      * @return amount of {@link RequestForFlatBooking}
      * @author Roman Blavatskyi
      */
-    Long countAllByStatus(RequestForVerificationStatus status);
+    long countAllByStatus(RequestForVerificationStatus status);
+
+    @Query("SELECT COUNT(f)" +
+            " FROM RequestForFlatBooking f" +
+            " WHERE  f.status='APPROVED' AND f.verificationDate between :start AND :end")
+    long countAllApprovedRequestsByVerificationDateBetween(Date start, Date end);
+
+
+    @Query("SELECT r FROM RequestForFlatBooking r " +
+            "WHERE r.status='APPROVED'")
+    List<RequestForFlatBooking> findAllApproved();
 }
