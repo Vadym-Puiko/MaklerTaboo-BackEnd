@@ -1,9 +1,9 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.constant.ErrorMessage;
+import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.chat.Chat;
 import com.softserve.maklertaboo.entity.user.User;
-import com.softserve.maklertaboo.exception.exceptions.UserNotFoundException;
+import com.softserve.maklertaboo.mapping.UserMapper;
 import com.softserve.maklertaboo.repository.chat.ChatRepository;
 import com.softserve.maklertaboo.repository.chat.MessageRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
@@ -15,33 +15,71 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
+/**
+ * Service implementation for {@link Chat} entity.
+ *
+ * @author Mykola Borovets
+ */
 @Service
 public class ChatService {
 
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
+    private final UserMapper userMapper;
 
+
+
+    /**
+     * Constructor with parameters of {@link ChatService}.
+     *
+     * @author MykolaBorovets
+     */
     @Autowired
     public ChatService(ChatRepository chatRepository,
                        MessageRepository messageRepository,
-                       UserRepository userRepository) {
+                       UserRepository userRepository,
+                       UserService userService,
+                       UserMapper userMapper) {
         this.chatRepository = chatRepository;
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
+        this.userMapper = userMapper;
     }
 
-
+    /**
+     * Method that get {@link Chat} by chatId.
+     *
+     * @param chatId of {@link Chat}
+     * @return {@link Chat}
+     * @author Mykola Borovets
+     */
     public Chat getChatById(Long chatId) {
         return chatRepository.findById(chatId).orElseThrow(IllegalArgumentException::new);
     }
 
+    /**
+     * Method that get {@link List<Chat>} by userId.
+     *
+     * @param Id of {@link User}
+     * @return {@link List<Chat>}
+     * @author Mykola Borovets
+     */
     public List<Chat> getChatByUserId(Long Id) {
         return Stream.concat(chatRepository.findAllBySender_Id(Id).stream(),
                 chatRepository.findAllByReceiver_Id(Id).stream())
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method that delete {@link Chat} by chatId.
+     *
+     * @param id of {@link Chat}
+     * @author Mykola Borovets
+     */
     public void deleteChatById(Long id) {
         Optional<Chat> chat = chatRepository.findById(id);
         if (chat.isPresent()) {
@@ -49,27 +87,62 @@ public class ChatService {
         }
     }
 
+    /**
+     * Method that get {@link User} by userId.
+     *
+     * @param id of {@link User}
+     * @return
+     * @author Mykola Borovets
+     */
     public User findOne(Long id) {
         return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
+    /**
+     * Method that get the count of messages by chatId.
+     *
+     * @param chatId of {@link Chat}
+     * @return count of  messages
+     * @author Mykola Borovets
+     */
     public Long getCountOfMessages(Long chatId) {
         return messageRepository.countByChatId(chatId);
     }
 
+    /**
+     * Method that get the count of unread messages by chatId.
+     *
+     * @param chatId of {@link Chat}
+     * @return count of unread messages
+     * @author Mykola Borovets
+     */
     public Long getCountOfUnreadMessages(Long chatId) {
         return messageRepository.countByChatIdAndDataSeenIsNull(chatId);
     }
 
+    /**
+     * Method that set the count of unread messages by chatId.
+     *
+     * @param chatId of {@link Chat}
+     * @return count of unread messages
+     * @author Mykola Borovets
+     */
     public void setCountOfUnreadMessages(Long chatId) {
         messageRepository.countByChatIdAndDataSeenIsNull(chatId);
     }
 
+    /**
+     * The method that create new chat or return chat that already exists.
+     *
+     * @param recieverName String
+     * @param  senderId Long
+     * @return chat that exist or new chat
+     * @author Mykola Borovets
+     */
     public Long getChatId(String recieverName, Long senderId) {
 
-        User reciever = userRepository.findUserByUsername(recieverName).orElseThrow(
-                () -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND_BY_USERNAME));
-        User sender = userRepository.findById(senderId).get();
+        UserDto reciever = userService.findByUsername(recieverName);
+        UserDto sender = userService.findUserById(senderId);
 
         if (sender.getId().equals(reciever.getId())) {
             throw new IllegalArgumentException("YOU CANT CHAT WITH YOURSELF");
@@ -91,8 +164,8 @@ public class ChatService {
             return result;
         }
         Chat chat = new Chat();
-        chat.setReceiver(reciever);
-        chat.setSender(sender);
+        chat.setReceiver(userMapper.convertToEntity(reciever));
+        chat.setSender(userMapper.convertToEntity(sender));
         return chatRepository.save(chat).getId();
     }
 }

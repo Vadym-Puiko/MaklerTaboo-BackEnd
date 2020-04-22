@@ -11,9 +11,23 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
+/**
+ * Interceptor.
+ *
+ * @author Mykola Borovets
+ */
 @Slf4j
 @Component
 public class HttpHandshakeInterceptor implements HandshakeInterceptor {
+    /**
+     * @param serverHttpRequest ServerHttpRequest
+     * @param serverHttpResponse ServerHttpResponse
+     * @param webSocketHandler WebSocketHandler
+     * @param map Map<String, Object>
+     * @return boolean
+     * @throws Exception
+     * @author MykolaBorovets
+     */
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
                                    WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
@@ -29,6 +43,13 @@ public class HttpHandshakeInterceptor implements HandshakeInterceptor {
         return true;
     }
 
+    /**
+     * @param serverHttpRequest ServerHttpRequest
+     * @param serverHttpResponse ServerHttpResponse
+     * @param webSocketHandler WebSocketHandler
+     * @param e Exception
+     * @author MykolaBorovets
+     */
     @Override
     public void afterHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
                                WebSocketHandler webSocketHandler, Exception e) {
