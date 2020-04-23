@@ -4,6 +4,8 @@ import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.passport.PassportDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.Passport;
+import com.softserve.maklertaboo.entity.enums.GenderType;
+import com.softserve.maklertaboo.entity.enums.PassportType;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.DuplicateLandlordRequest;
@@ -21,6 +23,7 @@ public class PassportService {
     private final PassportMapper passportMapper;
     private final UserRepository userRepository;
     private final RequestForVerificationService requestForVerificationService;
+
     @Autowired
     public PassportService(PassportRepository passportRepository, PassportMapper passportMapper, UserRepository userRepository, RequestForVerificationService requestForVerificationService) {
         this.passportRepository = passportRepository;
@@ -49,13 +52,13 @@ public class PassportService {
             passport = new Passport();
         }
 
-        passport.setPassportType(passportDto.getPassportType());
+        passport.setPassportType(PassportType.valueOf(passportDto.getPassportType()));
         passport.setPassportNumber(passportDto.getPassportNumber());
         passport.setNationality(passportDto.getNationality());
         passport.setMiddleName(passportDto.getMiddleName());
         passport.setLastName(passportDto.getLastName());
         passport.setIdentificationNumber(passportDto.getIdentificationNumber());
-        passport.setGender(passportDto.getGender());
+        passport.setGender(GenderType.valueOf(passportDto.getGender()));
         passport.setFirstName(passportDto.getFirstName());
         passport.setExpirationDate(passportDto.getExpirationDate());
         passport.setDateOfIssue(passportDto.getDateOfIssue());
@@ -83,4 +86,5 @@ public class PassportService {
             throw new DuplicateLandlordRequest(ErrorMessage.DUPLICATE_LANDLORD_REQUEST);
         }
     }
+
 }

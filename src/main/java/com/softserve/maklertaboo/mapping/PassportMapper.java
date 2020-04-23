@@ -2,6 +2,8 @@ package com.softserve.maklertaboo.mapping;
 
 import com.softserve.maklertaboo.dto.passport.PassportDto;
 import com.softserve.maklertaboo.entity.Passport;
+import com.softserve.maklertaboo.entity.enums.GenderType;
+import com.softserve.maklertaboo.entity.enums.PassportType;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,13 +13,17 @@ public class PassportMapper implements MapperToDto<Passport, PassportDto>, Mappe
     public PassportDto convertToDto(Passport entity) {
         PassportDto passportDto = new PassportDto();
         passportDto.setId(entity.getId());
-        passportDto.setPassportType(entity.getPassportType());
+        if (entity.getPassportType() != null) {
+            passportDto.setPassportType(entity.getPassportType().getPassportTypeValue());
+        }
         passportDto.setPassportNumber(entity.getPassportNumber());
         passportDto.setNationality(entity.getNationality());
         passportDto.setMiddleName(entity.getMiddleName());
         passportDto.setLastName(entity.getLastName());
         passportDto.setIdentificationNumber(entity.getIdentificationNumber());
-        passportDto.setGender(entity.getGender());
+        if (entity.getGender() != null) {
+            passportDto.setGender(entity.getGender().getGetGenderValue());
+        }
         passportDto.setFirstName(entity.getFirstName());
         passportDto.setExpirationDate(entity.getExpirationDate());
         passportDto.setDateOfIssue(entity.getDateOfIssue());
@@ -31,13 +37,13 @@ public class PassportMapper implements MapperToDto<Passport, PassportDto>, Mappe
     public Passport convertToEntity(PassportDto dto) {
         Passport passport = new Passport();
         passport.setId(dto.getId());
-        passport.setPassportType(dto.getPassportType());
+        passport.setPassportType(PassportType.valueOf(dto.getPassportType()));
         passport.setPassportNumber(dto.getPassportNumber());
         passport.setNationality(dto.getNationality());
         passport.setMiddleName(dto.getMiddleName());
         passport.setLastName(dto.getLastName());
         passport.setIdentificationNumber(dto.getIdentificationNumber());
-        passport.setGender(dto.getGender());
+        passport.setGender(GenderType.valueOf(dto.getGender()));
         passport.setFirstName(dto.getFirstName());
         passport.setExpirationDate(dto.getExpirationDate());
         passport.setDateOfIssue(dto.getDateOfIssue());

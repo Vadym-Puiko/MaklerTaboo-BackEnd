@@ -31,6 +31,4 @@ public class ErrorMessage {
     public static final String FLATCOMMENT_NOT_FOUND = "Flat comment not found";
     public static final String USERCOMMENT_NOT_FOUND = "User comment not found";
     public static final String COMPLAINT_IS_FOUND = "A complaint has already been submitted";
-
-
 }

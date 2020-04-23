@@ -1,11 +1,12 @@
 package com.softserve.maklertaboo.entity;
 
+import com.softserve.maklertaboo.entity.enums.GenderType;
+import com.softserve.maklertaboo.entity.enums.PassportType;
 import com.softserve.maklertaboo.entity.photo.PassportPhoto;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 import javax.persistence.*;
 import java.util.List;
-
 
 @Data
 @Entity
@@ -18,10 +19,12 @@ public class Passport {
     private String firstName;
     private String lastName;
     private String middleName;
-    private String gender;
+    @Enumerated(value = EnumType.STRING)
+    private GenderType gender;
     private String birthDate;
     private String birthPlace;
-    private String passportType;
+    @Enumerated(value = EnumType.STRING)
+    private PassportType passportType;
     private String nationality;
     private String authority;
     private String dateOfIssue;
@@ -34,5 +37,6 @@ public class Passport {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<PassportPhoto> passportPhotoList;
+
 
 }
