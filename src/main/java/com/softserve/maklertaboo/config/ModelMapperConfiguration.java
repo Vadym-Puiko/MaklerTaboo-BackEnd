@@ -4,9 +4,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
+/**
+ * Configuration ModelMapper into Makler Taboo project.
+ *
+ * @author Mykola Borovets
+ */
 @Configuration
 public class ModelMapperConfiguration {
+
+    /**
+     * @return modelMapper
+     * @author Mykola Borovets
+     */
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();

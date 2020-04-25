@@ -98,7 +98,7 @@ public class FlatBookingController {
     public ResponseEntity<List<RequestForFlatDto>> getRenterRequests() {
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                flatBookingService.getRenterRequests());
+                flatBookingService.getAllRenterRequests());
     }
 
     /**
@@ -159,7 +159,7 @@ public class FlatBookingController {
     }
 
     /**
-     * Method that returns number of new requests of flat booking.
+     * Method that returns number of new requests of flat booking for Landlord.
      *
      * @return amount of new requests
      * @author Roman Blavatskyi
@@ -171,7 +171,45 @@ public class FlatBookingController {
             @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
     })
     @GetMapping("/new-requests")
-    public Long getCountOfNewRequests() {
+    public Long getCountOfNewRequestsForLandlord() {
         return flatBookingService.getCountOfNewRequests(RequestForVerificationStatus.NEW);
+    }
+
+    /**
+     * Method that finds all active requests of flat booking for Renter.
+     *
+     * @return {@link ResponseEntity} of {@link List<RequestForFlatDto>}
+     * @author Roman Blavatskyi
+     */
+    @ApiOperation(value = "Get list of flat booking requests of Renter")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
+    })
+    @GetMapping("/get-active-requests/renter")
+    public ResponseEntity<List<RequestForFlatDto>> getActiveRenterRequests() {
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                flatBookingService.getActiveRenterRequests());
+    }
+
+    /**
+     * Method that finds all declined requests of flat booking for Renter.
+     *
+     * @return {@link ResponseEntity} of {@link List<RequestForFlatDto>}
+     * @author Roman Blavatskyi
+     */
+    @ApiOperation(value = "Get list of flat booking requests of Renter")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
+    })
+    @GetMapping("/get-declined-requests/renter")
+    public ResponseEntity<List<RequestForFlatDto>> getDeclinedRenterRequests() {
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                flatBookingService.getDeclinedRenterRequests());
     }
 }

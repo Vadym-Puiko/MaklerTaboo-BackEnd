@@ -63,13 +63,15 @@ public interface FlatBookingRepository
     Optional<List<RequestForFlatBooking>> findAllByAuthor_Id(Long id);
 
     /**
-     * Count number of {@link RequestForFlatBooking} by {@link RequestForVerificationStatus}.
+     * Count number of {@link RequestForFlatBooking} by ownerId
+     * and {@link RequestForVerificationStatus}.
      *
-     * @param status {@link RequestForVerificationStatus}
+     * @param ownerId Long
+     * @param status  {@link RequestForVerificationStatus}
      * @return amount of {@link RequestForFlatBooking}
      * @author Roman Blavatskyi
      */
-    long countAllByStatus(RequestForVerificationStatus status);
+    long countAllByFlat_OwnerIdAndStatus(Long ownerId, RequestForVerificationStatus status);
 
     @Query("SELECT COUNT(f)" +
             " FROM RequestForFlatBooking f" +

@@ -41,7 +41,7 @@ public class FlatBookingMapper implements MapperToDto<RequestForFlatBooking, Req
         requestForFlatDto.setId(requestForFlat.getId());
         requestForFlatDto.setStatus(requestForFlat.getStatus());
         requestForFlatDto.setCreationDate(requestForFlat.getCreationDate());
-        requestForFlatDto.setVerificationDate(requestForFlat.getCreationDate());
+        requestForFlatDto.setVerificationDate(requestForFlat.getVerificationDate());
         requestForFlatDto.setFlat(flatMapper.convertToDto(requestForFlat.getFlat()));
         requestForFlatDto.setAuthor(userMapper.convertToDto(requestForFlat.getAuthor()));
 
