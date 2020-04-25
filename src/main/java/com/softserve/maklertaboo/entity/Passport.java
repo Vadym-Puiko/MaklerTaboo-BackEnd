@@ -21,14 +21,14 @@ public class Passport {
     private String middleName;
     @Enumerated(value = EnumType.STRING)
     private GenderType gender;
-    private String birthDate;
+    private java.time.LocalDate birthDate;
     private String birthPlace;
     @Enumerated(value = EnumType.STRING)
     private PassportType passportType;
     private String nationality;
     private String authority;
-    private String dateOfIssue;
-    private String expirationDate;
+    private java.time.LocalDate dateOfIssue;
+    private java.time.LocalDate expirationDate;
     private String passportNumber;
     private Long identificationNumber;
 

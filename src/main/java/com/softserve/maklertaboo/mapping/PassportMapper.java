@@ -6,6 +6,8 @@ import com.softserve.maklertaboo.entity.enums.GenderType;
 import com.softserve.maklertaboo.entity.enums.PassportType;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class PassportMapper implements MapperToDto<Passport, PassportDto>, MapperToEntity<PassportDto, Passport> {
 
@@ -25,10 +27,10 @@ public class PassportMapper implements MapperToDto<Passport, PassportDto>, Mappe
             passportDto.setGender(entity.getGender().getGetGenderValue());
         }
         passportDto.setFirstName(entity.getFirstName());
-        passportDto.setExpirationDate(entity.getExpirationDate());
-        passportDto.setDateOfIssue(entity.getDateOfIssue());
+        passportDto.setExpirationDate(String.valueOf(entity.getExpirationDate()));
+        passportDto.setDateOfIssue(String.valueOf(entity.getDateOfIssue()));
         passportDto.setBirthPlace(entity.getBirthPlace());
-        passportDto.setBirthDate(entity.getBirthDate());
+        passportDto.setBirthDate(String.valueOf(entity.getBirthDate()));
         passportDto.setAuthority(entity.getAuthority());
         return passportDto;
     }
@@ -45,10 +47,10 @@ public class PassportMapper implements MapperToDto<Passport, PassportDto>, Mappe
         passport.setIdentificationNumber(dto.getIdentificationNumber());
         passport.setGender(GenderType.valueOf(dto.getGender()));
         passport.setFirstName(dto.getFirstName());
-        passport.setExpirationDate(dto.getExpirationDate());
-        passport.setDateOfIssue(dto.getDateOfIssue());
+        passport.setExpirationDate(LocalDate.parse(dto.getExpirationDate()));
+        passport.setDateOfIssue(LocalDate.parse(dto.getDateOfIssue()));
         passport.setBirthPlace(dto.getBirthPlace());
-        passport.setBirthDate(dto.getBirthDate());
+        passport.setBirthDate(LocalDate.parse(dto.getBirthDate()));
         passport.setAuthority(dto.getAuthority());
         return passport;
     }
