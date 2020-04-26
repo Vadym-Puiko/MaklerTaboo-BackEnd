@@ -8,6 +8,7 @@ import com.softserve.maklertaboo.entity.request.RequestForFlatBooking;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.AccessDeniedException;
 import com.softserve.maklertaboo.exception.exceptions.RequestAlreadyExistsException;
+import com.softserve.maklertaboo.exception.exceptions.RequestDeclinedException;
 import com.softserve.maklertaboo.exception.exceptions.RequestForFlatBookingException;
 import com.softserve.maklertaboo.mapping.FlatBookingMapper;
 import com.softserve.maklertaboo.repository.FlatBookingRepository;
@@ -18,14 +19,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import static com.softserve.maklertaboo.utils.DateUtils.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.softserve.maklertaboo.constant.ErrorMessage.*;
+import static com.softserve.maklertaboo.utils.DateUtils.asDate;
 
 
 /**
@@ -52,6 +54,7 @@ public class FlatBookingService {
                               FlatService flatService,
                               JWTTokenProvider jwtTokenProvider,
                               FlatBookingMapper bookingMapper) {
+
         this.flatBookingRepository = flatBookingRepository;
         this.flatService = flatService;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -78,6 +81,13 @@ public class FlatBookingService {
         RequestForFlatBooking requestForFlatBooking = flatBookingRepository
                 .findRequestForFlatBookingByAuthor_IdAndFlat_Id(user.getId(), flat.getId())
                 .orElse(null);
+
+        if (requestForFlatBooking != null) {
+            String status = requestForFlatBooking.getStatus().toString();
+            if (status.equals("DECLINED")) {
+                throw new RequestDeclinedException(REQUEST_DECLINED);
+            }
+        }
 
         if (requestForFlatBooking == null) {
             RequestForFlatBooking requestForFlatBooking1 = new RequestForFlatBooking();
@@ -115,23 +125,18 @@ public class FlatBookingService {
      * @return {@link List<RequestForFlatDto>}
      * @author Roman Blavatskyi
      */
-    public List<RequestForFlatDto> getRenterRequests() {
+    public List<RequestForFlatDto> getAllRenterRequests() {
 
-        User user = jwtTokenProvider.getCurrentUser();
-
-        List<RequestForFlatBooking> requestForFlatBookings = flatBookingRepository
-                .findAllByAuthor_Id(user.getId())
-                .orElse(null);
+        List<RequestForFlatBooking> requestForFlatBookings = getRenterRequests();
 
         if (requestForFlatBookings == null) {
-            throw new RequestForFlatBookingException(REQUEST_FOR_FLAT_BOOKING_NOT_FOUND);
+            return new ArrayList<>();
+        } else {
+            return requestForFlatBookings
+                    .stream()
+                    .map(bookingMapper::convertToDto)
+                    .collect(Collectors.toList());
         }
-
-        return requestForFlatBookings
-                .stream()
-                .filter(request -> request.getStatus() != (RequestForVerificationStatus.DECLINED))
-                .map(bookingMapper::convertToDto)
-                .collect(Collectors.toList());
     }
 
     /**
@@ -141,6 +146,7 @@ public class FlatBookingService {
      * @author Roman Blavatskyi
      */
     public void approveFlatRequest(Long id) {
+
         RequestForFlatBooking requestForFlatBooking = getRequestForFlatBookingById(id);
         requestForFlatBooking.setStatus(RequestForVerificationStatus.APPROVED);
         requestForFlatBooking.setVerificationDate(new Date());
@@ -160,6 +166,7 @@ public class FlatBookingService {
      * @author Roman Blavatskyi
      */
     public void declineFlatRequest(Long id) {
+
         RequestForFlatBooking requestForFlatBooking = getRequestForFlatBookingById(id);
         requestForFlatBooking.setStatus(RequestForVerificationStatus.DECLINED);
         requestForFlatBooking.setVerificationDate(new Date());
@@ -180,6 +187,7 @@ public class FlatBookingService {
      * @author Roman Blavatskyi
      */
     public void reviewFlatRequest(Long id) {
+
         RequestForFlatBooking requestForFlatBooking = getRequestForFlatBookingById(id);
         requestForFlatBooking.setStatus(RequestForVerificationStatus.VIEWED);
         flatBookingRepository.save(requestForFlatBooking);
@@ -193,7 +201,10 @@ public class FlatBookingService {
      * @author Roman Blavatskyi
      */
     public Long getCountOfNewRequests(RequestForVerificationStatus status) {
-        return flatBookingRepository.countAllByStatus(status);
+
+        User user = jwtTokenProvider.getCurrentUser();
+
+        return flatBookingRepository.countAllByFlat_OwnerIdAndStatus(user.getId(), status);
     }
 
     /**
@@ -212,8 +223,65 @@ public class FlatBookingService {
         return requestForFlatBooking;
     }
 
+    /**
+     * Method that finds all active {@link RequestForFlatBooking} for Renter.
+     *
+     * @return {@link List<RequestForFlatDto>}
+     * @author Roman Blavatskyi
+     */
+    public List<RequestForFlatDto> getActiveRenterRequests() {
+
+        List<RequestForFlatBooking> requestForFlatBookings = getRenterRequests();
+
+        if (requestForFlatBookings == null) {
+            return new ArrayList<>();
+        } else {
+            return requestForFlatBookings
+                    .stream()
+                    .filter(request -> request.getStatus() != (RequestForVerificationStatus.DECLINED))
+                    .map(bookingMapper::convertToDto)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    /**
+     * Method that finds all declined {@link RequestForFlatBooking} for Renter.
+     *
+     * @return {@link List<RequestForFlatDto>}
+     * @author Roman Blavatskyi
+     */
+    public List<RequestForFlatDto> getDeclinedRenterRequests() {
+
+        List<RequestForFlatBooking> requestForFlatBookings = getRenterRequests();
+
+        if (requestForFlatBookings == null) {
+            return new ArrayList<>();
+        } else {
+            return requestForFlatBookings
+                    .stream()
+                    .filter(request -> request.getStatus() == (RequestForVerificationStatus.DECLINED))
+                    .map(bookingMapper::convertToDto)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    /**
+     * Method that finds all {@link RequestForFlatBooking} for Renter.
+     *
+     * @return {@link List<RequestForFlatBooking>}
+     * @author Roman Blavatskyi
+     */
+    private List<RequestForFlatBooking> getRenterRequests() {
+
+        User user = jwtTokenProvider.getCurrentUser();
+
+        return flatBookingRepository
+                .findAllByAuthor_Id(user.getId())
+                .orElse(null);
+    }
+
     public Long countApprovedRequestsBetween(LocalDate start, LocalDate end) {
-        return flatBookingRepository.countAllApprovedRequestsByVerificationDateBetween(asDate(start),asDate(end));
+        return flatBookingRepository.countAllApprovedRequestsByVerificationDateBetween(asDate(start), asDate(end));
     }
 
     public Long countApprovedRequestsOfLandlord(Long id) {
