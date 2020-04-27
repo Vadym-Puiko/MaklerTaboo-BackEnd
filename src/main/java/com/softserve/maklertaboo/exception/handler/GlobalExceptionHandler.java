@@ -167,6 +167,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * Method that intercepts exception {@link RequestDeclinedException}.
+     *
+     * @param exception Exception witch should be intercepted
+     * @param request   contains details about occurred exception
+     * @return {@link ResponseEntity} witch contains http status
+     * and body with message of the exception.
+     * @author Roman Blavatskyi
+     */
+    @ExceptionHandler(RequestDeclinedException.class)
+    public final ResponseEntity<Object> handleRequestDeclinedException(
+            RequestDeclinedException exception,
+            WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(
+                HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    /**
      * Method that intercepts exception {@link AccessDeniedException}.
      *
      * @param exception Exception witch should be intercepted
