@@ -44,7 +44,7 @@ public class VerifyEmailService {
         if (verifyEmailRepository.findByUserId(user.getId()).isPresent()) {
             verifyEmailRepository.delete(verifyEmailRepository.findByUserId(user.getId()).get());
         }
-        confirmRegistration(user, "http://localhost:4200/");
+        confirmRegistration(user, "https://maklertabooclient.herokuapp.com/");
     }
 
     private VerifyEmail createVerifyEmail(User user, String emailVerificationToken) {

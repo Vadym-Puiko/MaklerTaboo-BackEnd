@@ -87,7 +87,7 @@ public class UserService {
         }
         User user = userMapper.convertToEntity(userDto);
         User savedUser = userRepository.save(user);
-        verifyEmailService.confirmRegistration(savedUser, "http://localhost:4200/");
+        verifyEmailService.confirmRegistration(savedUser, "https://maklertabooclient.herokuapp.com/");
     }
 
     public Authentication getAuthentication(LoginDto loginDto) {
