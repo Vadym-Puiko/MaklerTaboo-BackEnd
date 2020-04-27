@@ -9,6 +9,7 @@ import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
 import com.softserve.maklertaboo.service.UserService;
+import com.softserve.maklertaboo.service.VerifyEmailService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -33,6 +34,7 @@ import javax.validation.constraints.NotBlank;
 public class UserController {
     private final UserService userService;
     private final JWTTokenProvider jwtTokenProvider;
+    private final VerifyEmailService verifyEmailService;
 
     /**
      * The method which saves new user.
@@ -68,12 +70,34 @@ public class UserController {
     })
     @PostMapping("/signIn")
     public ResponseEntity<JWTSuccessLogInDto> signIn(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
-        JWTSuccessLogInDto jwtSuccessLogInDto = userService.validateLogin(loginDto);
+        JWTSuccessLogInDto jwtSuccessLogInDto = userService.signIn(loginDto);
         Authentication authentication = userService.getAuthentication(loginDto);
         SecurityContextHolder.getContext().setAuthentication(userService.getAuthentication(loginDto));
         response.addHeader("accesstoken", jwtTokenProvider.generateAccessToken(authentication));
         response.addHeader("refreshtoken", jwtTokenProvider.generateRefreshToken(authentication));
         return ResponseEntity.ok(jwtSuccessLogInDto);
+    }
+
+    @ApiOperation("Confirming registration")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+    })
+    @GetMapping("/confirmRegistration/{token}")
+    public ResponseEntity confirmRegistration(@PathVariable("token") String token) {
+        verifyEmailService.validateVerificationToken(token);
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation("Request to resend confirmation token")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
+    })
+    @GetMapping(value = "/resendRegistrationToken/{email}")
+    public ResponseEntity resendRegistrationToken(@PathVariable("email") String email) {
+        verifyEmailService.resendRegistrationToken(email);
+        return ResponseEntity.ok().build();
     }
 
     /**
