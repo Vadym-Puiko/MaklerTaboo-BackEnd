@@ -1,29 +1,44 @@
 package com.softserve.maklertaboo.controller;
 
+import com.itextpdf.text.DocumentException;
+import com.softserve.maklertaboo.service.AgreementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/agreement")
 public class AgreementController {
 
+
+    private final AgreementService agreementService;
+
     @Autowired
-    SpringTemplateEngine templateEngine;
+    public AgreementController(AgreementService agreementService) {
+        this.agreementService = agreementService;
+    }
 
-    @RequestMapping(value = "/display")
-    public @ResponseBody
-    String displayAgreement() {
+    @RequestMapping(value = "/display/{id}", produces = "text/plain", method = RequestMethod.GET)
+    @ResponseBody
+    public String displayAgreement(@PathVariable Long id) {
 
-        Context context = new Context();
+        return agreementService.getAgreementTemplate(id);
+    }
 
-        context.setVariable("name", "RomanTheGreat");
-        String htmlContentToRender = templateEngine.process("agreement", context);
+    @RequestMapping(value = "/send/{id}", produces = "text/plain", method = RequestMethod.PUT)
+    @ResponseBody
+    public void sendAgreementForVerification(@PathVariable Long id) {
 
-        return htmlContentToRender;
+        agreementService.sendAgreementToLandlord(id);
+    }
+
+    @RequestMapping(value = "/accept/{id}", produces = "text/plain", method = RequestMethod.PUT)
+    @ResponseBody
+    public void acceptAgreement(@PathVariable Long id, @RequestBody String template)
+            throws IOException, DocumentException {
+
+        agreementService.acceptAgreement(id, template);
     }
 }

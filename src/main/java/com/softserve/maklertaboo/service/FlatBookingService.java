@@ -214,7 +214,7 @@ public class FlatBookingService {
      * @return {@link RequestForFlatBooking}
      * @author Roman Blavatskyi
      */
-    private RequestForFlatBooking getRequestForFlatBookingById(Long id) {
+    public RequestForFlatBooking getRequestForFlatBookingById(Long id) {
         RequestForFlatBooking requestForFlatBooking = flatBookingRepository
                 .findRequestForFlatBookingById(id)
                 .orElseThrow(() -> new RequestForFlatBookingException(
@@ -279,6 +279,11 @@ public class FlatBookingService {
                 .findAllByAuthor_Id(user.getId())
                 .orElse(null);
     }
+
+    public void saveFlatBookingRequest(RequestForFlatBooking request) {
+        flatBookingRepository.save(request);
+    }
+
 
     public Long countApprovedRequestsBetween(LocalDate start, LocalDate end) {
         return flatBookingRepository.countAllApprovedRequestsByVerificationDateBetween(asDate(start), asDate(end));

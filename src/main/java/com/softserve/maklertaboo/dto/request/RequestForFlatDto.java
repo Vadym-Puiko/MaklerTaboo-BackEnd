@@ -15,4 +15,6 @@ public class RequestForFlatDto {
     private Date verificationDate;
     private FlatDto flat;
     private UserDto author;
+    private Boolean isAgreementCreated;
+    private Boolean isAgreementAccepted;
 }
