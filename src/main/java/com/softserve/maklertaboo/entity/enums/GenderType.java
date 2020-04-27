@@ -6,8 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum GenderType {
-    Men,
-    Woman;
+    Male,
+    Female;
 
     public String getGetGenderValue() {
         return this.name();

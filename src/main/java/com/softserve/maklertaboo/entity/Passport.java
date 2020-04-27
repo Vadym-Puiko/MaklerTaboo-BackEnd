@@ -6,6 +6,7 @@ import com.softserve.maklertaboo.entity.photo.PassportPhoto;
 import com.softserve.maklertaboo.entity.user.User;
 import lombok.Data;
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -21,14 +22,14 @@ public class Passport {
     private String middleName;
     @Enumerated(value = EnumType.STRING)
     private GenderType gender;
-    private java.time.LocalDate birthDate;
+    private LocalDate birthDate;
     private String birthPlace;
     @Enumerated(value = EnumType.STRING)
     private PassportType passportType;
     private String nationality;
     private String authority;
-    private java.time.LocalDate dateOfIssue;
-    private java.time.LocalDate expirationDate;
+    private LocalDate dateOfIssue;
+    private LocalDate expirationDate;
     private String passportNumber;
     private Long identificationNumber;
 
