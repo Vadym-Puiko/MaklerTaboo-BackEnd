@@ -1,17 +1,16 @@
 package com.softserve.maklertaboo.mapping.comment;
 
-import com.softserve.maklertaboo.dto.comment.FlatCommentDto;
 import com.softserve.maklertaboo.dto.comment.UserCommentDto;
-import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.comment.UserComment;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.mapping.MapperToDto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
 import com.softserve.maklertaboo.mapping.UserMapper;
-import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.time.format.DateTimeFormatter;
 
 /**
  * Class that used by {@link MapperToDto}, {@link MapperToEntity} fot mapping {@link UserCommentDto} into {@link UserComment}
@@ -36,6 +35,8 @@ public class UserCommentMapper implements MapperToDto<UserComment, UserCommentDt
         this.userMapper=userMapper;
     }
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     /**
      * Method for converting {@link UserComment} into {@link UserCommentDto}.
      *
@@ -52,7 +53,7 @@ public class UserCommentMapper implements MapperToDto<UserComment, UserCommentDt
         userCommentDto.setText(entity.getText());
         userCommentDto.setCommentAboutComment(entity.getCommentAboutComment());
         userCommentDto.setCommentLikes(entity.getCommentLikes());
-        userCommentDto.setPublicationDate(entity.getPublicationDate());
+        userCommentDto.setPublicationDate(entity.getPublicationDate().format(formatter));
         userCommentDto.setUserId(entity.getUser().getId());
         userCommentDto.setUserAuthor(userMapper.convertToDto(entity.getUserAuthor()));
         return userCommentDto;
