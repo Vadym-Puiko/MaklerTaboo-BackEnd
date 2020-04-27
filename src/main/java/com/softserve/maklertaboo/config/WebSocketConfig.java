@@ -10,6 +10,11 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 
+/**
+ * Configuration Web Socket into Makler Taboo project.
+ *
+ * @author Mykola Borovets
+ */
 @Configuration
 @EnableWebSocketMessageBroker
 @Component
@@ -17,17 +22,30 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private HttpHandshakeInterceptor httpHandshakeInterceptor;
 
+    /**
+     * @param httpHandshakeInterceptor
+     * @author Mykola Borovets
+     */
     @Autowired
     public WebSocketConfig(HttpHandshakeInterceptor httpHandshakeInterceptor) {
         this.httpHandshakeInterceptor = httpHandshakeInterceptor;
     }
 
+    /**
+     * @param registry
+     * @author Mykola Borovets
+     */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/topic");
         registry.setApplicationDestinationPrefixes("/chat");
     }
 
+
+    /**
+     * @param registry
+     * @author Mykola Borovets
+     */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
 

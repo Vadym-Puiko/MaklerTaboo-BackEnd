@@ -1,18 +1,20 @@
 package com.softserve.maklertaboo.service;
 
-import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.passport.PassportDto;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.entity.Passport;
+import com.softserve.maklertaboo.entity.enums.GenderType;
+import com.softserve.maklertaboo.entity.enums.PassportType;
 import com.softserve.maklertaboo.entity.enums.UserRole;
 import com.softserve.maklertaboo.entity.user.User;
-import com.softserve.maklertaboo.exception.exceptions.DuplicateLandlordRequest;
-import com.softserve.maklertaboo.exception.exceptions.DuplicateRenterRequest;
 import com.softserve.maklertaboo.mapping.PassportMapper;
 import com.softserve.maklertaboo.repository.passport.PassportRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
+import com.softserve.maklertaboo.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 public class PassportService {
@@ -21,6 +23,7 @@ public class PassportService {
     private final PassportMapper passportMapper;
     private final UserRepository userRepository;
     private final RequestForVerificationService requestForVerificationService;
+
     @Autowired
     public PassportService(PassportRepository passportRepository, PassportMapper passportMapper, UserRepository userRepository, RequestForVerificationService requestForVerificationService) {
         this.passportRepository = passportRepository;
@@ -49,18 +52,18 @@ public class PassportService {
             passport = new Passport();
         }
 
-        passport.setPassportType(passportDto.getPassportType());
+        passport.setPassportType(PassportType.valueOf(passportDto.getPassportType()));
         passport.setPassportNumber(passportDto.getPassportNumber());
         passport.setNationality(passportDto.getNationality());
         passport.setMiddleName(passportDto.getMiddleName());
         passport.setLastName(passportDto.getLastName());
         passport.setIdentificationNumber(passportDto.getIdentificationNumber());
-        passport.setGender(passportDto.getGender());
+        passport.setGender(GenderType.valueOf(passportDto.getGender()));
         passport.setFirstName(passportDto.getFirstName());
-        passport.setExpirationDate(passportDto.getExpirationDate());
-        passport.setDateOfIssue(passportDto.getDateOfIssue());
+        passport.setExpirationDate(LocalDate.parse(passportDto.getExpirationDate(), DateUtils.convertDate()));
+        passport.setDateOfIssue(LocalDate.parse(passportDto.getDateOfIssue(), DateUtils.convertDate()));
         passport.setBirthPlace(passportDto.getBirthPlace());
-        passport.setBirthDate(passportDto.getBirthDate());
+        passport.setBirthDate(LocalDate.parse(passportDto.getBirthDate(), DateUtils.convertDate()));
         passport.setAuthority(passportDto.getAuthority());
 
         passportRepository.save(passport);
@@ -73,14 +76,13 @@ public class PassportService {
     public void getRenterAdminApproval(UserDto userDto) {
         if (UserRole.valueOf(userDto.getUserRole()) != UserRole.ROLE_RENTER) {
             requestForVerificationService.createRenterRequest(userRepository.findById(userDto.getId()).get());
-            throw new DuplicateRenterRequest(ErrorMessage.DUPLICATE_RENTER_REQUEST);
         }
     }
 
     public void getLandlordAdminApproval(UserDto userDto) {
         if (UserRole.valueOf(userDto.getUserRole()) != UserRole.ROLE_LANDLORD) {
             requestForVerificationService.createLandlordRequest(userRepository.findById(userDto.getId()).get());
-            throw new DuplicateLandlordRequest(ErrorMessage.DUPLICATE_LANDLORD_REQUEST);
         }
     }
+
 }

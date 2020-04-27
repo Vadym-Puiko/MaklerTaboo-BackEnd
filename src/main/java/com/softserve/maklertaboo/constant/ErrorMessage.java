@@ -25,12 +25,12 @@ public class ErrorMessage {
     public static final String PASSWORDS_DO_NOT_MATCHES = "Password does not match";
     public static final String CURRENT_PASSWORD_DOES_NOT_MATCH = "Current password is wrong";
     public static final String REQUEST_FOR_FLAT_BOOKING_ALREADY_EXISTS = "You've already sent request to book apartment. " +
-            "Wait for approval.";
+            "Wait for approval!";
     public static final String ACCESS_DENIED_TO_BOOK_APARTMENT = "You need to fill passport data in order to book apartment!";
     public static final String REQUEST_FOR_FLAT_BOOKING_NOT_FOUND = "Request for flat booking not found.";
     public static final String FLATCOMMENT_NOT_FOUND = "Flat comment not found";
     public static final String USERCOMMENT_NOT_FOUND = "User comment not found";
     public static final String COMPLAINT_IS_FOUND = "A complaint has already been submitted";
-
+    public static final String REQUEST_DECLINED = "Your request was declined!";
 
 }
