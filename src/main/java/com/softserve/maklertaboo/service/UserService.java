@@ -3,16 +3,20 @@ package com.softserve.maklertaboo.service;
 import com.softserve.maklertaboo.constant.ErrorMessage;
 import com.softserve.maklertaboo.dto.user.UserDto;
 import com.softserve.maklertaboo.dto.user.UserUpdateDto;
+import com.softserve.maklertaboo.entity.VerifyEmail;
 import com.softserve.maklertaboo.entity.enums.UserRole;
+import com.softserve.maklertaboo.entity.enums.UserStatus;
 import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.exception.exceptions.*;
 import com.softserve.maklertaboo.mapping.UserMapper;
+import com.softserve.maklertaboo.repository.VerifyEmailRepository;
 import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.security.dto.ChangePasswordDto;
 import com.softserve.maklertaboo.security.dto.JWTSuccessLogInDto;
 import com.softserve.maklertaboo.security.dto.JwtTokensDto;
 import com.softserve.maklertaboo.security.dto.LoginDto;
 import com.softserve.maklertaboo.security.jwt.JWTTokenProvider;
+import com.softserve.maklertaboo.service.mailer.EmailSenderService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,12 +29,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.softserve.maklertaboo.constant.ErrorMessage.*;
+import static com.softserve.maklertaboo.service.mailer.MailMessage.*;
 
 @Service
 public class UserService {
@@ -41,6 +48,7 @@ public class UserService {
     private final AmazonStorageService amazonStorageService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final VerifyEmailService verifyEmailService;
 
     /**
      * Constructor with parameters
@@ -53,13 +61,15 @@ public class UserService {
                        JWTTokenProvider jwtTokenProvider,
                        AmazonStorageService amazonStorageService,
                        PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager) {
+                       AuthenticationManager authenticationManager,
+                       VerifyEmailService verifyEmailService) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.amazonStorageService = amazonStorageService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.verifyEmailService = verifyEmailService;
     }
 
     /**
@@ -76,7 +86,8 @@ public class UserService {
             throw new UserAlreadyExistsException(ErrorMessage.USER_ALREADY_EXISTS);
         }
         User user = userMapper.convertToEntity(userDto);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        verifyEmailService.confirmRegistration(savedUser, "http://localhost:4200/");
     }
 
     public Authentication getAuthentication(LoginDto loginDto) {
@@ -95,10 +106,13 @@ public class UserService {
      * @return {@link JWTSuccessLogInDto}
      * @author Mike Ostapiuk
      */
-    public JWTSuccessLogInDto validateLogin(LoginDto loginDto) {
+    public JWTSuccessLogInDto signIn(LoginDto loginDto) {
         User user = userRepository.findUserByEmail(loginDto.getEmail()).orElseThrow(
                 () -> new BadEmailOrPasswordException(ErrorMessage.BAD_EMAIL_OR_PASSWORD));
         comparePasswordLogin(loginDto, passwordEncoder);
+        if (user.getUserStatus() == UserStatus.DEACTIVATED) {
+            throw new UserDeactivatedException(USER_DEACTIVATED);
+        }
         return new JWTSuccessLogInDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
     }
 

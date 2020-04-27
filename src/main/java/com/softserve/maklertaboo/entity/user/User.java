@@ -87,7 +87,7 @@ public class User {
     @PrePersist
     public void prePersist() {
         setRole(UserRole.ROLE_USER);
-        setUserStatus(UserStatus.ACTIVATED);
+        setUserStatus(UserStatus.DEACTIVATED);
         if (registrationDate == null) {
             registrationDate = LocalDateTime.now();
         }
