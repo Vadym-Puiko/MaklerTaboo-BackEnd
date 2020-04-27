@@ -13,5 +13,5 @@ public class FlatCommentDto {
     private Long commentAboutComment;
     private Long commentLikes;
     private String text;
-    private LocalDateTime publicationDate;
+    private String publicationDate;
 }
