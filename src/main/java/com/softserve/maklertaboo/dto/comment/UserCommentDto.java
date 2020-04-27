@@ -12,5 +12,5 @@ public class UserCommentDto {
     private Long commentAboutComment;
     private Long commentLikes;
     private String text;
-    private LocalDateTime publicationDate;
+    private String publicationDate;
 }
