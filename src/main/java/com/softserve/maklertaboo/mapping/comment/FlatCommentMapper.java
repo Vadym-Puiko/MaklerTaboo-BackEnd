@@ -1,19 +1,16 @@
 package com.softserve.maklertaboo.mapping.comment;
 
-import com.softserve.maklertaboo.dto.comment.ComplaintDtoId;
 import com.softserve.maklertaboo.dto.comment.FlatCommentDto;
-import com.softserve.maklertaboo.dto.user.UserDto;
-import com.softserve.maklertaboo.entity.comment.Complaint;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.flat.Flat;
-import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.mapping.MapperToDto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
 import com.softserve.maklertaboo.mapping.UserMapper;
-import com.softserve.maklertaboo.repository.FlatRepository;
 import com.softserve.maklertaboo.service.FlatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.time.format.DateTimeFormatter;
 
 
 /**
@@ -30,7 +27,7 @@ public class FlatCommentMapper implements MapperToDto<FlatComment, FlatCommentDt
     /**
      * Constructor with parameters
      *
-     * @author Iachenko Dmytro
+     * @author Isachenko Dmytro
      */
     @Autowired
     public FlatCommentMapper(FlatService flatService,
@@ -38,6 +35,8 @@ public class FlatCommentMapper implements MapperToDto<FlatComment, FlatCommentDt
         this.flatService = flatService;
         this.userMapper=userMapper;
     }
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     /**
@@ -55,7 +54,7 @@ public class FlatCommentMapper implements MapperToDto<FlatComment, FlatCommentDt
         flatCommentDto.setCommentAboutComment(entity.getCommentAboutComment());
         flatCommentDto.setText(entity.getText());
         flatCommentDto.setCommentLikes(entity.getCommentLikes());
-        flatCommentDto.setPublicationDate(entity.getPublicationDate());
+        flatCommentDto.setPublicationDate(entity.getPublicationDate().format(formatter));
         flatCommentDto.setFlatId(entity.getFlat().getId());
         flatCommentDto.setUserAuthor(userMapper.convertToDto(entity.getUserAuthor()));
 

@@ -1,16 +1,11 @@
 package com.softserve.maklertaboo.mapping.comment;
 
-import com.softserve.maklertaboo.dto.comment.FlatCommentDto;
 import com.softserve.maklertaboo.dto.comment.LikeDto;
 import com.softserve.maklertaboo.entity.comment.FlatComment;
 import com.softserve.maklertaboo.entity.comment.CommentLike;
 import com.softserve.maklertaboo.entity.comment.UserComment;
-import com.softserve.maklertaboo.entity.user.User;
 import com.softserve.maklertaboo.mapping.MapperToDto;
 import com.softserve.maklertaboo.mapping.MapperToEntity;
-import com.softserve.maklertaboo.repository.comment.FlatCommentRepository;
-import com.softserve.maklertaboo.repository.comment.UserCommentRepository;
-import com.softserve.maklertaboo.repository.user.UserRepository;
 import com.softserve.maklertaboo.service.FlatCommentService;
 import com.softserve.maklertaboo.service.UserCommentService;
 import org.springframework.beans.factory.annotation.Autowired;

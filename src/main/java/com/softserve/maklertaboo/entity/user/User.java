@@ -19,10 +19,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @NoArgsConstructor
 @EqualsAndHashCode(
         exclude = {"passport", "orders", "flats", "favoriteFlats", "comments", "userComments", "requestUser",
                 "registrationDate", "refreshKey", "telegramUserData", "requestForBanFlat"})
+
 @Data
 @Entity
 @Table(name = "usr")
@@ -77,7 +79,7 @@ public class User {
 
     private String refreshKey;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JoinColumn(name = "telegram_id", referencedColumnName = "id")
     private TelegramUserData telegramUserData;
 
@@ -87,7 +89,7 @@ public class User {
     @PrePersist
     public void prePersist() {
         setRole(UserRole.ROLE_USER);
-        setUserStatus(UserStatus.ACTIVATED);
+        setUserStatus(UserStatus.DEACTIVATED);
         if (registrationDate == null) {
             registrationDate = LocalDateTime.now();
         }
@@ -96,12 +98,12 @@ public class User {
     public User(Long id, String username, String email, String password, String phoneNumber,
                 String photoUrl, UserRole role, UserStatus userStatus) {
         this.id = id;
-        this.username=username;
-        this.email=email;
-        this.password=password;
-        this.phoneNumber=phoneNumber;
-        this.photoUrl=photoUrl;
-        this.role=role;
-        this.userStatus=userStatus;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.photoUrl = photoUrl;
+        this.role = role;
+        this.userStatus = userStatus;
     }
 }

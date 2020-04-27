@@ -140,6 +140,32 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
+    @ExceptionHandler(UserAlreadyActivated.class)
+    public final ResponseEntity<Object> handleUserAlreadyActivatedException(
+            UserAlreadyActivated exception,
+            WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(
+                HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(VerificationTokenNotValidException.class)
+    public final ResponseEntity<Object> handleVerificationTokenNotValidException(
+            VerificationTokenNotValidException exception,
+            WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(getErrorAttributes(request));
+        log.error(exception.getMessage(), exception);
+
+        return ResponseEntity.status(
+                HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
     /**
      * Method that intercepts exception {@link RequestDeclinedException}.
      *

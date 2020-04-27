@@ -9,9 +9,13 @@ public class ErrorMessage {
     public static final String USER_NOT_FOUND = "User not found";
     public static final String USER_NOT_FOUND_BY_ID = "User with following id not found: ";
     public static final String USER_NOT_FOUND_BY_USERNAME = "User with such name not found";
+    public static final String USER_DEACTIVATED = "Please, check your email to activate account";
+    public static final String VERIFICATION_TOKEN_IS_EXPIRED = "Verification Token is expired";
+    public static final String VERIFICATION_TOKEN_IS_NOT_VALID = "Verification token is not valid";
     public static final String INCORRECT_DATA = "Bad email or password";
     public static final String REFRESH_TOKEN_NOT_VALID = "Refresh token is not valid";
     public static final String USER_ALREADY_EXISTS = "User already exists with given credentials";
+    public static final String USER_ALREADY_ACTIVATED = "User already activated";
     public static final String DUPLICATE_RENTER_REQUEST = "Renter request successfully sent pending approval";
     public static final String DUPLICATE_LANDLORD_REQUEST = "Landlord request successfully sent, wait for approval";
     public static final String FLAT_ALREADY_IN_THE_FAVORITE_LIST = "Flat already exists in the favorite list";
@@ -32,6 +36,5 @@ public class ErrorMessage {
     public static final String USERCOMMENT_NOT_FOUND = "User comment not found";
     public static final String COMPLAINT_IS_FOUND = "A complaint has already been submitted";
     public static final String REQUEST_DECLINED = "Your request was declined!";
-
 
 }
