@@ -33,5 +33,4 @@ public class ErrorMessage {
     public static final String COMPLAINT_IS_FOUND = "A complaint has already been submitted";
     public static final String REQUEST_DECLINED = "Your request was declined!";
 
-
 }
