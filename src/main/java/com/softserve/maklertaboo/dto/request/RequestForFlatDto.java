@@ -17,4 +17,5 @@ public class RequestForFlatDto {
     private UserDto author;
     private Boolean isAgreementCreated;
     private Boolean isAgreementAccepted;
+    private Boolean isPaid;
 }

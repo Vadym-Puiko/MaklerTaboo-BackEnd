@@ -44,6 +44,7 @@ public class FlatBookingMapper implements MapperToDto<RequestForFlatBooking, Req
         requestForFlatDto.setAuthor(userMapper.convertToDto(requestForFlat.getAuthor()));
         requestForFlatDto.setIsAgreementAccepted(requestForFlat.getIsAgreementAccepted());
         requestForFlatDto.setIsAgreementCreated(requestForFlat.getIsAgreementCreated());
+        requestForFlatDto.setIsPaid(requestForFlat.getIsPaid());
 
         return requestForFlatDto;
     }
@@ -71,6 +72,8 @@ public class FlatBookingMapper implements MapperToDto<RequestForFlatBooking, Req
         requestForFlatBooking.setIsAgreementCreated(dto.getIsAgreementCreated());
 
         requestForFlatBooking.setIsAgreementAccepted(dto.getIsAgreementAccepted());
+
+        requestForFlatBooking.setIsPaid(dto.getIsPaid());
 
         return requestForFlatBooking;
     }

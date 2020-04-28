@@ -1,9 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymelaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xml:lang="en">
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Rental Agreement</title>
 </head>
 <body>
-<h1>Rental Agreement</h1>
-<p th:text="${'Name    : ' + name}"></p>
+<div class="document">
+    <h1 style="text-align: center;"><strong>House Rental Lease Agreement</strong></h1>
+    <p>Thank you for your interest in renting the house located at <span th:text="${houseNumber}"></span>
+        <span th:text="${street}"></span>, Apartment <span th:text="${flatNumber}"></span> (“House”)
+        from [ START DATE ] to [ END DATE ]. Please review and sign below to confirm your agreement with the terms and
+        conditions in this House Rental Lease Agreement. Signature by both parties identified in this House
+        Rental Lease Agreement will bind them to a legally enforceable contract so make sure to consult with a
+        lawyer before signing if you want to do so.</p>
+    <p><strong>TERMS AND CONDITIONS</strong></p>
+    <p>1. Agreement to rent. <span th:text="${landlordSurname}"></span> <span th:text="${landlordFirstName}"></span>
+        <span th:text="${landlordMiddleName}"></span> (“Owner”) agrees to rent the house located at
+        <span th:text="${houseNumber}"></span> <span th:text="${street}"></span>, Apartment
+        <span th:text="${flatNumber}"></span> to <span th:text="${renterSurname}"></span>
+        <span th:text="${renterFirstName}"></span> <span th:text="${renterMiddleName}"></span> (“Renter”) for the
+        term of this House Rental Lease Agreement.
+    </p>
+    <p>2. Term of lease. The rental term will start on [ START DATE ] and end on [ END DATE ].</p>
+    <p>3. Rent. Renter agrees to pay [ TOTAL RENT ] in exchange for use of
+        the House under the conditions of this House Rental Lease Agreement, payable as follows: [ RENT PAYMENT
+        DUE SCHEDULE ].</p>
+    <p>Payments will be made by [ PAYMENT METHOD ] to Owner on or before the due date(s) set forth
+        above. Late payments will result in [ LATE PAYMENT CONSEQUENCE ]; returned checks will result in
+        [ RETURNED CHECK CONSEQUENCE. ]</p>
+    <p>4. Security deposit. Renter will pay Owner a security deposit of [ SECURITY DEPOSIT ] on the day this House
+        Rental
+        Lease Agreement is signed. It will be returned upon surrender of the House in a clean and undamaged condition,
+        subject to ordinary wear and tear. Any use of the security deposit to reimburse Owner for unusual cleaning costs
+        or repairs will be itemized by Owner upon return of the security deposit.</p>
+    <p>5. Occupants. The maximum occupants of the House is [ MAXIMUM GUESTS ]. Any unauthorized guests beyond that
+        number will result in an additional charge of [ ADDITIONAL CHARGE ] per guest per day.</p>
+    <p>6. Assumption of liability and risk. Renter agrees to hold harmless Owner from any injury, liability, damage or
+        cost Renter, or guests of Renter, may incur due to occupancy of the House or its surrounding areas, and Renter
+        assumes all risks associated therewith.</p>
+    <p>7. Rules and Regulations. Renter will abide by the Rules and Regulations for the House, a list of which is
+        attached here to as Exhibit A.</p>
+    <p>8. Keys. Keys to the House are owned by the Owner, not the Renter. No copies may be made, and keys will be
+        returned to the Owner upon termination of this rental agreement and before the security deposit is released.</p>
+    <p>9. Additional provisions. Additional provisions to this Agreement are the following: [ ADDITIONAL PROVISIONS
+        ]</p>
+    <p>10. Entire agreement. This House Rental Lease Agreement, including all attachments (if any), is the entire
+        agreement between the Owner and the Renter. Any changes must be in writing and signed by both parties.</p>
+    <br/>
+    <br/>
+    <br/>
+    <p>Executed by the Parties on [ SIGN DATE ].</p>
+    <p>_________________________________________</p>
+    <p>Owner <span th:text="${landlordSurname}"></span> <span th:text="${landlordFirstName}"></span>
+        <span th:text="${landlordMiddleName}"></span></p>
+    <p><span th:text="${landlordPassportNumber}"></span></p>
+    <p><span th:text="${landlordPhoneNumber}"></span></p>
+    <p><span th:text="${landlordEmail}"></span></p>
+    <p>_________________________________________</p>
+    <p>Renter <span th:text="${renterSurname}"></span> <span th:text="${renterFirstName}"></span>
+        <span th:text="${renterMiddleName}"></span></p>
+    <p><span th:text="${renterPassportNumber}"></span></p>
+    <p><span th:text="${renterPhoneNumber}"></span></p>
+    <p><span th:text="${renterEmail}"></span></p>
+</div>
 </body>
 </html>

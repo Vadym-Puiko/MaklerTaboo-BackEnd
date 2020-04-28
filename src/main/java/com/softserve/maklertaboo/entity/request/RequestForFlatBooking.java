@@ -21,6 +21,9 @@ public class RequestForFlatBooking extends RequestForVerification {
     @Column
     private Boolean isAgreementAccepted;
 
+    @Column
+    private Boolean isPaid;
+
     @ManyToOne
     private Flat flat;
 }

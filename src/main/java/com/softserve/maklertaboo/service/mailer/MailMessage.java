@@ -7,7 +7,7 @@ public class MailMessage {
     public static final String AGREEMENT_BODY = "Dear customer,\n\nYou have " +
             "successfully created rental agreement. It is attached bellow.\n" +
             "Please, download your agreement and finish all necessary steps " +
-            "of renting process.\n\nBest regards,\nMaklerTaboo service.";
+            "of renting process.\n\nBest regards,\nMaklerTaboo service";
     public static final String CONGRATS = "Dear %s,\n";
     public static final String VERIFY_EMAIL_SUBJECT = "Maklertaboo — Confirm registration";
     public static final String VERIFY_EMAIL_BODY = "\nPlease verify your email address to complete registration to 'Maklertaboo'." +
