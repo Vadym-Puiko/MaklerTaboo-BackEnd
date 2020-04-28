@@ -95,7 +95,8 @@ public class FlatBookingService {
             requestForFlatBooking1.setAuthor(user);
             flatBookingRepository.save(requestForFlatBooking1);
         } else {
-            throw new RequestAlreadyExistsException(REQUEST_FOR_FLAT_BOOKING_ALREADY_EXISTS);
+            throw new RequestAlreadyExistsException(
+                    REQUEST_FOR_FLAT_BOOKING_ALREADY_EXISTS);
         }
     }
 
@@ -115,8 +116,8 @@ public class FlatBookingService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return flatBookingRepository.findAllByFlat_Owner_IdAndStatus(pageable, user.getId(), status)
-                .map(bookingMapper::convertToDto);
+        return flatBookingRepository.findAllByFlat_Owner_IdAndStatus(pageable,
+                user.getId(), status).map(bookingMapper::convertToDto);
     }
 
     /**
@@ -214,7 +215,8 @@ public class FlatBookingService {
      * @return {@link RequestForFlatBooking}
      * @author Roman Blavatskyi
      */
-    private RequestForFlatBooking getRequestForFlatBookingById(Long id) {
+    public RequestForFlatBooking getRequestForFlatBookingById(Long id) {
+
         RequestForFlatBooking requestForFlatBooking = flatBookingRepository
                 .findRequestForFlatBookingById(id)
                 .orElseThrow(() -> new RequestForFlatBookingException(
@@ -279,6 +281,18 @@ public class FlatBookingService {
                 .findAllByAuthor_Id(user.getId())
                 .orElse(null);
     }
+
+    /**
+     * Method that saves {@link RequestForFlatBooking}.
+     *
+     * @param request of {@link RequestForFlatBooking}
+     * @author Roman Blavatskyi
+     */
+    public void saveFlatBookingRequest(RequestForFlatBooking request) {
+
+        flatBookingRepository.save(request);
+    }
+
 
     public Long countApprovedRequestsBetween(LocalDate start, LocalDate end) {
         return flatBookingRepository.countAllApprovedRequestsByVerificationDateBetween(asDate(start), asDate(end));
