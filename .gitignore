@@ -27,7 +27,7 @@ out/
 *.iws
 *.iml
 *.ipr
-
+*.pdf
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
