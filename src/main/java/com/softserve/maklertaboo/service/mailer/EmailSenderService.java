@@ -2,7 +2,6 @@ package com.softserve.maklertaboo.service.mailer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
-import java.io.File;
 
 import static com.softserve.maklertaboo.constant.ErrorMessage.EMAIL_SENDING_ERROR;
 
@@ -45,9 +43,8 @@ public class EmailSenderService {
         sendMessage(message);
     }
 
-    public void sendMailWithAttachment(Long requestId, String to1, String to2,
-                                       String subject, String body,
-                                       String fileToAttach) {
+    public void sendMailWithAttachment(String to1, String to2,
+                                       String subject, String fileUrl) {
 
         MimeMessagePreparator preparator = mimeMessage -> {
 
@@ -57,13 +54,13 @@ public class EmailSenderService {
                     new InternetAddress(to2));
             mimeMessage.setSubject(subject);
 
-            FileSystemResource file = new FileSystemResource(
-                    new File(fileToAttach));
             MimeMessageHelper helper = new MimeMessageHelper(
                     mimeMessage, true);
-            helper.addAttachment("agreement"
-                    + requestId + ".pdf", file);
-            helper.setText(body);
+            helper.setText("Dear customer,\n\nYou have " +
+                    "successfully created rental agreement. "
+                    + "\nFollow the link bellow to check your agreement:\n" + fileUrl
+                    + "\n\nPlease, download agreement and finish all necessary steps "
+                    + "of renting process.\n\nBest regards,\nMaklerTaboo service");
         };
 
         try {
