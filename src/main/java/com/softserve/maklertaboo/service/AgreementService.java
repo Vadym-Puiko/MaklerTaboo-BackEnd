@@ -1,5 +1,6 @@
 package com.softserve.maklertaboo.service;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.itextpdf.text.DocumentException;
 import com.softserve.maklertaboo.entity.flat.Flat;
 import com.softserve.maklertaboo.entity.request.RequestForFlatBooking;
@@ -16,7 +17,6 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import java.io.*;
 import java.nio.file.FileSystems;
 
-import static com.softserve.maklertaboo.service.mailer.MailMessage.AGREEMENT_BODY;
 import static com.softserve.maklertaboo.service.mailer.MailMessage.AGREEMENT_HEADER;
 
 /**
@@ -27,10 +27,14 @@ import static com.softserve.maklertaboo.service.mailer.MailMessage.AGREEMENT_HEA
 @Service
 public class AgreementService {
 
+    private final String BUCKET_NAME = "makler.tabbo/agreements";
+    private final String ENDPOINT_URL = "https://s3.eu-central-1.amazonaws.com";
+
     private final SpringTemplateEngine templateEngine;
     private final FlatBookingService bookingService;
     private final JWTTokenProvider jwtTokenProvider;
     private final EmailSenderService emailSenderService;
+    private final AmazonStorageService amazonStorageService;
 
     /**
      * Constructor with parameters of {@link AgreementService}.
@@ -41,11 +45,13 @@ public class AgreementService {
     public AgreementService(SpringTemplateEngine templateEngine,
                             FlatBookingService bookingService,
                             JWTTokenProvider jwtTokenProvider,
-                            EmailSenderService emailSenderService) {
+                            EmailSenderService emailSenderService,
+                            AmazonStorageService amazonStorageService) {
         this.templateEngine = templateEngine;
         this.bookingService = bookingService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.emailSenderService = emailSenderService;
+        this.amazonStorageService = amazonStorageService;
     }
 
     /**
@@ -135,14 +141,22 @@ public class AgreementService {
         renderer.setDocumentFromString(xHtml, baseUrl);
         renderer.layout();
 
-        OutputStream outputStream = new FileOutputStream("src//agreement_"
-                + id + ".pdf");
-        renderer.createPDF(outputStream);
-        outputStream.close();
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        renderer.createPDF(os);
+        os.close();
+        InputStream inputStream = new ByteArrayInputStream(os.toByteArray());
 
-        emailSenderService.sendMailWithAttachment(id, renterEmail, landlordEmail,
-                AGREEMENT_HEADER, AGREEMENT_BODY,
-                "D:\\MaklerTaboo\\Flat-Service\\src\\agreement_" + id + ".pdf");
+        String fileName = amazonStorageService.generateFileName() + ".pdf";
+        String fileUrl = ENDPOINT_URL + "/" + BUCKET_NAME + "/" + fileName;
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(".pdf");
+        objectMetadata.setContentLength(os.size());
+
+        amazonStorageService.uploadAgreementTos3bucket(BUCKET_NAME, fileName,
+                inputStream, objectMetadata);
+
+        emailSenderService.sendMailWithAttachment(landlordEmail, renterEmail,
+                AGREEMENT_HEADER, fileUrl);
 
         requestForFlatBooking.setIsAgreementAccepted(true);
         bookingService.saveFlatBookingRequest(requestForFlatBooking);

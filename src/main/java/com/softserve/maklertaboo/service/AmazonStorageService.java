@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
@@ -108,9 +109,9 @@ public class AmazonStorageService {
     /**
      * The method that upload file to s3 bucket
      *
-     * @param fileName string
+     * @param fileName    string
      * @param inputStream inputStream
-     * @param metadata objectMetadata
+     * @param metadata    objectMetadata
      * @author Vadym Puiko
      */
     private void uploadFileTos3bucket(String fileName, InputStream inputStream, ObjectMetadata metadata) {
@@ -124,7 +125,7 @@ public class AmazonStorageService {
      * @return {@link String}
      * @author Vadym Puiko
      */
-    private String generateFileName() {
+    public String generateFileName() {
         log.info("File name was generated successfully");
         return UUID.randomUUID().toString();
     }
@@ -145,5 +146,35 @@ public class AmazonStorageService {
         }
         log.info("MultiPartFile to InputStream was converted successfully");
         return inputStream;
+    }
+
+    public String uploadPdfFile(MultipartFile multipartFile) {
+        String fileUrl = "";
+        if (multipartFile != null) {
+            try {
+                String fileName = generateFileName();
+                fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
+                InputStream inputStream = convertMultiPartToInputStream(multipartFile);
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentType(multipartFile.getContentType());
+                metadata.setContentLength(multipartFile.getSize());
+                uploadFileTos3bucket(fileName, inputStream, metadata);
+                inputStream.close();
+                log.info("File was uploaded successfully");
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.info("Caught an AmazonClientException: ");
+                log.info("Error Message: " + e.getMessage());
+            }
+            return fileUrl;
+        } else {
+            log.info("File is not exists");
+            return "";
+        }
+    }
+
+    public void uploadAgreementTos3bucket(String bucketName, String fileName, InputStream inputStream, ObjectMetadata metadata) {
+        s3client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, metadata));
+        log.info("File was uploaded successfully to S3 Bucket");
     }
 }
