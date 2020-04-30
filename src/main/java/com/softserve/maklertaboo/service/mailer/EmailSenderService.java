@@ -58,9 +58,9 @@ public class EmailSenderService {
                     mimeMessage, true);
             helper.setText("Dear customer,\n\nYou have " +
                     "successfully created rental agreement. "
-                    + "\nFollow the link bellow to check your agreement:\n" + fileUrl
-                    + "\n\nPlease, download agreement and finish all necessary steps "
-                    + "of renting process.\n\nBest regards,\nMaklerTaboo service");
+                    + "\n\nFollow the link bellow to download agreement"
+                    + " and finish all necessary steps of renting process:\n" + fileUrl
+                    + "\n\nBest regards,\nMaklerTaboo service");
         };
 
         try {
