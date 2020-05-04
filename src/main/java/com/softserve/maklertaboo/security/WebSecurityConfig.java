@@ -62,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/refreshTokens").permitAll()
                 .antMatchers("/users/confirmRegistration/*").permitAll()
                 .antMatchers("/users/resendRegistrationToken/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/users/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/users/getById/*").permitAll()
                 .antMatchers(HttpMethod.GET, "/flat/*").permitAll()
                 .antMatchers("/flat/userflat/*").permitAll()
                 .antMatchers("/flat/search/*").permitAll()
